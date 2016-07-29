@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>SONATA SDK Editor</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#accordion" ).accordion({active:false, collapsible:true});
+  } );
+  </script>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="homeView.html">SONATA SDK Editor</a>
+    </div>
+    <ul class="nav navbar-nav">
+	   <li><a href="homeView.html">Home</a></li>
+       <li><a href="workspaceView.html">Workspace</a></li>
+       <li><a href="projectView.html">Project</a></li>
+	   <li class="active"><a href="vnfView.html">VNF</a></li>
+    </ul>
+  </div>
+</nav>
+  
+<div class="container">
+<form class="form-horizontal" role="form">
+	<div class="form-group"> 
+		<div id="accordion">
+			<h3>General Descriptor Section</h3>
+			 <div>
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-md-2">Descriptor version:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Schema (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Vendor:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Name:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Version:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Author (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Description (optional):</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+				  
+				</form>
+			 </div>
+			<h3>Virtual Deployment Units Section</h3>
+			<div>
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-md-2">Virtual deployment units:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">id:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">VM image (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">VM image format (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">VM image md5 (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Resource requirements:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Connection points (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Monitoring parameters (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Scale in out (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+				</form>
+			</div>
+			<h3>Connection Points Section</h3>
+			<div>
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-md-2">Connection points (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">id:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">type:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Virtual link reference (optional):</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+				</form>		
+			</div>
+			<h3>Virtual Links Section</h3>
+			<div>
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-md-2">Virtual links (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">id:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Connectivity type:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Connection points reference:</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+				</form>				
+					
+			</div>
+			<h3>VNF Lifecycle Events Section</h3>
+			<div>
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-md-2">Lifecycle events (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">VNF container:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Events:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+				</form>				
+			</div>
+			<h3>Deployment Flavours Section</h3>
+			<div>
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-md-2">Deployment flavour (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Flavour key:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">VDU reference:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+				</form>				
+			</div>
+			<h3>Monitoring Rules</h3>
+			<div>
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="control-label col-md-2">Monitoring rules (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Name:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Duration:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Duratuion unit (optional):</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Condition:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+						<label class="control-label col-md-2">Notification:</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Description (optional):</label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" placeholder="">
+						</div>
+					</div>
+				</form>		
+			</div>
+		</div>
+	</div>
+	<div class="form-group"> 
+	<button type="submit"  class="btn btn-primary center-block">
+		Submit
+	</button>
+	</div>	
+</div>
+	<ul class="pager">
+			<li><a href="projectView.html">Previous</a></li>
+    </ul>
+</div>
+
+</body>
+</html>
+
