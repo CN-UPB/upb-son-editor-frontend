@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>SONATA SDK Editor</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css">
+  <link rel="stylesheet" media="screen" href="css/app.css">
+  <SCRIPT TYPE="text/javascript"> function popup(mylink, windowname) { if (! window.focus)return true; var href; if (typeof(mylink) == 'string') href=mylink; else href=mylink.href; window.open(href, windowname, 'width=400,height=200,scrollbars=yes'); return false; } 
+  </SCRIPT>
+
+</head>
+
+<body>
+	<nav class="navbar navbar-default">
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="home.html">SONATA SDK Editor</a>
+		</div>
+		<ul class="nav navbar-nav">
+		   <li><a class="top-navigation-menu" href="home.html">Home</a></li>
+		   <li><a class="top-navigation-menu" href="workspace.html">Workspace Name</a></li>
+		   <li><a class="top-navigation-menu" href="project.html">Project Name</a></li>
+		   <li class="active"><a class="top-navigation-menu" href="ns.html">Network Service Name</a></li>
+		</ul>
+	</nav>
+
+	<div class="container-fluid">	
+		<div class="row">
+			<div class="col-xs-3 no-padding">
+				<div class="action-section">
+					<div class="row">
+						<div class="col-xs-4">
+							<a href=""><i class="fa fa-file fa-2x"></i><br>File</a>
+						</div>
+						
+						<div class="col-xs-4">
+							<a href=""><i class="fa fa-folder-open fa-2x"></i><br>Open</a>
+						</div>
+						
+						<div class="col-xs-4">
+							<a href=""><i class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-xs-2 no-padding">
+				<div class="action-section">
+					<div class="row">
+						<div class="col-xs-6">
+							<a href=""><i class="fa fa-undo fa-2x"></i><br>Undo</a>
+						</div>
+						
+						<div class="col-xs-6">
+							<a href=""><i class="fa fa-repeat fa-2x"></i><br>Redo</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-xs-3 no-padding">
+				<div class="action-section">
+					<div class="row">
+						<div class="col-xs-4">
+							<a href=""><i class="fa fa-link fa-2x"></i><br>Connect</a>
+						</div>
+						
+						<div class="col-xs-4">
+							<a href=""><i class="fa fa-mouse-pointer fa-2x"></i><br>Select</a>
+						</div>
+						
+						<div class="col-xs-4">
+							<a href=""><i class="fa fa-hand-paper-o fa-2x"></i><br>Hand</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-xs-4 no-padding">
+				<div class="action-section">
+					<div class="row">
+						<div class="col-xs-4">
+							<select class="form-control">
+								<option value="1">10 %</option>
+								<option value="2">20 %</option>
+								<option value="1">30 %</option>
+								<option value="1">40 %</option>
+								<option value="1">50 %</option>
+								<option value="1">60 %</option>
+								<option value="1">70 %</option>
+								<option value="1">80 %</option>
+								<option value="1">90 %</option>
+								<option value="" disabled="disabled" selected="selected">100 %</option>
+								<option value="1">150 %</option>
+								<option value="1">200 %</option>
+							</select>
+						</div>
+						
+						<div class="col-xs-4">
+							<a href=""><i class="fa fa-search-plus fa-2x"></i><br>Zoom-in</a>
+						</div>
+						
+						<div class="col-xs-4">
+							<a href=""><i class="fa fa-search-minus fa-2x"></i><br>Zoom-out</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	
+							
+								<div class="row">
+									<div class="col-xs-6 col-md-3 no-padding">
+										<div class="left-navigation-bar">
+											<ul class="nav nav-pills nav-stacked">
+												<li role="presentation" class="active"><a href="#" onClick="return popup(this, 'notes')">Virtual Network Function<span class="glyphicon glyphicon-play pull-right" aria-hidden="true"></span></a></li>
+												<li role="presentation"><a href="#">Network Services</a></li>
+												<li role="presentation"><a href="#">Hardwares</a></li>
+											</ul>
+										</div>	
+									</div>
+																	
+									<div class="col-sm-9 no-padding">
+										<div class="editor-area">
+											<div class="scrollbar">
+
+
+											</div>
+										</div>	
+																			
+									</div>
+																			
+								</div>
+						
+	</div>
+
+
+
+
+
+</body>
+</html>
