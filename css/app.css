@@ -122,3 +122,26 @@ body{
     height: 100%;
     overflow-x: hidden
 }
+.panel {
+	background: #ffffbd;
+    background-size:90% 90%;
+    height:300px;
+	display:none;
+    font-family:garamond,times-new-roman,serif;
+}
+
+ul .vnf-list {
+    margin: 0 auto;
+    text-align: center;
+}
+
+li .vnf {
+	border: 1px solid black;
+	margin: 5px 5px 5px 5px;
+	background-color: #F0FFFF;
+	height: 30px;
+	width: 50px;
+    display: inline-block;
+	float: left;
+    vertical-align: top;
+}
