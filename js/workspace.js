@@ -1,41 +1,74 @@
-var projects = [{
-		"name" : "project1",
-		"id" : "12sf34"
-	}, {
-		"name" : "project2",
-		"id" : "13sf4"
-	}, {
-		"name" : "project3",
-		"id" : "14fsd"
-	}
-];
-$(function () {
-	var availableProjects = [
-		"Create new project",
-	];
-for (i = 0; i < projects.length; i++) {
-		availableProjects.push(projects[i].name);
-	}
-	$("#search_pt").autocomplete({
-		source : availableProjects
-	});
-});
+var serverURL = "http://jonas-msi:5000/";
+var projects = [];
+var wsId = "";
 
 $(document).ready(function () {
-	for (i = 0; i < projects.length; i++) {
-		var ptId = projects[i].id;
-		(function (ptId) {
-			var ptLink = document.createElement("a");
-			ptLink.innerHTML = projects[i].name;
-			ptLink.className = "list-group-item";
-			$("#displayPT").append(ptLink);
-			ptLink.addEventListener('click', function () {
-				loadProject(ptId);
-			}, false);
-		})(ptId)
-	}
+	var availableProjects = ["Create new project"];
+	wsId = getQueryString()["wsId"];
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			var newLink = document.createElement("a");
+			newLink.innerHTML = "Create new project";
+			newLink.className = "list-group-item";
+			$("#displayPT").append(newLink);
+			$(newLink).click(function () {
+				$("#createProjectDialog").dialog({
+					modal : true,
+					buttons : {
+						Cancel : function () {
+							$(this).dialog("close");
+						},
+						"Create" : function () {
+							$(this).dialog("close");
+						}
+					}
+				})
+			});
+			projects = data.projects;
+			for (i = 0; i < projects.length; i++) {
+				var ptId = projects[i].id;
+				(function (ptId) {
+					var ptLink = document.createElement("a");
+					var project = projects[i];
+					availableProjects.push(project.name);
+					ptLink.innerHTML = project.name;
+					ptLink.className = "list-group-item";
+					$("#displayPT").append(ptLink);
+					$(ptLink).click(function () {
+						goToProjectView(ptId);
+					});
+				})(ptId)
+			}
+			$("#search_pt").autocomplete({
+				source : availableProjects
+			});
+		}
+	})
 });
 
-function loadProject(id) {
-	this.location.href = "projectView.html";
+function createNewProject(ptName) {
+	$.ajax({
+		url : serverURL + "projects/projects/",
+		type : 'POST',
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		success : function (data) {
+			alert('data: ' + data);
+		},
+		data : JSON.stringify({
+			"name" : ptName,
+			"id" : ptId
+		})
+	});
+	$.cookie("ptId", ptId);
+	window.location.href = "projectView.html";
+}
+
+function goToProjectView(wsId) {
+	window.location.href = "projectView.html?ptId=" + ptId;
 }
