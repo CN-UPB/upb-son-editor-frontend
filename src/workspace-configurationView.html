@@ -5,9 +5,10 @@
 		<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 				<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-					<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"/>
-					<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"/>
-					<script type="text/javascript" src="../js/editorScript.js"></script>
+					<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+					<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+					<script src="../js/configuration.js"></script>
+					<script src="../js/utils.js"></script>
 				</head>
 				<body>
 
@@ -18,13 +19,13 @@
 							</div>
 							<ul class="nav navbar-nav">
 								<li>
-									<a href="homeView.html">Home</a>
+									<a onclick="history.go(-2);">Home</a>
 								</li>
 								<li>
-									<a href="workspaceView.html">Workspace</a>
+									<a id="nav_workspace" onclick="history.go(-1);">Workspace</a>
 								</li>
 								<li class="active">
-									<a href="workspace-configuration.html">Configuration</a>
+									<a onclick="history.go(0);">Configuration</a>
 								</li>
 							</ul>
 						</div>
@@ -35,7 +36,7 @@
 							<div class="form-group">
 								<label class="control-label col-md-2">Workspace name:</label>
 								<div class="col-md-8">
-									<input type="text" class="form-control" placeholder="Enter name">
+									<input type="text" class="form-control" placeholder="Enter name of workspace">
 									</div>
 								</div>
 								<div class="form-group">
@@ -92,16 +93,11 @@
 								</div>
 								<div class="form-group"> 
 									<div class="col-md-offset-2 col-md-2">
-										<a href="workspaceView.html" class="btn btn-default" role="button">Cancel</a>
-										<button class="btn btn-primary" >Save</button>
+										<button class="btn btn-default" onclick="cancelConfiguration();"> Cancel</button>
+										<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
 									</div>
 								</div>
 							</form>
-							<ul class="pager">
-								<li>
-									<a href="workspaceView.html">Previous</a>
-								</li>
-							</ul>
 						</div>
 
 					</body>

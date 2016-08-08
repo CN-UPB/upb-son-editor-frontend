@@ -6,14 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-  <script>
-  $( function() {
-    $( "#accordion" ).accordion({active:false, collapsible:true});
-  } );
-  </script>
+  <script src="../js/vnf.js"></script>
+  <script src="../js/utils.js"></script>
 </head>
 <body>
 
@@ -23,10 +20,10 @@
       <a class="navbar-brand" href="homeView.html">SONATA SDK Editor</a>
     </div>
     <ul class="nav navbar-nav">
-	   <li><a href="homeView.html">Home</a></li>
-       <li><a href="workspaceView.html">Workspace</a></li>
-       <li><a href="projectView.html">Project</a></li>
-	   <li class="active"><a href="vnfView.html">VNF</a></li>
+	   <li><a onclick="history.go(-3);">Home</a></li>
+       <li><a id="nav_workspace" onclick="history.go(-2);">Workspace</a></li>
+       <li><a id="nav_project"onclick="history.go(-1);">Project</a></li>
+	   <li class="active"><a id="nav_vnf" onclick="history.go(0);">VNF</a></li>
     </ul>
   </div>
 </nav>
@@ -259,7 +256,7 @@
 	</div>	
 </div>
 	<ul class="pager">
-			<li><a href="projectView.html">Previous</a></li>
+			<li><a onclick="history.go(-1);">Previous</a></li>
     </ul>
 </div>
 

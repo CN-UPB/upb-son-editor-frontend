@@ -9,12 +9,10 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-		<script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.cookie/1.3.1/jquery.cookie.js"></script>
 		<script src="../js/workspace.js"></script>
 		<script src="../js/utils.js"></script>
 	</head>
 	<body>
-
 		<nav class="navbar navbar-default">
 			<div class="container-fluid">
 				<div class="navbar-header">
@@ -22,11 +20,11 @@
 				</div>
 				<ul class="nav navbar-nav">
 					<li>
-						<a href="homeView.html">Home</a>
+						<a onclick="history.go(-1);">Home</a>
 					</li>
-					<li class="active">
-						<a href="workspaceView.html">Workspace</a>
-					</li>
+					<li class = "active" >
+						<a id = "nav_workspace" onclick="history.go(0);" > Workspace </a>
+					</li >
 				</ul>
 			</div>
 		</nav>
@@ -40,18 +38,18 @@
 							<div id="displayPT">
 							</div>	
 						</div>
-						<button type="button" class="btn btn-link col-md-1" onclick="window.location.href = 'workspace-configurationView.html'">
+						<button id="configuration_btn" type="button" class="btn btn-link col-md-1" onclick="goToConfigurationView();">
 											Configuration
 						</button>
 					</div>	
 			</form>
-			<div id="createWorkspaceDialog" title="Create new project" hidden>
+			<div id="createProjectDialog" title="Create new project" hidden>
 				<h4>Please input the name of the new project:</h4>
-				<input id ='ptNameInput' placeholder="name of project"/>
+				<input id ='ptNameInput' placeholder="Enter name of project"/>
 			</div>
 				<ul class="pager">
 					<li>
-						<a href="homeView.html">Previous</a>
+						<a onclick="history.go(-1);">Previous</a>
 					</li>
 				</ul>
 			</div>
