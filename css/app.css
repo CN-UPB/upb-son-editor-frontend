@@ -95,7 +95,7 @@
 }
 
 .top-navigation-menu {
-	border: 1px solid black;
+	/* border: 1px solid black; */
 }
 
 .action-section{
@@ -130,12 +130,13 @@ body{
     font-family:garamond,times-new-roman,serif;
 }
 
-ul .vnf-list {
-    margin: 0 auto;
+div .vnf-list {
+    margin: auto;
     text-align: center;
 }
 
-li .vnf {
+.vnf {
+	
 	border: 1px solid black;
 	margin: 5px 5px 5px 5px;
 	background-color: #F0FFFF;
@@ -144,4 +145,16 @@ li .vnf {
     display: inline-block;
 	float: left;
     vertical-align: top;
+	
+}
+
+div .vnf-after-drop{
+	border: 1px solid black;
+	background-color: #F0FFFF;
+	height: 30px;
+	width: 50px;
+} 
+
+.ui-draggable{
+	background-position: center center;
 }
