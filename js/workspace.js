@@ -79,7 +79,7 @@ function showCreateDialog() {
 }
 
 //send the name of the new workspace to server
-function createNewProject(wsId, projectName) {
+function createNewProject(wsId, ptName) {
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/",
 		method : 'POST',
@@ -89,10 +89,9 @@ function createNewProject(wsId, projectName) {
 			withCredentials : true
 		},
 		data : JSON.stringify({
-			"name" : projectName
+			"name" : ptName
 		}),
 		success : function (data) {
-			alert(JSON.stringify(data));
 			goToProjectView(data.name, data.id);
 		},
 		error : function (err) {
