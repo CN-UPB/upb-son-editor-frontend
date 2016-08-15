@@ -6,8 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="../css/editorStyle.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../js/bootstrap-filestyle.min.js"> </script>
   <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
   <script src="../js/constants.js"></script>
   <script src="../js/vnf.js"></script>
@@ -28,7 +30,8 @@
     </ul>
   </div>
 </nav>
-  
+
+<!--jquery ui-->
 <div class="container">
 <form class="form-horizontal" role="form">
 	<div class="form-group"> 
@@ -76,47 +79,123 @@
 			<h3>Virtual Deployment Units Section</h3>
 			<div>
 				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label class="control-label col-md-2">Virtual deployment units:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-						<label class="control-label col-md-2">id:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-						<label class="control-label col-md-2">VM image (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
+					<div id="virtual_deployment_units">
+						<div id="accordion_units">
+							<h3>Unit 1</h3>
+							<div id="unit_table1">
+								<div class="form-group">
+									<label class="control-label col-md-2">id:</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>
+									<label class="control-label col-md-2">VM image (optional):</label>
+									<div class="col-md-4">
+										<input type="file" class="filestyle" data-buttonText="Select an image">
+									</div>		
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-2">VM image format (optional):</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>
+									<label class="control-label col-md-2">VM image md5 (optional):</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>
+								</div>
+								<hr>
+								<div class="form-group">
+									<label class="control-label">Resource requirements:</label>
+								</div>	
+								<div class="form-group">
+									<label class="control-label col-md-2">CPU:</label>
+									<label class="control-label col-md-2">VCPUS:</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>	
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-2">Memory:</label>
+									<label class="control-label col-md-2">Size:</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>	
+									<label class="control-label col-md-2">Size unit:</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>	
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-2">Storage:</label>
+									<label class="control-label col-md-2">Size:</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>	
+									<label class="control-label col-md-2">Size unit:</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>	
+								</div>
+								<hr>
+								<div class="form-group">	
+									<label class="control-label">Connection points (optional):</label>
+								</div>
+								<div id="connection_points">
+									<div id="connection_point" class="form-group">
+										<label class="control-label col-md-2">Point:</label>
+										<label class="control-label col-md-2">id:</label>
+										<div class="col-md-2">
+											<input type="text" class="form-control" placeholder="">
+										</div>	
+										<label class="control-label col-md-2">Type:</label>
+										<div class="col-md-2">
+											<input type="text" class="form-control" placeholder="">
+										</div>			
+									</div>	
+								</div>
+								<div class="form-group" align="right">	
+									<button class="editorButtons add" onclick="addPoint(this.parentNode.parentNode.id)">Add</button>	
+									<button class="editorButtons delete" onclick="deletePoint(this.parentNode.parentNode.id)">Delete</button>
+								</div>
+								<hr>
+								<div class="form-group">
+									<label class="control-label">Monitoring parameters (optional):</label>
+								</div>
+								<div id="monitoring_parameters">
+									<div id="monitoring_parameter"  class="form-group">
+										<label class="control-label col-md-2">Parameter:</label>
+										<label class="control-label col-md-2">Name:</label>
+										<div class="col-md-2">
+											<input type="text" class="form-control" placeholder="">
+										</div>	
+										<label class="control-label col-md-2">Unit:</label>
+										<div class="col-md-2">
+											<input type="text" class="form-control" placeholder="">
+										</div>	
+									</div>										
+								</div>			
+								<div class="form-group" align="right">	
+									<button class="editorButtons add" onclick="addParameter(this.parentNode.parentNode.id)">Add</button>	
+									<button class="editorButtons delete" onclick="deleteParameter(this.parentNode.parentNode.id)">Delete</button>
+								</div>
+								<hr>
+								<div class="form-group">
+									<label class="control-label col-md-2">Scale in out (optional):</label> 
+									<label class="control-label col-md-2">Minimum:</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>	
+									<label class="control-label col-md-2">Maximum:</label>
+									<div class="col-md-2">
+										<input type="text" class="form-control" placeholder="">
+									</div>				
+								</div>	
+							</div>
+						</div>	
 					</div>
-					<div class="form-group">
-						<label class="control-label col-md-2">VM image format (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-						<label class="control-label col-md-2">VM image md5 (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-						<label class="control-label col-md-2">Resource requirements:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-2">Connection points (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-						<label class="control-label col-md-2">Monitoring parameters (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-						<label class="control-label col-md-2">Scale in out (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
+					<div class="form-group" align="right">	
+						<button class="editorButtons add" onclick="addVirtualUnit()">Add unit</button>	
+						<button class="editorButtons delete" onclick="deleteVirtualUnit()">Delete unit</button>
 					</div>
 				</form>
 			</div>
