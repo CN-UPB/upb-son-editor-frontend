@@ -1,4 +1,3 @@
-var serverURL = "http://131.234.73.193:5000/";
 var queryString = {};
 $(document).ready(function () {
 	queryString = getQueryString();
