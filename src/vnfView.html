@@ -11,6 +11,7 @@
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="../js/bootstrap-filestyle.min.js"> </script>
   <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
   <script src="../js/constants.js"></script>
   <script src="../js/vnf.js"></script>
   <script src="../js/utils.js"></script>
@@ -37,295 +38,759 @@
 	<div class="form-group"> 
 		<div id="accordion">
 			<h3>General Descriptor Section</h3>
-			 <div>
+			<div>
 				<form class="form-horizontal" role="form">
 					<div class="form-group">
 						<label class="control-label col-md-2">Descriptor version:</label>
 						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+							<input data-bind="value: descriptor_version" type="text" class="form-control" placeholder="">
 						</div>
 						<label class="control-label col-md-2">Schema (optional):</label>
 						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+							<input data-bind="value: schema" type="text" class="form-control" placeholder="">
 						</div>
 						<label class="control-label col-md-2">Vendor:</label>
 						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+							<input data-bind="value: vendor" type="text" class="form-control" placeholder="">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-md-2">Name:</label>
 						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+							<input data-bind="value: name" type="text" class="form-control" placeholder="">
 						</div>
 						<label class="control-label col-md-2">Version:</label>
 						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+							<input data-bind="value: version" type="text" class="form-control" placeholder="">
 						</div>
 						<label class="control-label col-md-2">Author (optional):</label>
 						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+							<input data-bind="value: author" type="text" class="form-control" placeholder="">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-md-2">Description (optional):</label>
 						<div class="col-md-10">
-							<input type="text" class="form-control" placeholder="">
+							<input data-bind="value: description" type="text" class="form-control" placeholder="">
 						</div>
-					</div>
-				  
-				</form>
-			 </div>
-			<h3>Virtual Deployment Units Section</h3>
-			<div>
-				<form class="form-horizontal" role="form">
-					<div id="virtual_deployment_units">
-						<div id="accordion_units">
-							<h3>Unit 1</h3>
-							<div id="unit_table1">
-								<div class="form-group">
-									<label class="control-label col-md-2">id:</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>
-									<label class="control-label col-md-2">VM image (optional):</label>
-									<div class="col-md-4">
-										<input type="file" class="filestyle" data-buttonText="Select an image">
-									</div>		
-								</div>
-								<div class="form-group">
-									<label class="control-label col-md-2">VM image format (optional):</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>
-									<label class="control-label col-md-2">VM image md5 (optional):</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>
-								</div>
-								<hr>
-								<div class="form-group">
-									<label class="control-label">Resource requirements:</label>
-								</div>	
-								<div class="form-group">
-									<label class="control-label col-md-2">CPU:</label>
-									<label class="control-label col-md-2">VCPUS:</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>	
-								</div>
-								<div class="form-group">
-									<label class="control-label col-md-2">Memory:</label>
-									<label class="control-label col-md-2">Size:</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>	
-									<label class="control-label col-md-2">Size unit:</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>	
-								</div>
-								<div class="form-group">
-									<label class="control-label col-md-2">Storage:</label>
-									<label class="control-label col-md-2">Size:</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>	
-									<label class="control-label col-md-2">Size unit:</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>	
-								</div>
-								<hr>
-								<div class="form-group">	
-									<label class="control-label">Connection points (optional):</label>
-								</div>
-								<div id="connection_points">
-									<div id="connection_point" class="form-group">
-										<label class="control-label col-md-2">Point:</label>
-										<label class="control-label col-md-2">id:</label>
-										<div class="col-md-2">
-											<input type="text" class="form-control" placeholder="">
-										</div>	
-										<label class="control-label col-md-2">Type:</label>
-										<div class="col-md-2">
-											<input type="text" class="form-control" placeholder="">
-										</div>			
-									</div>	
-								</div>
-								<div class="form-group" align="right">	
-									<button class="editorButtons add" onclick="addPoint(this.parentNode.parentNode.id)">Add</button>	
-									<button class="editorButtons delete" onclick="deletePoint(this.parentNode.parentNode.id)">Delete</button>
-								</div>
-								<hr>
-								<div class="form-group">
-									<label class="control-label">Monitoring parameters (optional):</label>
-								</div>
-								<div id="monitoring_parameters">
-									<div id="monitoring_parameter"  class="form-group">
-										<label class="control-label col-md-2">Parameter:</label>
-										<label class="control-label col-md-2">Name:</label>
-										<div class="col-md-2">
-											<input type="text" class="form-control" placeholder="">
-										</div>	
-										<label class="control-label col-md-2">Unit:</label>
-										<div class="col-md-2">
-											<input type="text" class="form-control" placeholder="">
-										</div>	
-									</div>										
-								</div>			
-								<div class="form-group" align="right">	
-									<button class="editorButtons add" onclick="addParameter(this.parentNode.parentNode.id)">Add</button>	
-									<button class="editorButtons delete" onclick="deleteParameter(this.parentNode.parentNode.id)">Delete</button>
-								</div>
-								<hr>
-								<div class="form-group">
-									<label class="control-label col-md-2">Scale in out (optional):</label> 
-									<label class="control-label col-md-2">Minimum:</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>	
-									<label class="control-label col-md-2">Maximum:</label>
-									<div class="col-md-2">
-										<input type="text" class="form-control" placeholder="">
-									</div>				
-								</div>	
-							</div>
-						</div>	
-					</div>
-					<div class="form-group" align="right">	
-						<button class="editorButtons add" onclick="addVirtualUnit()">Add unit</button>	
-						<button class="editorButtons delete" onclick="deleteVirtualUnit()">Delete unit</button>
 					</div>
 				</form>
 			</div>
+			<h3>Function Specific Managers Section</h3>
+			<div>
+				<div data-bind="foreach: function_specific_managers">
+					<form  class="form-horizontal" role="form">
+						<!-- ko if: $index() != 0 -->
+								<hr>
+						<!-- /ko -->
+						<div class="form-group">
+							<label class="control-label col-md-2">Description:</label>
+							<div class="col-md-2">
+								<input data-bind="value: description" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">id*:</label>
+							<div class="col-md-2">
+								<input data-bind="value: id" type="text" class="form-control" placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-2">image*:</label>
+							<div class="col-md-2">
+								<input data-bind="value: image" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">image md5:</label>
+							<div class="col-md-2">
+								<input data-bind="value: image_md5" type="text" class="form-control" placeholder="">
+							</div>
+						</div>
+						<hr>
+						<div class="form-group">
+							<h4>Resource Requirements</h4>
+							<label class="control-label col-md-2">Docker Version</label>
+							<div class="col-md-2">
+								<input data-bind="value: resource_requirements.docker_version" type="text" class="form-control" placeholder="">
+							</div>
+						</div>
+						<hr>
+						<div class="form-group">
+							<h4>Options</h4>
+							<div data-bind="foreach: options"id="options">
+								<div class="form-group">
+									<label class="control-label col-md-2">Key</label>
+									<div class="col-md-2">
+										<input data-bind="value: key" type="text" class="form-control" placeholder="">
+									</div>
+									<label class="control-label col-md-2">Value</label>
+									<div class="col-md-2">
+										<input data-bind="value: value" type="text" class="form-control" placeholder="">
+									</div>
+									<button class="editorButtons delete" data-bind="click: $parent.deleteOption"></button>
+								</div>					
+							</div>
+							<div class="form-group" align="right">	
+								<button class="editorButtons add" data-bind="click: addOption">Add Option</button>	
+							</div>
+						</div>
+						<div class="form-group" align="right">	
+								<button class="editorButtons delete" data-bind="click: $parent.deleteFunctionSpecificManager">Delete Function Specific Manager</button>
+						</div>
+					</form>
+				</div>
+				<div class="form-group" align="right">	
+					<button class="editorButtons add" data-bind="click: addFunctionSpecificManager">Add Function Specific Manager</button>	
+				</div>
+			</div>
+			<h3>Virtual Deployment Units Section</h3>
+			<div>
+				<div >
+					<form class="form-horizontal" role="form">
+						<div id="virtual_deployment_units">
+							<div data-bind="foreach: virtual_deployment_units" id="accordion_units">
+								<h3>
+									Unit <span data-bind="text: id"></span>
+									<button class="editorButtons delete" data-bind="visible: $parent.virtual_deployment_units().length > 1, click: $parent.deleteVirtualDeploymentUnit">Delete</button>
+								</h3>
+								<div id="unit_table1">
+									<div class="form-group">
+										<label class="control-label col-md-2">id:</label>
+										<div class="col-md-2">
+											<input data-bind="value: id" type="text" class="form-control" placeholder="">
+										</div>
+										<label class="control-label col-md-2">VM image (optional):</label>
+										<div class="col-md-4">
+											<input data-bind="value: vm_image" type="file" class="filestyle" data-buttonText="Select an image">
+										</div>		
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2">VM image format (optional):</label>
+										<div class="col-md-2">
+											<input data-bind="value: vm_image_format"type="text" class="form-control" placeholder="">
+										</div>
+										<label class="control-label col-md-2">VM image md5 (optional):</label>
+										<div class="col-md-2">
+											<input data-bind="value: vm_image_md5" type="text" class="form-control" placeholder="">
+										</div>
+									</div>
+									<hr>
+									<div class="form-group">
+										<h4>Resource requirements</h4>
+									</div>	
+									<div data-bind="foreach: resource_requirements">
+										<div class="form-group">
+											<h5>Hypervisor Parameters</h5>
+											<label class="control-label col-md-2">Type:</label>
+											<div class="col-md-2">
+												<input data-bind="value: hypervisor_parameters.type"type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Version:</label>
+											<div class="col-md-2">
+												<input data-bind="value: hypervisor_parameters.version" type="text" class="form-control" placeholder="">
+											</div>	
+										</div>
+										<div class="form-group">
+											<h5>VSwitch Capabilities</h5>
+											<label class="control-label col-md-2">Type:</label>
+											<div class="col-md-2">
+												<input data-bind="value: vswitch_capabilities.type"type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Version:</label>
+											<div class="col-md-2">
+												<input data-bind="value: vswitch_capabilities.version" type="text" class="form-control" placeholder="">
+											</div>	
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-2">Overlay Tunnel:</label>
+											<div class="col-md-2">
+												<input data-bind="value: vswitch_capabilities.overlay_tunnel" type="text" class="form-control" placeholder="">
+											</div>	
+										</div>
+										<div class="form-group">
+											<h5>CPU</h5>
+											<label class="control-label col-md-2">VCPUS:</label>
+											<div class="col-md-2">
+												<input data-bind="value: cpu.vcpus"type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">CPU Support Accelerator:</label>
+											<div class="col-md-2">
+												<input data-bind="value: cpu.cpu_support_accelerator"type="text" class="form-control" placeholder="">
+											</div>	
+										</div>
+										<div class="form-group">
+											<h5>Memory</h5>
+											<label class="control-label col-md-2">Size:</label>
+											<div class="col-md-2">
+												<input data-bind="value: memory.size" type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Size unit:</label>
+											<div class="col-md-2">
+												<input data-bind="value: memory.size_unit"type="text" class="form-control" placeholder="">
+											</div>	
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-2">Large Packages Required:</label>
+											<div class="col-md-2">
+												<input data-bind="value: memory.large_pages_required" type="checkbox" class="checkbox" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Numa allocation Policy:</label>
+											<div class="col-md-2">
+												<input data-bind="value: memory.numa_allocation_policy"type="text" class="form-control" placeholder="">
+											</div>	
+										</div>
+										<div class="form-group">
+											<h5>Storage</h5>
+											<label class="control-label col-md-2">Size:</label>
+											<div class="col-md-2">
+												<input data-bind="value: storage.size"type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Size unit:</label>
+											<div class="col-md-2">
+												<input data-bind="value: storage.size_unit" type="text" class="form-control" placeholder="">
+											</div>	
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-2">Persistence:</label>
+											<div class="col-md-2">
+												<input data-bind="value: storage.persistence" type="checkbox" class="checkbox" placeholder="">
+											</div>	
+										</div>
+										<div class="form-group">
+											<h5>Network</h5>
+											<div class="form-group">
+												<label class="control-label col-md-2">Network Interface Bandwidth:</label>
+												<div class="col-md-2">
+													<input data-bind="value: network.network_interface_bandwidth"type="text" class="form-control" placeholder="">
+												</div>	
+												<label class="control-label col-md-2">Network Interface Bandwidth Unit:</label>
+												<div class="col-md-2">
+													<input data-bind="value: network.network_interface_bandwidth_unit" type="text" class="form-control" placeholder="">
+												</div>	
+											</div>
+											<div class="form-group">
+												<h6>Network Interface Card Capabilities:</h6>
+												<label class="control-label col-md-2">SR-IOV:</label>
+												<div class="col-md-2">
+													<input data-bind="value: network.network_interface_card_capabilities.SR_IOV" type="checkbox" class="checkbox" placeholder="">
+												</div>	
+												<label class="control-label col-md-2">Mirroring:</label>
+												<div class="col-md-2">
+													<input data-bind="value: network.network_interface_card_capabilities.mirroring" type="checkbox" class="checkbox" placeholder="">
+												</div>	
+											</div>
+											<div class="form-group">
+												<label class="control-label col-md-2">Data Processing Acceleration library:</label>
+												<div class="col-md-2">
+													<input data-bind="value: network.data_processing_acceleration_library" type="checkbox" class="checkbox" placeholder="">
+												</div>	
+											</div>
+										</div>
+										<div class="form-group">
+											<h5>PCIE</h5>
+											<label class="control-label col-md-2">SR-IOV:</label>
+											<div class="col-md-2">
+												<input data-bind="value: pcie.SR_IOV" type="checkbox" class="checkbox" placeholder="">
+											</div>		
+											<label class="control-label col-md-2">Device Pass Through:</label>
+											<div class="col-md-2">
+												<input data-bind="value: pcie.device_pass_through" type="checkbox" class="checkbox" placeholder="">
+											</div>	
+										</div>
+									</div>
+									<hr>
+									<div class="form-group">	
+										<label class="control-label">Connection points (optional):</label>
+									</div>
+									<div data-bind="foreach: connection_points" id="connection_points">
+										<div id="connection_point" class="form-group">
+											<h5>Point:</h5>
+											<label class="control-label col-md-2">id:</label>
+											<div class="col-md-2">
+												<input data-bind="value: id" type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Type:</label>
+											<div class="col-md-2">
+												<input data-bind="value: type" type="text" class="form-control" placeholder="">
+											</div>
+										</div>
+										<div class="form-group">	
+											<label class="control-label col-md-2">Virtual Link Reference:</label>
+											<div class="col-md-2">
+												<input data-bind="value: virtual_link_reference" type="text" class="form-control" placeholder="">
+											</div>
+											<div class="form-group" align="right">
+												<button class="editorButtons delete" data-bind="click: $parent.removePoint">Delete</button>
+											</div>
+										</div>	
+									</div>
+									<div class="form-group" align="right">	
+											<button class="editorButtons add" data-bind="click: addPoint">Add</button>	
+									</div>
+									
+									<hr>
+									<div class="form-group">
+										<label class="control-label">Monitoring parameters (optional):</label>
+									</div>
+									<div data-bind="foreach: monitoring_parameters" id="monitoring_parameters">
+										<div id="monitoring_parameter"  class="form-group">
+											<h5>Parameter:</h5>
+											<label class="control-label col-md-2">Name:</label>
+											<div class="col-md-2">
+												<input data-bind="value: name" type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Unit:</label>
+											<div class="col-md-2">
+												<input data-bind="value: unit" type="text" class="form-control" placeholder="">
+											</div>	
+										</div>		
+										<div class="form-group">
+											<label class="control-label col-md-2">Frequency:</label>
+											<div class="col-md-2">
+												<input data-bind="value: frequency" type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Frequency Unit:</label>
+											<div class="col-md-2">
+												<input data-bind="value: frequency_unit" type="text" class="form-control" placeholder="">
+											</div>	
+										</div>	
+										<div class="form-group">
+											<label class="control-label col-md-2">Command:</label>
+											<div class="col-md-2">
+												<input data-bind="value: command" type="text" class="form-control" placeholder="">
+											</div>	
+											<div class="form-group" align="right">	
+												<button class="editorButtons delete" data-bind="click: $parent.deleteParameter">Delete</button>
+											</div>
+										</div>
+									</div>			
+									<div class="form-group" align="right">	
+										<button class="editorButtons add" data-bind="click: addParameter">Add</button>	
+									</div>
+									<hr>
+									<div class="form-group">
+										<label class="control-label col-md-2">Scale in out (optional):</label> 
+										<div id="scale_in_out">
+											<label class="control-label col-md-2">Minimum:</label>
+											<div class="col-md-2">
+												<input data-bind="value: scale_in_out.minimum" type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Maximum:</label>
+											<div class="col-md-2">
+												<input data-bind="value: scale_in_out.maximum" type="text" class="form-control" placeholder="">
+											</div>				
+										</div>
+									</div>	
+								</div>
+							</div>	
+						</div>
+						
+					</form>
+				</div>
+				<div class="form-group" align="right">	
+					<button class="editorButtons add" data-bind="click: addVirtualDeploymentUnit">Add Virtual Deployment Unit</button>	
+				</div>
+			</div>	
 			<h3>Connection Points Section</h3>
 			<div>
-				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label class="control-label col-md-2">Connection points (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+				<div data-bind="foreach: connection_points">
+					<form  class="form-horizontal" role="form">
+						<!-- ko if: $index() != 0 -->
+								<hr>
+						<!-- /ko -->
+						<div class="form-group">
+							<label class="control-label col-md-2">id:</label>
+							<div class="col-md-2">
+								<input data-bind="value: id" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">type:</label>
+							<div class="col-md-2">
+								<input data-bind="value: type" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Virtual link reference (optional):</label>
+							<div class="col-md-2">
+								<input data-bind="value: virtual_link_reference" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-						<label class="control-label col-md-2">id:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div data-bind="visible: $parent.connection_points().length > 1" class="form-group" align="right">	
+							<button class="editorButtons delete" data-bind="click: $parent.deleteConnectionPoint">Delete Connection Point</button>
 						</div>
-						<label class="control-label col-md-2">type:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-2">Virtual link reference (optional):</label>
-						<div class="col-md-10">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-					</div>
-				</form>		
+					</form>		
+				</div>
+				<div class="form-group" align="right">	
+					<button class="editorButtons add" data-bind="click: addConnectionPoint">Add Connection Point</button>
+				</div>
 			</div>
 			<h3>Virtual Links Section</h3>
 			<div>
-				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label class="control-label col-md-2">Virtual links (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+				<div data-bind="foreach: virtual_links">
+					<form class="form-horizontal" role="form">
+						<!-- ko if: $index() != 0 -->
+								<hr>
+						<!-- /ko -->
+						<div class="form-group">
+							<label class="control-label col-md-2">id:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: id" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Connectivity type:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: connectivity_type" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-						<label class="control-label col-md-2">id:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group">
+							<label class="control-label col-md-2">Connection points reference:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: connection_points_reference" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-						<label class="control-label col-md-2">Connectivity type:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group">
+							<label class="control-label col-md-2">Access:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: access" type="checkbox" class="checkbox" placeholder="">
+							</div>
+							<label class="control-label col-md-2">External Access:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: external_access" type="checkbox" class="checkbox" placeholder="">
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-2">Connection points reference:</label>
-						<div class="col-md-10">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group">
+							<label class="control-label col-md-2">Root Requirement:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: root_requirement" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Leaf Requirement:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: leaf_requirement" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-					</div>
-				</form>				
-					
+						<div class="form-group">
+							<label class="control-label col-md-2">DHCP:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: dhcp" type="checkbox" class="checkbox" placeholder="">
+							</div>
+							<label class="control-label col-md-2">QOS:</label>
+							<div class="col-md-2">
+								<input  data-bind="value: qos" type="checkbox" class="checkbox" placeholder="">
+							</div>
+						</div>
+						<div data-bind="visible: $parent.virtual_links().length > 1" class="form-group" align="right">	
+							<button class="editorButtons delete" data-bind="click: $parent.deleteVirtualLink">Delete Virtual Link</button>
+						</div>
+					</form>		
+				</div>
+				<div class="form-group" align="right">	
+					<button class="editorButtons add" data-bind="click: addVirtualLink">Add Virtual Link</button>
+				</div>
 			</div>
 			<h3>VNF Lifecycle Events Section</h3>
 			<div>
-				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label class="control-label col-md-2">Lifecycle events (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+				<div data-bind="foreach: lifecycle_events">
+					<form class="form-horizontal" role="form">
+						<!-- ko if: $index() != 0 -->
+							<hr>
+						<!-- /ko -->
+						<div class="form-group">
+							<label class="control-label col-md-2">Authentication Username:</label>
+							<div class="col-md-2">
+								<input data-bind="value: authentication_username" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Driver:</label>
+							<div class="col-md-2">
+								<input data-bind="value: driver" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-						<label class="control-label col-md-2">VNF container:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group">
+							<label class="control-label col-md-2">Authentication Type:</label>
+							<div class="col-md-2">
+								<input data-bind="value: authentication_type" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Authentication:</label>
+							<div class="col-md-2">
+								<input data-bind="value: authentication" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-						<label class="control-label col-md-2">Events:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group">
+							<label class="control-label col-md-2">VNF container:</label>
+							<div class="col-md-2">
+								<input data-bind="value: vnf_container" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Flavour ID Ref:</label>
+							<div class="col-md-2">
+								<input data-bind="value: flavor_id_ref" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-					</div>
-				</form>				
+						<div class="form-group">
+							<h4>Events</h4>
+							<h5>Start</h5>
+							<div class="form-group">
+								<label class="control-label col-md-2">Command:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.start.commmand" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-2">Template File:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.start.template_file" type="text" class="form-control" placeholder="">
+								</div>
+								<label class="control-label col-md-2">Template File Format:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.start.template_file_format" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<h5>Stop</h5>
+							<div class="form-group">
+								<label class="control-label col-md-2">Command:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.stop.commmand" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-2">Template File:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.stop.template_file" type="text" class="form-control" placeholder="">
+								</div>
+								<label class="control-label col-md-2">Template File Format:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.stop.template_file_format" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<h5>Restart</h5>
+							<div class="form-group">
+								<label class="control-label col-md-2">Command:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.restart.commmand" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-2">Template File:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.restart.template_file" type="text" class="form-control" placeholder="">
+								</div>
+								<label class="control-label col-md-2">Template File Format:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.restart.template_file_format" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<h5>Scale-In</h5>
+							<div class="form-group">
+								<label class="control-label col-md-2">Command:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.scale_in.commmand" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-2">Template File:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.scale_in.template_file" type="text" class="form-control" placeholder="">
+								</div>
+								<label class="control-label col-md-2">Template File Format:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.scale_in.template_file_format" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<h5>Scale-Out</h5>
+							<div class="form-group">
+								<label class="control-label col-md-2">Command:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.scale_out.commmand" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-2">Template File:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.scale_out.template_file" type="text" class="form-control" placeholder="">
+								</div>
+								<label class="control-label col-md-2">Template File Format:</label>
+								<div class="col-md-2">
+									<input data-bind="value: events.scale_out.template_file_format" type="text" class="form-control" placeholder="">
+								</div>
+							</div>
+						</div>	
+					</form>				
+				</div>
 			</div>
 			<h3>Deployment Flavours Section</h3>
 			<div>
-				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label class="control-label col-md-2">Deployment flavour (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+				<div data-bind="foreach: deployment_flavours">
+					<form class="form-horizontal" role="form">
+						<!-- ko if: $index() != 0 -->
+							<hr>
+						<!-- /ko -->
+						<div class="form-group">
+							<label class="control-label col-md-2">id:</label>
+							<div class="col-md-2">
+								<input data-bind="value: id" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Flavour key:</label>
+							<div class="col-md-2">
+								<input data-bind="value: flavour_key" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Constraint:</label>
+							<div class="col-md-2">
+								<input data-bind="value: constraint" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-						<label class="control-label col-md-2">Flavour key:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group">
+							<h4>VDU reference</h4>
+							<div data-bind="foreach: vdu_reference" class="form-group">
+								<div class="col-md-2">
+									<input data-bind="value: text" type="text" class="form-control" placeholder="">								
+									<button class="editorButtons delete" data-bind="click: $parent.deleteVduReference"></button>
+								</div>	
+							</div>
+							<div class="form-group" align="right">	
+								<button class="editorButtons add" data-bind="click: addVduReference">Add</button>	
+							</div>
 						</div>
-						<label class="control-label col-md-2">VDU reference:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group">
+							<h4>VLink Reference</h4>
+							<div data-bind="foreach: vlink_reference" class="form-group">
+								<div class="col-md-2">
+									<input data-bind="value: text" type="text" class="form-control" placeholder="">								
+									<button class="editorButtons delete" data-bind="click: $parent.deleteVlinkReference"></button>
+								</div>	
+							</div>
+							<div class="form-group" align="right">	
+								<button class="editorButtons add" data-bind="click: addVlinkReference">Add</button>	
+							</div>
 						</div>
-					</div>
-				</form>				
+						<hr>
+						<div class="form-group">
+							<h4>Assurance Parameters</h4>
+							<div data-bind="foreach: assurance_parameters">
+								<div>
+									<h5>Violation</h5>
+									<div data-bind="foreach: violation">
+										<div  class="form-group">
+											<label class="control-label col-md-2">Interval:</label>
+											<div class="col-md-2">
+												<input data-bind="value: interval" type="text" class="form-control" placeholder="">								
+											</div>
+											<label class="control-label col-md-2">Breaches Count:</label>
+											<div class="col-md-2">
+												<input data-bind="value: breaches_count" type="text" class="form-control" placeholder="">								
+											</div>
+											<button class="editorButtons delete" data-bind="click: $parent.deleteViolation"></button>
+										</div>
+									</div>
+									<div class="form-group" align="right">	
+										<button class="editorButtons add" data-bind="click: addViolation">Add</button>	
+									</div>
+									<hr>
+									<h5>Penalty:</h5>
+									<div class="form-group">
+										<label class="control-label col-md-2">Type:</label>
+										<div class="col-md-2">
+											<input data-bind="value: penalty.type" type="text" class="form-control" placeholder="">								
+										</div>	
+										<label class="control-label col-md-2">Expression:</label>
+										<div class="col-md-2">
+											<input data-bind="value: penalty.expression" type="text" class="form-control" placeholder="">								
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2">Validity:</label>
+										<div class="col-md-2">
+											<input data-bind="value: penalty.validity" type="text" class="form-control" placeholder="">								
+										</div>	
+										<label class="control-label col-md-2">Unit:</label>
+										<div class="col-md-2">
+											<input data-bind="value: penalty.unit" type="text" class="form-control" placeholder="">								
+										</div>
+									</div>
+									<hr>
+									<div class="form-group">
+										<label class="control-label col-md-2">Value:</label>
+										<div class="col-md-2">
+											<input data-bind="value: value" type="text" class="form-control" placeholder="">								
+										</div>
+										<label class="control-label col-md-2">Formula:</label>
+										<div class="col-md-2">
+											<input data-bind="value: formula" type="text" class="form-control" placeholder="">								
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2">Rel ID:</label>
+										<div class="col-md-2">
+											<input data-bind="value: rel_id" type="text" class="form-control" placeholder="">								
+										</div>
+										<label class="control-label col-md-2">ID:</label>
+										<div class="col-md-2">
+											<input data-bind="value: id" type="text" class="form-control" placeholder="">								
+										</div>
+										<label class="control-label col-md-2">Unit:</label>
+										<div class="col-md-2">
+											<input data-bind="value: unit" type="text" class="form-control" placeholder="">								
+										</div>
+									</div>
+									<div class="form-group" align="right">	
+										<button class="editorButtons delete" data-bind="click: $parent.deleteAssuranceParameter">Delete Assurance Parameter</button>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" align="right">	
+								<button class="editorButtons add" data-bind="click: addAssuranceParameter">Add Assurance Parameter</button>	
+							</div>
+						</div>
+						<div class="form-group" align="right">	
+							<button class="editorButtons delete" data-bind="click: $parent.deleteDeploymentFlavour">Delete Deployment Flavour</button>
+						</div>
+					</form>	
+				</div>
+				<div class="form-group" align="right">	
+					<button class="editorButtons add" data-bind="click: addDeploymentFlavour">Add Deployment Flavour</button>	
+				</div>				
 			</div>
 			<h3>Monitoring Rules</h3>
 			<div>
-				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label class="control-label col-md-2">Monitoring rules (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+				<div data-bind="foreach: monitoring_rules">
+					<form  class="form-horizontal" role="form">
+						<!-- ko if: $index() != 0 -->
+							<hr>
+						<!-- /ko -->
+						<div class="form-group">
+							<label class="control-label col-md-2">Name:</label>
+							<div class="col-md-2">
+								<input data-bind="value: name" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Description (optional):</label>
+							<div class="col-md-6">
+								<input data-bind="value: description" type="text" class="form-control" placeholder="">
+							</div>
+							
 						</div>
-						<label class="control-label col-md-2">Name:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group">
+							<label class="control-label col-md-2">Duration:</label>
+							<div class="col-md-2">
+								<input data-bind="value: duration" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Duratuion unit (optional):</label>
+							<div class="col-md-2">
+								<input data-bind="value: duration_unit" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Condition:</label>
+							<div class="col-md-2">
+								<input data-bind="value: condition" type="text" class="form-control" placeholder="">
+							</div>
+						</div>			
+						<h4>Notification</h4>
+						<div class="form-group">
+							<label class="control-label col-md-2">Name:</label>
+							<div class="col-md-2">
+								<input data-bind="value: notification.name" type="text" class="form-control" placeholder="">
+							</div>
+							<label class="control-label col-md-2">Type:</label>
+							<div class="col-md-2">
+								<input data-bind="value: notification.type" type="text" class="form-control" placeholder="">
+							</div>
 						</div>
-						<label class="control-label col-md-2">Duration:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
+						<div class="form-group" align="right">	
+							<button class="editorButtons delete" data-bind="click: $parent.deleteMonitoringRule">Delete Monitoring Rule</button>
 						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-2">Duratuion unit (optional):</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-						<label class="control-label col-md-2">Condition:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-						<label class="control-label col-md-2">Notification:</label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-2">Description (optional):</label>
-						<div class="col-md-10">
-							<input type="text" class="form-control" placeholder="">
-						</div>
-					</div>
-				</form>		
+					</form>				
+				</div>
+				<div class="form-group" align="right">	
+					<button class="editorButtons add" data-bind="click: addMonitoringRule">Add Monitoring Rule</button>	
+				</div>
 			</div>
 		</div>
 	</div>
