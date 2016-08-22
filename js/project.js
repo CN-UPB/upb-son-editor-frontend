@@ -41,7 +41,7 @@ function loadServices() {
 		},
 		success : function (data) {
 			//display available services and their onclick event.
-			services = data.services;
+			services = data;
 			for (i = 0; i < services.length; i++) {
 				var serviceName = services[i].name;
 				availableItems.push("NS: " + serviceName);
@@ -81,7 +81,7 @@ function loadVnfs() {
 		},
 		success : function (data) {
 			//display available vnfs and their onclick event.
-			vnfs = data.functions;
+			vnfs = data;
 			for (i = 0; i < vnfs.length; i++) {
 				var vnfName = vnfs[i].name;
 				availableItems.push("VNF: " + vnfName);

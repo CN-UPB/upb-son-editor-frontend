@@ -24,7 +24,7 @@ $(document).ready(function () {
 				showCreateDialog();
 			});
 			//display available projects and their onclick event.
-			projects = data.projects;
+			projects = data;
 			console.log("projects:")
 			console.log(projects);
 			for (i = 0; i < projects.length; i++) {

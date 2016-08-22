@@ -19,7 +19,7 @@ $(document).ready(function () {
 				showCreateDialog();
 			});
 			//display available workspaces and their onclick event.
-			workspaces = data.workspaces;
+			workspaces = data;
 			for (i = 0; i < workspaces.length; i++) {
 				var wsName=workspaces[i].name;
 				var wsId = workspaces[i].id;
