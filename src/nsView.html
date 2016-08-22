@@ -9,15 +9,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/1.4.1/jquery.jsPlumb-1.4.1-all-min.js"></script>
-  <script type="text/javascript" src="../js/togglePanel.js"></script>
-  <script type="text/javascript" src="../js/draggable.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+  
   <!-- <link rel="stylesheet" href="/resources/demos/style.css" /> -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css" />
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css" />
   <link rel="stylesheet" media="screen" href="../css/app.css" />
+  <script type="text/javascript" src="../js/togglePanel.js"></script>
+  <script type="text/javascript" src="../js/draggable.js"></script>
   <script src="../js/constants.js"></script>
+  <script src="../js/utils.js"></script>
 
 </head>
 
@@ -126,13 +129,15 @@
 											<ul class="nav nav-pills nav-stacked">
 												<li role="presentation" class="active"><a href="#">Virtual Network Function<span id="toggle-panel-left" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
 													<div class="panel">
-														<div id="vnf-panel" class="vnf-list">
+														<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">
+															<div data-bind="attr: {'id': 'myprefix_' + name}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
+															<!--
 															<div id="vnf1" class="vnf" > <p>vnf1</p></div>
 															<div id="vnf2" class="vnf" > <p>vnf2</p></div>
 															<div id="vnf3" class="vnf" > <p>vnf3</p></div>
 															<div id="vnf4" class="vnf" > <p>vnf4</p></div>
 															<div id="vnf5" class="vnf" > <p>vnf5</p></div>
-															<div id="vnf6" class="vnf" > <p>vnf6</p></div>
+															<div id="vnf6" class="vnf" > <p>vnf6</p></div> -->
 														</div>
 													</div>
 													

@@ -1,5 +1,62 @@
+ //var vnfs=[{"name":"name1"},{"name":"name2"},{"name":"name3"}]
+var vnfs=[];
+var queryString = {};
+var wsId = "";
+var ptId = "";
+
+var vnfViewModel = function(){
+					this.vnfs = ko.observableArray([]);
+	
+					this.addVnf=function(vnf){
+						this.vnfs.push(vnf);
+					}.bind(this);
+				}
+ 
+ var vnfModel = new vnfViewModel();
+
 	$(document).ready(function() {
+		
+		
 		jsPlumb.ready(function() {
+		
+		queryString = getQueryString();
+		wsId = queryString["wsId"];
+		ptId = queryString["ptId"];
+				
+		$.ajax({
+			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
+			dataType : "json",
+			xhrFields : {
+				withCredentials : true
+			},
+			success : function (data) { 
+				vnfs = data;
+				
+				for (var i=0; i< vnfs.length;i++){
+					vnfModel.addVnf(vnfs[i]);
+				}
+				
+				$(".vnf").draggable({
+					helper: "clone", 
+					revert: "invalid"
+			/*
+			// this function will disable the dragged vnf after drag stops.
+			stop: function( event, ui ) {
+				console.log("Stop event is triggered for draggable...");
+				$(this).draggable({ disabled: true });
+			} */
+		
+				});
+			}
+		});
+		
+		
+		ko.applyBindings(vnfModel);
+		
+		
+		
+		
+		
 		var instance = jsPlumb.getInstance({
 				
 					DragOptions: { cursor: 'pointer', zIndex: 2000 },
@@ -14,7 +71,7 @@
 		});
 		
 		
-		
+		/* 
 		$(".vnf").draggable({
 			helper: "clone", 
 			revert: "invalid"
@@ -25,7 +82,7 @@
 				$(this).draggable({ disabled: true });
 			} */
 		
-		});
+		//}); 
 		//$(this).draggable( "option", "disabled", true);
 		
 		//-------------------function to set the editor height dynamically fitting to the browser window -------------------------------------
