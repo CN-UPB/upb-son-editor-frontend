@@ -130,7 +130,7 @@
 				instance.addEndpoint(data.attr('id'), {
 					anchor:["Left"],
 					connectorOverlays:[ 
-						[ "Arrow", { width:10, length:30, location:1, id:"arrow" } ]
+						[ "Arrow", { width:10, length:20, location:0.45, id:"arrow" } ]
 						//[ "Label", { label:"foo", id:"label" } ]
 					]
 				}, common);
@@ -138,7 +138,7 @@
 				instance.addEndpoint(data.attr('id'), {
 					anchor:["Right"],
 					connectorOverlays:[ 
-						[ "Arrow", { width:10, length:30, location:1, id:"arrow" } ]
+						[ "Arrow", { width:10, length:20, location:0.45, id:"arrow" } ]
 						//[ "Label", { label:"foo", id:"label" } ]
 					]
 				}, common);
@@ -211,6 +211,24 @@
 						hideConnectionInfo();
 				};
 				
+			//---------------------- method for animation over connection-------------------
+			
+			var interval = null; 
+			animateConn = function(conn) {
+            var arrow = conn.getOverlay("arrow");
+            interval = window.setInterval(function() {
+					arrow.loc += 0.05;
+					if (arrow.loc > 1) {arrow.loc = 0;}
+					try{
+						conn.repaint(); // writing in try block since when connection is removed we need to terminate the function for that particular connection
+					}catch(e){stop();}
+				}, 100);                 
+			},
+			stop = function() {
+				window.clearInterval(interval);
+			};
+			
+			//-----------------------method for animation over connection ends ------------------
 			
 							// ------------------------new code - batch function------------------
 				// suspend drawing and initialise.
@@ -220,6 +238,7 @@
 					instance.bind("connection", function (info, originalEvent) {
 						//$(info.sourceId).addClass('connected');
 						//$(info.targetId).addClass('connected');
+						new animateConn(info.connection);
 						updateConnections(info.connection);
 					});
 					instance.bind("connectionDetached", function (info, originalEvent) {
