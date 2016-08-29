@@ -1,27 +1,63 @@
 var queryString = {};
+var numOfUnits = 1;
+var units;
+var vnfViewModel;
 
-var Option = function(){
-	this.key = ko.observable("");
-	this.value = ko.observable("");
-}
-
-var ResourceRequirements= function(){
-	this.docker_version = ko.observable("");
-}
-
+/*1.Function Specific Managers Section*/
 var FunctionSpecificManager = function(){
 	this.description = ko.observable("");
 	this.id = ko.observable("");
 	this.image = ko.observable("");
 	this.image_md5 = ko.observable("");
 	this.resource_requirements = new ResourceRequirements();
-	this.options = ko.observableArray([]);
-	
+	this.options = ko.observableArray([new Option()]);
 	this.addOption = function(){
 		this.options.push(new Option());
 	}.bind(this);
 	this.deleteOption = function(option){
 		this.options.remove(option);	
+	}.bind(this);
+}
+
+var ResourceRequirements= function(){
+	this.docker_version = ko.observable("");
+}
+
+var Option = function(){
+	this.key = ko.observable("");
+	this.value = ko.observable("");
+}
+
+/*2.Virtual Deployment Units Section*/
+var VirtualDeploymentUnit = function(){
+	this.id = ko.observable("");
+	this.vm_image = ko.observable("");
+	this.vm_image_format = ko.observable("");
+	this.vm_image_md5 = ko.observable("");
+	this.resource_requirements= ko.observableArray([new ResourceRequirement()]);
+	this.connection_points= ko.observableArray([new ConnectionPoint()]);
+	this.monitoring_parameters= ko.observableArray([new MonitoringParameter()]);
+	this.scale_in_out = new ScaleInOut();
+	
+	this.addRequirement = function() {
+		this.resource_requirements.push(new ResourceRequirement());
+	}
+	this.deleteRequirement = function(requirement){
+		this.resource_requirements.remove(requirement);
+	}.bind(this);
+	
+	this.addPoint = function() {
+		this.connection_points.push(new ConnectionPoint());
+	}
+	this.removePoint = function(point){
+		this.connection_points.remove(point);
+	}.bind(this);
+	
+	this.addParameter = function() {
+		this.monitoring_parameters.push(new MonitoringParameter());
+	}
+	this.deleteParameter = function(parameter){
+		this.monitoring_parameters.remove(parameter);
 	}.bind(this);
 }
 
@@ -36,12 +72,6 @@ var MonitoringParameter = function(){
 var MonitoringRequirement = function (){
 	this.name = ko.observable("");
 	this.unit = ko.observable("");
-}
-
-var ConnectionPoint = function () {
-	this.id  = ko.observable("");
-	this.type = ko.observable("");
-	this.virtual_link_reference = ko.observable("");	
 }
 
 var HypervisorParameters = function(){
@@ -94,6 +124,7 @@ var ScaleInOut = function(){
 	this.minimum = ko.observable(1);
 	this.maximum = ko.observable(1);
 }
+
 var ResourceRequirement= function(){
 	this.hypervisor_parameters = new HypervisorParameters();
 	this.vswitch_capabilities = new VswitchCapabilities();
@@ -104,39 +135,14 @@ var ResourceRequirement= function(){
 	this.pcie = new PCIE();
 }
 
-var VirtualDeploymentUnit = function(){
-	this.id = ko.observable("");
-	this.vm_image = ko.observable("");
-	this.vm_image_format = ko.observable("");
-	this.vm_image_md5 = ko.observable("");
-	this.resource_requirements= ko.observableArray([new ResourceRequirement()]);
-	this.connection_points= ko.observableArray([new ConnectionPoint()]);
-	this.monitoring_parameters= ko.observableArray([new MonitoringParameter()]);
-	this.scale_in_out = new ScaleInOut();
-	
-	this.addRequirement = function() {
-		this.resource_requirements.push(new ResourceRequirement());
-	}
-	this.deleteRequirement = function(requirement){
-		this.resource_requirements.remove(requirement);
-	}.bind(this);
-	
-	this.addPoint = function() {
-		this.connection_points.push(new ConnectionPoint());
-	}
-	this.removePoint = function(point){
-		this.connection_points.remove(point);
-	}.bind(this);
-	
-	this.addParameter = function() {
-		this.monitoring_parameters.push(new MonitoringParameter());
-	}
-	this.deleteParameter = function(parameter){
-		this.monitoring_parameters.remove(parameter);
-	}.bind(this);
+/*3.Connection Points Section*/
+var ConnectionPoint = function () {
+	this.id  = ko.observable("");
+	this.type = ko.observable("");
+	this.virtual_link_reference = ko.observable("");	
 }
 
-
+/*4.Virtual Links Section*/
 var VirtualLink = function() {
 	this.id = ko.observable("");
 	this.connectivity_type = ko.observable("");
@@ -149,38 +155,32 @@ var VirtualLink = function() {
 	this.qos =  ko.observable("");
 }
 
-var Violation = function(){
-	this.interval = ko.observable("");
-	this.breaches_count = ko.observable("");
+/*5.VNF Lifecycle Events Section*/
+var Event = function () {
+	this.command = ko.observable("");
+	this.template_file = ko.observable("");
+	this.template_file_format = ko.observable("");
 }
 
-var Penalty = function(){
-	this.type = ko.observable("");
-	this.expression = ko.observable("");
-	this.validity = ko.observable("");
-	this.unit = ko.observable("");
+var Events = function(){
+	this.start = new Event();
+	this.stop = new Event();
+	this.restart = new Event();
+	this.scale_in = new Event();
+	this.scale_out = new Event();
 }
 
-var AssuranceParameter = function() {
-    this.violation = ko.observableArray([new Violation()]);
-    this.value = ko.observable("");
-	this.penalty = new Penalty();
-	this.formula = ko.observable("");
-	this.rel_id = ko.observable("");
-	this.id = ko.observable("");
-	this.unit = ko.observable("");
-	
-	this.addViolation= function(){
-		this.violation.push(new Violation());
-	};
-	this.deleteViolation = function(violation){
-		this.violation.remove(violation);
-	}.bind(this);
-}
-var Text = function(){
-	this.text = ko.observable("");
+var LifecycleEvent = function(){
+	this.authentication_username = ko.observable("");
+	this.driver = ko.observable("");
+	this.authentication_type = ko.observable("");
+	this.authentication = ko.observable("");
+	this.vnf_container = ko.observable("");
+	this.events = new Events();
+	this.flavor_id_ref = ko.observable("");
 }
 
+/*6.Deployment Flavours Section*/
 var DeploymentFlavour = function() {
 	this.id = ko.observable("");
 	this.flavour_key = ko.observable("");
@@ -211,34 +211,39 @@ var DeploymentFlavour = function() {
 	}.bind(this);
 }
 
-var Event = function () {
-	this.command = ko.observable("");
-	this.template_file = ko.observable("");
-	this.template_file_format = ko.observable("");
+var Text = function(){
+	this.text = ko.observable("");
 }
 
-var Events = function(){
-	this.start = new Event();
-	this.stop = new Event();
-	this.restart = new Event();
-	this.scale_in = new Event();
-	this.scale_out = new Event();
+var Violation = function(){
+	this.interval = ko.observable("");
+	this.breaches_count = ko.observable("");
 }
 
-var LifecycleEvent = function(){
-	this.authentication_username = ko.observable("");
-	this.driver = ko.observable("");
-	this.authentication_type = ko.observable("");
-	this.authentication = ko.observable("");
-	this.vnf_container = ko.observable("");
-	this.events = new Events();
-	this.flavor_id_ref = ko.observable("");
+var Penalty = function(){
+	this.type = ko.observable("");
+	this.expression = ko.observable("");
+	this.validity = ko.observable("");
+	this.unit = ko.observable("");
 }
 
-var Notification = function(){
-	this.name= ko.observable("");
-    this.type= ko.observable("");
+var AssuranceParameter = function() {
+    this.violation = ko.observableArray([new Violation()]);
+    this.value = ko.observable("");
+	this.penalty = new Penalty();
+	this.formula = ko.observable("");
+	this.rel_id = ko.observable("");
+	this.id = ko.observable("");
+	this.unit = ko.observable("");	
+	this.addViolation= function(){
+		this.violation.push(new Violation());
+	};
+	this.deleteViolation = function(violation){
+		this.violation.remove(violation);
+	}.bind(this);
 }
+
+/*7.Monitoring Rules*/
 var MonitoringRule = function(){
 	this.name= ko.observable("");
     this.description= ko.observable("");
@@ -246,6 +251,11 @@ var MonitoringRule = function(){
     this.duration_unit= ko.observable("");
     this.condition= ko.observable("");
     this.notification= new Notification();
+}
+
+var Notification = function(){
+	this.name= ko.observable("");
+    this.type= ko.observable("");
 }
 
 var vnfViewModel = function() {
@@ -261,8 +271,8 @@ var vnfViewModel = function() {
 	this.virtual_deployment_units = ko.observableArray([new VirtualDeploymentUnit()]);
 	this.connection_points=ko.observableArray([new ConnectionPoint()]);
 	this.virtual_links = ko.observableArray([new VirtualLink()]);
-	this.deployment_flavours=ko.observableArray([new DeploymentFlavour()]);
 	this.lifecycle_events=ko.observableArray([new LifecycleEvent()]);
+	this.deployment_flavours=ko.observableArray([new DeploymentFlavour()]);
 	this.monitoring_rules=ko.observableArray([new MonitoringRule()]);
 	
 	this.addFunctionSpecificManager=  function(){
@@ -316,12 +326,7 @@ var vnfViewModel = function() {
 	}.bind(this);
 };
 
-
-var numOfUnits = 1;
-var units;
-
-
-
+/*Other page events*/
 $(document).ready(function () {
 	queryString = getQueryString();
 	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
@@ -329,7 +334,8 @@ $(document).ready(function () {
 	if (queryString["vnfName"] != undefined)
 		document.getElementById("nav_vnf").text = "VNF: " + queryString["vnfName"];
 	units = document.getElementById("accordion_units");
-	ko.applyBindings(new vnfViewModel());
+	vnfViewModel=new vnfViewModel();
+	ko.applyBindings(vnfViewModel);
 	$("#accordion_units").accordion({
 		active : false,
 		collapsible : true,
@@ -342,9 +348,11 @@ $(document).ready(function () {
 	});
 	
 });
+
 function submitInfos() {
 	alert("submit");
 }
+
 function createNewVnf(vnfName) {
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
@@ -385,47 +393,4 @@ function createNewVnf(vnfName) {
 
 function goToProjectView() {
 	window.location.href = "projectView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"];
-}
-
-function addVirtualUnit() {
-	numOfUnits++;
-	var uhead=document.createElement("h3");
-	uhead.innerHTML="Unit "+numOfUnits;
-	var utable= document.getElementById("unit_table1").cloneNode(true);
-	utable.id="unit_table"+numOfUnits;
-	var unit=document.createElement("div");
-	unit.id = "accordion_unit" + numOfUnits;
-	unit.class="subaccordion";
-	units.appendChild(uhead);
-	units.appendChild(utable);
-	$(units).accordion("refresh");
-}
-
-function deleteVirtualUnit() {
-	if (numOfUnits > 1) {
-		units.lastChild.remove();
-		units.lastChild.remove();
-		numOfUnits--;
-	}
-}
-
-
-
-function deletePoint(tName) {
-	var utable=document.getElementById(tName);
-	var points=$(utable).find("#connection_points")[0];
-	points.lastChild.remove();
-}
-
-function addParameter(tName) {
-	var utable=document.getElementById(tName);
-	var pars=$(utable).find("#monitoring_parameters")[0];
-	var par= document.getElementById("monitoring_parameter").cloneNode(true);
-	pars.appendChild(par);
-}
-
-function deleteParameter(tName) {
-	var utable=document.getElementById(tName);
-	var pars=$(utable).find("#monitoring_parameters")[0];
-	pars.lastChild.remove();
 }

@@ -88,17 +88,17 @@
 							<div class="col-md-2">
 								<input data-bind="value: description" type="text" class="form-control" placeholder="">
 							</div>
-							<label class="control-label col-md-2">id*:</label>
+							<label class="control-label col-md-2">id:</label>
 							<div class="col-md-2">
 								<input data-bind="value: id" type="text" class="form-control" placeholder="">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-2">image*:</label>
+							<label class="control-label col-md-2">Image:</label>
 							<div class="col-md-2">
 								<input data-bind="value: image" type="text" class="form-control" placeholder="">
 							</div>
-							<label class="control-label col-md-2">image md5:</label>
+							<label class="control-label col-md-2">Image md5:</label>
 							<div class="col-md-2">
 								<input data-bind="value: image_md5" type="text" class="form-control" placeholder="">
 							</div>
@@ -106,26 +106,28 @@
 						<hr>
 						<div class="form-group">
 							<h4>Resource Requirements</h4>
-							<label class="control-label col-md-2">Docker Version</label>
+							<label class="control-label col-md-2">Docker version:</label>
 							<div class="col-md-2">
 								<input data-bind="value: resource_requirements.docker_version" type="text" class="form-control" placeholder="">
 							</div>
 						</div>
 						<hr>
 						<div class="form-group">
-							<h4>Options</h4>
+							<h4>Options (optional)</h4>
 							<div data-bind="foreach: options"id="options">
 								<div class="form-group">
-									<label class="control-label col-md-2">Key</label>
+									<label class="control-label col-md-2">Key:</label>
 									<div class="col-md-2">
 										<input data-bind="value: key" type="text" class="form-control" placeholder="">
 									</div>
-									<label class="control-label col-md-2">Value</label>
+									<label class="control-label col-md-2">Value:</label>
 									<div class="col-md-2">
 										<input data-bind="value: value" type="text" class="form-control" placeholder="">
-									</div>
-									<button class="editorButtons delete" data-bind="click: $parent.deleteOption"></button>
-								</div>					
+									</div>									
+								</div>
+								<div class="form-group" align="right">
+									<button class="editorButtons delete" data-bind="click: $parent.deleteOption">Delete Option</button>								
+								</div>
 							</div>
 							<div class="form-group" align="right">	
 								<button class="editorButtons add" data-bind="click: addOption">Add Option</button>	
@@ -148,7 +150,7 @@
 							<div data-bind="foreach: virtual_deployment_units" id="accordion_units">
 								<h3>
 									Unit <span data-bind="text: id"></span>
-									<button class="editorButtons delete" data-bind="visible: $parent.virtual_deployment_units().length > 1, click: $parent.deleteVirtualDeploymentUnit">Delete</button>
+									<button class="editorButtons delete" data-bind="visible: $parent.virtual_deployment_units().length > 1, click: $parent.deleteVirtualDeploymentUnit">Delete Virtual Deployment Unit</button>
 								</h3>
 								<div id="unit_table1">
 									<div class="form-group">
@@ -173,11 +175,10 @@
 									</div>
 									<hr>
 									<div class="form-group">
-										<h4>Resource requirements</h4>
-									</div>	
+									<h4>Resource requirements</h4>
 									<div data-bind="foreach: resource_requirements">
-										<div class="form-group">
-											<h5>Hypervisor Parameters</h5>
+										<h5>Hypervisor Parameters</h5>
+										<div class="form-group">											
 											<label class="control-label col-md-2">Type:</label>
 											<div class="col-md-2">
 												<input data-bind="value: hypervisor_parameters.type"type="text" class="form-control" placeholder="">
@@ -187,8 +188,8 @@
 												<input data-bind="value: hypervisor_parameters.version" type="text" class="form-control" placeholder="">
 											</div>	
 										</div>
+										<h5>VSwitch Capabilities</h5>
 										<div class="form-group">
-											<h5>VSwitch Capabilities</h5>
 											<label class="control-label col-md-2">Type:</label>
 											<div class="col-md-2">
 												<input data-bind="value: vswitch_capabilities.type"type="text" class="form-control" placeholder="">
@@ -199,24 +200,24 @@
 											</div>	
 										</div>
 										<div class="form-group">
-											<label class="control-label col-md-2">Overlay Tunnel:</label>
+											<label class="control-label col-md-2">Overlay tunnel:</label>
 											<div class="col-md-2">
 												<input data-bind="value: vswitch_capabilities.overlay_tunnel" type="text" class="form-control" placeholder="">
 											</div>	
 										</div>
+										<h5>CPU</h5>
 										<div class="form-group">
-											<h5>CPU</h5>
 											<label class="control-label col-md-2">VCPUS:</label>
 											<div class="col-md-2">
 												<input data-bind="value: cpu.vcpus"type="text" class="form-control" placeholder="">
 											</div>	
-											<label class="control-label col-md-2">CPU Support Accelerator:</label>
+											<label class="control-label col-md-2">CPU support accelerator:</label>
 											<div class="col-md-2">
 												<input data-bind="value: cpu.cpu_support_accelerator"type="text" class="form-control" placeholder="">
 											</div>	
 										</div>
-										<div class="form-group">
-											<h5>Memory</h5>
+										<h5>Memory</h5>
+										<div class="form-group">										
 											<label class="control-label col-md-2">Size:</label>
 											<div class="col-md-2">
 												<input data-bind="value: memory.size" type="text" class="form-control" placeholder="">
@@ -227,17 +228,17 @@
 											</div>	
 										</div>
 										<div class="form-group">
-											<label class="control-label col-md-2">Large Packages Required:</label>
+											<label class="control-label col-md-2">Large packages required:</label>
 											<div class="col-md-2">
 												<input data-bind="value: memory.large_pages_required" type="checkbox" class="checkbox" placeholder="">
 											</div>	
-											<label class="control-label col-md-2">Numa allocation Policy:</label>
+											<label class="control-label col-md-2">Numa allocation policy:</label>
 											<div class="col-md-2">
 												<input data-bind="value: memory.numa_allocation_policy"type="text" class="form-control" placeholder="">
 											</div>	
 										</div>
-										<div class="form-group">
-											<h5>Storage</h5>
+										<h5>Storage</h5>
+										<div class="form-group">										
 											<label class="control-label col-md-2">Size:</label>
 											<div class="col-md-2">
 												<input data-bind="value: storage.size"type="text" class="form-control" placeholder="">
@@ -253,55 +254,52 @@
 												<input data-bind="value: storage.persistence" type="checkbox" class="checkbox" placeholder="">
 											</div>	
 										</div>
-										<div class="form-group">
-											<h5>Network</h5>
-											<div class="form-group">
-												<label class="control-label col-md-2">Network Interface Bandwidth:</label>
-												<div class="col-md-2">
-													<input data-bind="value: network.network_interface_bandwidth"type="text" class="form-control" placeholder="">
-												</div>	
-												<label class="control-label col-md-2">Network Interface Bandwidth Unit:</label>
-												<div class="col-md-2">
-													<input data-bind="value: network.network_interface_bandwidth_unit" type="text" class="form-control" placeholder="">
-												</div>	
-											</div>
-											<div class="form-group">
-												<h6>Network Interface Card Capabilities:</h6>
-												<label class="control-label col-md-2">SR-IOV:</label>
-												<div class="col-md-2">
-													<input data-bind="value: network.network_interface_card_capabilities.SR_IOV" type="checkbox" class="checkbox" placeholder="">
-												</div>	
-												<label class="control-label col-md-2">Mirroring:</label>
-												<div class="col-md-2">
-													<input data-bind="value: network.network_interface_card_capabilities.mirroring" type="checkbox" class="checkbox" placeholder="">
-												</div>	
-											</div>
-											<div class="form-group">
-												<label class="control-label col-md-2">Data Processing Acceleration library:</label>
-												<div class="col-md-2">
-													<input data-bind="value: network.data_processing_acceleration_library" type="checkbox" class="checkbox" placeholder="">
-												</div>	
-											</div>
+										<h5>Network</h5>
+										<div class="form-group">										
+											<label class="control-label col-md-2">Network interface bandwidth:</label>
+											<div class="col-md-2">
+												<input data-bind="value: network.network_interface_bandwidth"type="text" class="form-control" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Network interface bandwidth unit:</label>
+											<div class="col-md-2">
+											<input data-bind="value: network.network_interface_bandwidth_unit" type="text" class="form-control" placeholder="">				</div>	
+										</div>
+										<h5>Network Interface Card Capabilities</h5>
+										<div class="form-group">										
+											<label class="control-label col-md-2">SR-IOV:</label>
+											<div class="col-md-2">
+												<input data-bind="value: network.network_interface_card_capabilities.SR_IOV" type="checkbox" class="checkbox" placeholder="">
+											</div>	
+											<label class="control-label col-md-2">Mirroring:</label>
+											<div class="col-md-2">
+												<input data-bind="value: network.network_interface_card_capabilities.mirroring" type="checkbox" class="checkbox" placeholder="">
+											</div>	
 										</div>
 										<div class="form-group">
-											<h5>PCIE</h5>
+											<label class="control-label col-md-2">Data processing acceleration library:</label>
+											<div class="col-md-2">
+												<input data-bind="value: network.data_processing_acceleration_library" type="checkbox" class="checkbox" placeholder="">
+											</div>	
+										</div>
+										<h5>PCIE</h5>
+										<div class="form-group">											
 											<label class="control-label col-md-2">SR-IOV:</label>
 											<div class="col-md-2">
 												<input data-bind="value: pcie.SR_IOV" type="checkbox" class="checkbox" placeholder="">
 											</div>		
-											<label class="control-label col-md-2">Device Pass Through:</label>
+											<label class="control-label col-md-2">Device pass through:</label>
 											<div class="col-md-2">
 												<input data-bind="value: pcie.device_pass_through" type="checkbox" class="checkbox" placeholder="">
 											</div>	
 										</div>
 									</div>
+									</div>
 									<hr>
 									<div class="form-group">	
-										<label class="control-label">Connection points (optional):</label>
-									</div>
+									<h4>Connection Points (optional)</h4>								
 									<div data-bind="foreach: connection_points" id="connection_points">
-										<div id="connection_point" class="form-group">
-											<h5>Point:</h5>
+										<h5>Point</h5>
+										<div id="connection_point" class="form-group">											
 											<label class="control-label col-md-2">id:</label>
 											<div class="col-md-2">
 												<input data-bind="value: id" type="text" class="form-control" placeholder="">
@@ -311,27 +309,26 @@
 												<input data-bind="value: type" type="text" class="form-control" placeholder="">
 											</div>
 										</div>
-										<div class="form-group">	
-											<label class="control-label col-md-2">Virtual Link Reference:</label>
+										<div class="form-group">
+											<label class="control-label col-md-2">Virtual link reference:</label>
 											<div class="col-md-2">
 												<input data-bind="value: virtual_link_reference" type="text" class="form-control" placeholder="">
-											</div>
-											<div class="form-group" align="right">
-												<button class="editorButtons delete" data-bind="click: $parent.removePoint">Delete</button>
-											</div>
+											</div>		
+										</div>
+										<div class="form-group" align="right">
+											<button class="editorButtons delete" data-bind="click: $parent.removePoint">Delete Point</button>
 										</div>	
 									</div>
 									<div class="form-group" align="right">	
-											<button class="editorButtons add" data-bind="click: addPoint">Add</button>	
+											<button class="editorButtons add" data-bind="click: addPoint">Add Point</button>	
 									</div>
-									
+									</div>
 									<hr>
 									<div class="form-group">
-										<label class="control-label">Monitoring parameters (optional):</label>
-									</div>
+									<h4>Monitoring parameters (optional)</h4>
 									<div data-bind="foreach: monitoring_parameters" id="monitoring_parameters">
-										<div id="monitoring_parameter"  class="form-group">
-											<h5>Parameter:</h5>
+										<h5>Parameter</h5>
+										<div id="monitoring_parameter"  class="form-group">										
 											<label class="control-label col-md-2">Name:</label>
 											<div class="col-md-2">
 												<input data-bind="value: name" type="text" class="form-control" placeholder="">
@@ -339,34 +336,35 @@
 											<label class="control-label col-md-2">Unit:</label>
 											<div class="col-md-2">
 												<input data-bind="value: unit" type="text" class="form-control" placeholder="">
-											</div>	
+											</div>											
 										</div>		
-										<div class="form-group">
+										<div class="form-group">	
 											<label class="control-label col-md-2">Frequency:</label>
 											<div class="col-md-2">
 												<input data-bind="value: frequency" type="text" class="form-control" placeholder="">
 											</div>	
-											<label class="control-label col-md-2">Frequency Unit:</label>
+											<label class="control-label col-md-2">Frequency unit:</label>
 											<div class="col-md-2">
 												<input data-bind="value: frequency_unit" type="text" class="form-control" placeholder="">
 											</div>	
-										</div>	
-										<div class="form-group">
+										</div>
+										<div class="form-group">	
 											<label class="control-label col-md-2">Command:</label>
 											<div class="col-md-2">
 												<input data-bind="value: command" type="text" class="form-control" placeholder="">
-											</div>	
-											<div class="form-group" align="right">	
-												<button class="editorButtons delete" data-bind="click: $parent.deleteParameter">Delete</button>
-											</div>
+											</div>									
+										</div>
+										<div class="form-group" align="right">	
+												<button class="editorButtons delete" data-bind="click: $parent.deleteParameter">Delete Parameter</button>
 										</div>
 									</div>			
 									<div class="form-group" align="right">	
-										<button class="editorButtons add" data-bind="click: addParameter">Add</button>	
+										<button class="editorButtons add" data-bind="click: addParameter">Add Parameter</button>	
+									</div>
 									</div>
 									<hr>
 									<div class="form-group">
-										<label class="control-label col-md-2">Scale in out (optional):</label> 
+										<h4>Scale in out (optional)</h4> 
 										<div id="scale_in_out">
 											<label class="control-label col-md-2">Minimum:</label>
 											<div class="col-md-2">
@@ -400,7 +398,7 @@
 							<div class="col-md-2">
 								<input data-bind="value: id" type="text" class="form-control" placeholder="">
 							</div>
-							<label class="control-label col-md-2">type:</label>
+							<label class="control-label col-md-2">Type:</label>
 							<div class="col-md-2">
 								<input data-bind="value: type" type="text" class="form-control" placeholder="">
 							</div>
@@ -446,17 +444,17 @@
 							<div class="col-md-2">
 								<input  data-bind="value: access" type="checkbox" class="checkbox" placeholder="">
 							</div>
-							<label class="control-label col-md-2">External Access:</label>
+							<label class="control-label col-md-2">External access:</label>
 							<div class="col-md-2">
 								<input  data-bind="value: external_access" type="checkbox" class="checkbox" placeholder="">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-2">Root Requirement:</label>
+							<label class="control-label col-md-2">Root requirement:</label>
 							<div class="col-md-2">
 								<input  data-bind="value: root_requirement" type="text" class="form-control" placeholder="">
 							</div>
-							<label class="control-label col-md-2">Leaf Requirement:</label>
+							<label class="control-label col-md-2">Leaf requirement:</label>
 							<div class="col-md-2">
 								<input  data-bind="value: leaf_requirement" type="text" class="form-control" placeholder="">
 							</div>
@@ -488,7 +486,7 @@
 							<hr>
 						<!-- /ko -->
 						<div class="form-group">
-							<label class="control-label col-md-2">Authentication Username:</label>
+							<label class="control-label col-md-2">Authentication username:</label>
 							<div class="col-md-2">
 								<input data-bind="value: authentication_username" type="text" class="form-control" placeholder="">
 							</div>
@@ -498,7 +496,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-2">Authentication Type:</label>
+							<label class="control-label col-md-2">Authentication type:</label>
 							<div class="col-md-2">
 								<input data-bind="value: authentication_type" type="text" class="form-control" placeholder="">
 							</div>
@@ -512,11 +510,12 @@
 							<div class="col-md-2">
 								<input data-bind="value: vnf_container" type="text" class="form-control" placeholder="">
 							</div>
-							<label class="control-label col-md-2">Flavour ID Ref:</label>
+							<label class="control-label col-md-2">Flavour ID ref:</label>
 							<div class="col-md-2">
 								<input data-bind="value: flavor_id_ref" type="text" class="form-control" placeholder="">
 							</div>
 						</div>
+						<hr>
 						<div class="form-group">
 							<h4>Events</h4>
 							<h5>Start</h5>
@@ -527,11 +526,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-md-2">Template File:</label>
+								<label class="control-label col-md-2">Template file:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.start.template_file" type="text" class="form-control" placeholder="">
 								</div>
-								<label class="control-label col-md-2">Template File Format:</label>
+								<label class="control-label col-md-2">Template file format:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.start.template_file_format" type="text" class="form-control" placeholder="">
 								</div>
@@ -544,11 +543,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-md-2">Template File:</label>
+								<label class="control-label col-md-2">Template file:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.stop.template_file" type="text" class="form-control" placeholder="">
 								</div>
-								<label class="control-label col-md-2">Template File Format:</label>
+								<label class="control-label col-md-2">Template file format:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.stop.template_file_format" type="text" class="form-control" placeholder="">
 								</div>
@@ -561,11 +560,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-md-2">Template File:</label>
+								<label class="control-label col-md-2">Template file:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.restart.template_file" type="text" class="form-control" placeholder="">
 								</div>
-								<label class="control-label col-md-2">Template File Format:</label>
+								<label class="control-label col-md-2">Template file format:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.restart.template_file_format" type="text" class="form-control" placeholder="">
 								</div>
@@ -578,11 +577,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-md-2">Template File:</label>
+								<label class="control-label col-md-2">Template file:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.scale_in.template_file" type="text" class="form-control" placeholder="">
 								</div>
-								<label class="control-label col-md-2">Template File Format:</label>
+								<label class="control-label col-md-2">Template file format:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.scale_in.template_file_format" type="text" class="form-control" placeholder="">
 								</div>
@@ -595,11 +594,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-md-2">Template File:</label>
+								<label class="control-label col-md-2">Template file:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.scale_out.template_file" type="text" class="form-control" placeholder="">
 								</div>
-								<label class="control-label col-md-2">Template File Format:</label>
+								<label class="control-label col-md-2">Template file format:</label>
 								<div class="col-md-2">
 									<input data-bind="value: events.scale_out.template_file_format" type="text" class="form-control" placeholder="">
 								</div>
@@ -629,28 +628,30 @@
 								<input data-bind="value: constraint" type="text" class="form-control" placeholder="">
 							</div>
 						</div>
+						<hr>
 						<div class="form-group">
 							<h4>VDU reference</h4>
 							<div data-bind="foreach: vdu_reference" class="form-group">
-								<div class="col-md-2">
+								<div class="col-md-2" align="center">
 									<input data-bind="value: text" type="text" class="form-control" placeholder="">								
-									<button class="editorButtons delete" data-bind="click: $parent.deleteVduReference"></button>
+									<button class="editorButtons delete" data-bind="click: $parent.deleteVduReference">Delete</button>
 								</div>	
 							</div>
 							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addVduReference">Add</button>	
+								<button class="editorButtons add" data-bind="click: addVduReference">Add VDU Reference</button>	
 							</div>
 						</div>
+						<hr>
 						<div class="form-group">
-							<h4>VLink Reference</h4>
+							<h4>VLink reference</h4>
 							<div data-bind="foreach: vlink_reference" class="form-group">
-								<div class="col-md-2">
+								<div class="col-md-2" align="center">
 									<input data-bind="value: text" type="text" class="form-control" placeholder="">								
-									<button class="editorButtons delete" data-bind="click: $parent.deleteVlinkReference"></button>
+									<button class="editorButtons delete" data-bind="click: $parent.deleteVlinkReference">Delete</button>
 								</div>	
 							</div>
 							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addVlinkReference">Add</button>	
+								<button class="editorButtons add" data-bind="click: addVlinkReference">Add VLink Reference</button>	
 							</div>
 						</div>
 						<hr>
@@ -658,46 +659,6 @@
 							<h4>Assurance Parameters</h4>
 							<div data-bind="foreach: assurance_parameters">
 								<div>
-									<h5>Violation</h5>
-									<div data-bind="foreach: violation">
-										<div  class="form-group">
-											<label class="control-label col-md-2">Interval:</label>
-											<div class="col-md-2">
-												<input data-bind="value: interval" type="text" class="form-control" placeholder="">								
-											</div>
-											<label class="control-label col-md-2">Breaches Count:</label>
-											<div class="col-md-2">
-												<input data-bind="value: breaches_count" type="text" class="form-control" placeholder="">								
-											</div>
-											<button class="editorButtons delete" data-bind="click: $parent.deleteViolation"></button>
-										</div>
-									</div>
-									<div class="form-group" align="right">	
-										<button class="editorButtons add" data-bind="click: addViolation">Add</button>	
-									</div>
-									<hr>
-									<h5>Penalty:</h5>
-									<div class="form-group">
-										<label class="control-label col-md-2">Type:</label>
-										<div class="col-md-2">
-											<input data-bind="value: penalty.type" type="text" class="form-control" placeholder="">								
-										</div>	
-										<label class="control-label col-md-2">Expression:</label>
-										<div class="col-md-2">
-											<input data-bind="value: penalty.expression" type="text" class="form-control" placeholder="">								
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-md-2">Validity:</label>
-										<div class="col-md-2">
-											<input data-bind="value: penalty.validity" type="text" class="form-control" placeholder="">								
-										</div>	
-										<label class="control-label col-md-2">Unit:</label>
-										<div class="col-md-2">
-											<input data-bind="value: penalty.unit" type="text" class="form-control" placeholder="">								
-										</div>
-									</div>
-									<hr>
 									<div class="form-group">
 										<label class="control-label col-md-2">Value:</label>
 										<div class="col-md-2">
@@ -721,7 +682,48 @@
 										<div class="col-md-2">
 											<input data-bind="value: unit" type="text" class="form-control" placeholder="">								
 										</div>
+									</div>								
+									<h5>Violation</h5>
+									<div data-bind="foreach: violation">
+										<div  class="form-group">
+											<label class="control-label col-md-2">Interval:</label>
+											<div class="col-md-2">
+												<input data-bind="value: interval" type="text" class="form-control" placeholder="">								
+											</div>
+											<label class="control-label col-md-2">Breaches Count:</label>
+											<div class="col-md-2">
+												<input data-bind="value: breaches_count" type="text" class="form-control" placeholder="">								
+											</div>											
+										</div>
+										<div class="form-group" align="right">	
+										<button class="editorButtons delete" data-bind="click: $parent.deleteViolation">Delete</button>
+										</div>
 									</div>
+									<div class="form-group" align="right">	
+										<button class="editorButtons add" data-bind="click: addViolation">Add Violation</button>	
+									</div>
+									<h5>Penalty</h5>
+									<div class="form-group">
+										<label class="control-label col-md-2">Type:</label>
+										<div class="col-md-2">
+											<input data-bind="value: penalty.type" type="text" class="form-control" placeholder="">								
+										</div>	
+										<label class="control-label col-md-2">Expression:</label>
+										<div class="col-md-2">
+											<input data-bind="value: penalty.expression" type="text" class="form-control" placeholder="">								
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2">Validity:</label>
+										<div class="col-md-2">
+											<input data-bind="value: penalty.validity" type="text" class="form-control" placeholder="">								
+										</div>	
+										<label class="control-label col-md-2">Unit:</label>
+										<div class="col-md-2">
+											<input data-bind="value: penalty.unit" type="text" class="form-control" placeholder="">								
+										</div>
+									</div>	
+	
 									<div class="form-group" align="right">	
 										<button class="editorButtons delete" data-bind="click: $parent.deleteAssuranceParameter">Delete Assurance Parameter</button>
 									</div>
@@ -771,9 +773,10 @@
 							<div class="col-md-2">
 								<input data-bind="value: condition" type="text" class="form-control" placeholder="">
 							</div>
-						</div>			
-						<h4>Notification</h4>
+						</div>				
+						<hr>
 						<div class="form-group">
+						<h4>Notification</h4>
 							<label class="control-label col-md-2">Name:</label>
 							<div class="col-md-2">
 								<input data-bind="value: notification.name" type="text" class="form-control" placeholder="">
