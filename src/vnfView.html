@@ -15,6 +15,7 @@
   <script src="../js/constants.js"></script>
   <script src="../js/vnf.js"></script>
   <script src="../js/utils.js"></script>
+  <script src="../js/knockout.mapping-latest.js"></script>
 </head>
 <body>
 
@@ -798,13 +799,15 @@
 		</div>
 	</div>
 	<div class="form-group"> 
-	<button type="submit"  class="btn btn-primary center-block" onclick="submitInfos();">
+	<button type="submit"  class="btn btn-primary center-block" onclick="submitTables();">
 		Submit
 	</button>
 	</div>	
 	</div>
-	<div id="successVnfDialog" title="Create new project" hidden>
+	<div id="successVnfDialog" title="Success" hidden>
 		<h4>New VNF is created!</h4>
+	</div>
+	<div id="errorDialog" title="Error" hidden>
 	</div>
 	<ul class="pager">
 			<li><a onclick="history.go(-1);">Previous</a></li>

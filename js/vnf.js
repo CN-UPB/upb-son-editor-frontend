@@ -1,5 +1,4 @@
 var queryString = {};
-var numOfUnits = 1;
 var units;
 var vnfViewModel;
 
@@ -326,6 +325,74 @@ var vnfViewModel = function() {
 	}.bind(this);
 };
 
+function updateVnfViewModel(vnf) 
+{
+	console.log(vnf);
+	this.schema = vnf.schema;
+	this.descriptor_version = vnf.descriptor_version;
+	this.vendor = vnf.vendor;
+	this.name = vnf.name;
+	this.version= vnf.version;
+	this.author = vnf.author;
+	this.description= vnf.description;
+	this.function_specific_managers=vnf.function_specific_managers;
+	this.virtual_deployment_units = ko.observableArray(vnf.virtual_deployment_units);
+	this.connection_points=ko.observableArray(vnf.connection_points);
+	this.virtual_links = ko.observableArray(vnf.virtual_Links);
+	this.lifecycle_events=ko.observableArray(vnf.lifecycle_events);
+	this.deployment_flavours=ko.observableArray(vnf.deployment_flavours);
+	this.monitoring_rules=ko.observableArray(vnf.monitoring_rules);
+	
+	this.addFunctionSpecificManager=  function(){
+		this.function_specific_managers.push(new FunctionSpecificManager());
+	};
+	this.deleteFunctionSpecificManager=  function(functionSpecificManager){
+		this.function_specific_managers.remove(functionSpecificManager);
+	}.bind(this);
+	
+	this.addVirtualDeploymentUnit=  function(){
+		this.virtual_deployment_units.push(new VirtualDeploymentUnit());
+		$(units).accordion("refresh");
+	};
+	this.deleteVirtualDeploymentUnit=  function(virtualDeploymentUnit){
+		this.virtual_deployment_units.remove(virtualDeploymentUnit);
+	}.bind(this);
+	
+	this.addConnectionPoint=  function(){
+		this.connection_points.push(new ConnectionPoint());
+	};
+	this.deleteConnectionPoint=  function(connectionPoint){
+		this.connection_points.remove(connectionPoint);
+	}.bind(this);
+	
+	this.addVirtualLink=  function(){
+		this.virtual_links.push(new VirtualLink());
+	};
+	this.deleteVirtualLink=  function(virtualLink){
+		this.virtual_links.remove(virtualLink);
+	}.bind(this);
+	
+	this.addDeploymentFlavour=  function(){
+		this.deployment_flavours.push(new DeploymentFlavour());
+	};
+	this.deleteDeploymentFlavour=  function(deploymentFlavour){
+		this.deployment_flavours.remove(deploymentFlavour);
+	}.bind(this);
+	
+	this.addLifecycleEvent=  function(){
+		this.lifecycle_events.push(new LifecycleEvent());
+	};
+	this.deleteLifecycleEvent=  function(lifecycleEvent){
+		this.lifecycle_events.remove(lifecycleEvent);
+	}.bind(this);
+	
+	this.addMonitoringRule =  function(){
+		this.monitoring_rules.push(new MonitoringRule());
+	};
+	this.deleteMonitoringRule = function(monitoring_rule){
+		this.monitoring_rules.remove(monitoring_rule);
+	}.bind(this);
+}
 /*Other page events*/
 $(document).ready(function () {
 	queryString = getQueryString();
@@ -335,6 +402,10 @@ $(document).ready(function () {
 		document.getElementById("nav_vnf").text = "VNF: " + queryString["vnfName"];
 	units = document.getElementById("accordion_units");
 	vnfViewModel=new vnfViewModel();
+	if(queryString["loadVnf"]=="true")
+	{
+			loadVnf(queryString["vnfId"]);
+	}
 	ko.applyBindings(vnfViewModel);
 	$("#accordion_units").accordion({
 		active : false,
@@ -349,22 +420,26 @@ $(document).ready(function () {
 	
 });
 
-function submitInfos() {
-	alert("submit");
+function submitTables() {
+	var jsonData=ko.toJSON(vnfViewModel);
+	//correct some variable names
+	jsonData=jsonData.replace(/SR_IOV/g,"SR-IOV");
+	jsonData=jsonData.replace(/scale_in/g,"scale-in");
+	jsonData=jsonData.replace(/scale_out/g,"scale-out");
+	//console.log(jsonData);
+	createNewVnf(jsonData);
 }
 
-function createNewVnf(vnfName) {
+function createNewVnf(jsonData) {
 	$.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
+		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/",
 		method : 'POST',
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		xhrFields : {
 			withCredentials : true
 		},
-		data : JSON.stringify({
-			"name" : vnfName
-		}),
+		data : jsonData,
 		success : function (data) {
 			$("#successVnfDialog").dialog({
 				modal : true,
@@ -372,10 +447,10 @@ function createNewVnf(vnfName) {
 				buttons : {
 					ok : function () {
 						$(this).dialog("close");
+						goToProjectView();
 					}
 				}
 			});
-			goToProjectView();
 		},
 		error : function (err) {
 			$('#errorDialog').text(err.responseText);
@@ -391,6 +466,22 @@ function createNewVnf(vnfName) {
 	});
 }
 
+
 function goToProjectView() {
 	window.location.href = "projectView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"];
 }
+
+function loadVnf(vnfId)
+{
+	$.ajax({
+		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/"+vnfId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			updateVnfViewModel(data.descriptor);
+		}
+	});
+}
+
