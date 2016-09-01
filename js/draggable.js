@@ -1,5 +1,6 @@
  //var vnfs=[{"name":"name1"},{"name":"name2"},{"name":"name3"}]
 var vnfs=[];
+var nss=[];
 var queryString = {};
 var wsId = "";
 var ptId = "";
@@ -10,11 +11,28 @@ var vnfViewModel = function(){
 					this.addVnf=function(vnf){
 						this.vnfs.push(vnf);
 					}.bind(this);
+					
+					this.nss = ko.observableArray([]);
+	
+					this.addNs=function(ns){
+						this.nss.push(ns);
+					}.bind(this);
 				}
  
- var vnfModel = new vnfViewModel();
+var vnfModel = new vnfViewModel();
+/*
+var nsViewModel = function(){
+					this.nss = ko.observableArray([]);
+	
+					this.addNs=function(ns){
+						this.nss.push(ns);
+					}.bind(this);
+				}
+ 
+var nsModel = new nsViewModel();
+*/
 
-	$(document).ready(function() {
+$(document).ready(function() {
 		
 		
 		jsPlumb.ready(function() {
@@ -39,22 +57,50 @@ var vnfViewModel = function(){
 				$(".vnf").draggable({
 					helper: "clone", 
 					revert: "invalid"
-			/*
+			/* -----------------------
 			// this function will disable the dragged vnf after drag stops.
 			stop: function( event, ui ) {
 				console.log("Stop event is triggered for draggable...");
 				$(this).draggable({ disabled: true });
-			} */
+			} ------------------------ */
 		
 				});
 			}
 		});
 		
 		
-		ko.applyBindings(vnfModel);
+		//ko.applyBindings(vnfModel); 
 		
 		
+		$.ajax({
+			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
+			dataType : "json",
+			xhrFields : {
+				withCredentials : true
+			},
+			success : function (data) { 
+				nss = data;
+				
+				for (var i=0; i< nss.length;i++){
+					vnfModel.addNs(nss[i]);
+				}
+				
+				$(".ns").draggable({
+					helper: "clone", 
+					revert: "invalid"
+			/* ----------------------
+			// this function will disable the dragged vnf after drag stops.
+			stop: function( event, ui ) {
+				console.log("Stop event is triggered for draggable...");
+				$(this).draggable({ disabled: true });
+			} ----------------------- */
 		
+				});
+			}
+		});
+		
+		ko.applyBindings(vnfModel); 
+		//ko.applyBindings(nsModel);
 		
 		
 		var instance = jsPlumb.getInstance({
@@ -100,7 +146,7 @@ var vnfViewModel = function(){
 		//--------------------------------------------------------
 		var countDropped = 1;
 		$( "#editor").droppable({
-			accept: ".vnf",
+			accept: " .vnf , .ns",
 			drop: function(event, ui) {
 
 				var data = ui.draggable.clone();
@@ -116,11 +162,20 @@ var vnfViewModel = function(){
 				
 				//console.log(data);
 				
+				//if (data.className === "vnf") { code not tested due to server error
 				// remove the 'vnf' class from the source vnf , add new class 'vnf-after-drop' to the clone
-				data.removeClass('vnf');
-				data.addClass('vnf-after-drop');
-				data.removeClass('ui-draggable');
-				
+					console.log("inside vnf condition");
+					data.removeClass('vnf');
+					data.addClass('vnf-after-drop');
+					data.removeClass('ui-draggable');
+				//}
+				/* --------------------- code not tested due to server error
+				else if (data.className === "ns") {
+					console.log("inside ns condition");
+					data.removeClass('ns');
+					data.addClass('ns-after-drop');
+					data.removeClass('ui-draggable');
+				}	--------------------*/
 				//console.log($(ui.draggable).position());
 				//var mouseX = $(ui.draggable).left;
 				//var mouseY = $(ui.draggable).top;

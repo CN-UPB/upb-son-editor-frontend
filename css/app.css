@@ -172,6 +172,18 @@ div .vnf-after-drop p{
     transform: translate(-50%, -50%)
 }
 
+.ns {
+	
+	border: 1px solid black;
+	margin: 5px 5px 5px 5px;
+	background-color: #F0FFFF;
+	height: 30px;
+	width: 50px;
+    display: inline-block;
+	float: left;
+    vertical-align: top;
+	
+}
 .ui-draggable{
 	background-position: center center;
 }

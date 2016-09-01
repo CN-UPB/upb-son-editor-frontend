@@ -128,7 +128,7 @@
 										<div class="left-navigation-bar">
 											<ul class="nav nav-pills nav-stacked">
 												<li role="presentation" class="active"><a href="#">Virtual Network Function<span id="toggle-panel-left" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
-													<div class="panel">
+													<div class="panel" id="show-vnfs">
 														<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">
 															<div data-bind="attr: {'id': 'myprefix_' + name}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
 															<!--
@@ -143,7 +143,14 @@
 													
 												</li>
 												
-												<li role="presentation"><a href="#">Network Services</a></li>
+												<li role="presentation"><a href="#">Network Services<span id="toggle-panel-left-ns" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
+													<div class="panel" id="show-ns">
+														<div data-bind="foreach: nss" id="ns-panel" class="ns-list">
+															<div data-bind="attr: {'id': 'myprefix_' + name}" class="ns" ><p data-bind="text: name">ns1</p></div>
+														</div>
+													</div>
+												
+												</li>
 												<li role="presentation"><a href="#">Hardwares</a></li>
 											</ul>
 										</div>	
