@@ -162,20 +162,24 @@ $(document).ready(function() {
 				
 				//console.log(data);
 				
-				//if (data.className === "vnf") { code not tested due to server error
+				//var vnfClassName = data.attr('class');
+				//console.log(vnfClassName);
+				if (data.hasClass('vnf') == true) { 
+				//code not tested due to server error
 				// remove the 'vnf' class from the source vnf , add new class 'vnf-after-drop' to the clone
 					console.log("inside vnf condition");
 					data.removeClass('vnf');
 					data.addClass('vnf-after-drop');
 					data.removeClass('ui-draggable');
-				//}
-				/* --------------------- code not tested due to server error
-				else if (data.className === "ns") {
+				}
+				// --------------------- code not tested due to server error
+				else if (data.hasClass('ns') == true) {
 					console.log("inside ns condition");
 					data.removeClass('ns');
 					data.addClass('ns-after-drop');
 					data.removeClass('ui-draggable');
-				}	--------------------*/
+				}	
+				//-------------------- */
 				//console.log($(ui.draggable).position());
 				//var mouseX = $(ui.draggable).left;
 				//var mouseY = $(ui.draggable).top;
