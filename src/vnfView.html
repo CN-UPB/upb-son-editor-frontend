@@ -28,7 +28,7 @@
 	   <li><a onclick="history.go(-3);">Home</a></li>
        <li><a id="nav_workspace" onclick="history.go(-2);">Workspace</a></li>
        <li><a id="nav_project"onclick="history.go(-1);">Project</a></li>
-	   <li class="active"><a id="nav_vnf" onclick="history.go(0);">VNF</a></li>
+	   <li class="active"><a id="nav_vnf" onclick="history.go(0);" data-bind="text: name">VNF</a></li>
     </ul>
   </div>
 </nav>
@@ -231,7 +231,7 @@
 										<div class="form-group">
 											<label class="control-label col-md-2">Large packages required:</label>
 											<div class="col-md-2">
-												<input data-bind="value: memory.large_pages_required" type="checkbox" class="checkbox" placeholder="">
+												<input data-bind="checked: memory.large_pages_required" type="checkbox" class="checkbox" placeholder="">
 											</div>	
 											<label class="control-label col-md-2">Numa allocation policy:</label>
 											<div class="col-md-2">
@@ -252,7 +252,7 @@
 										<div class="form-group">
 											<label class="control-label col-md-2">Persistence:</label>
 											<div class="col-md-2">
-												<input data-bind="value: storage.persistence" type="checkbox" class="checkbox" placeholder="">
+												<input data-bind="checked: storage.persistence" type="checkbox" class="checkbox" placeholder="">
 											</div>	
 										</div>
 										<h5>Network</h5>
@@ -269,28 +269,28 @@
 										<div class="form-group">										
 											<label class="control-label col-md-2">SR-IOV:</label>
 											<div class="col-md-2">
-												<input data-bind="value: network.network_interface_card_capabilities.SR_IOV" type="checkbox" class="checkbox" placeholder="">
+												<input data-bind="checked: network.network_interface_card_capabilities.SR_IOV" type="checkbox" class="checkbox" placeholder="">
 											</div>	
 											<label class="control-label col-md-2">Mirroring:</label>
 											<div class="col-md-2">
-												<input data-bind="value: network.network_interface_card_capabilities.mirroring" type="checkbox" class="checkbox" placeholder="">
+												<input data-bind="checked: network.network_interface_card_capabilities.mirroring" type="checkbox" class="checkbox" placeholder="">
 											</div>	
 										</div>
 										<div class="form-group">
 											<label class="control-label col-md-2">Data processing acceleration library:</label>
 											<div class="col-md-2">
-												<input data-bind="value: network.data_processing_acceleration_library" type="checkbox" class="checkbox" placeholder="">
+												<input data-bind="checked: network.data_processing_acceleration_library" type="checkbox" class="checkbox" placeholder="">
 											</div>	
 										</div>
 										<h5>PCIE</h5>
 										<div class="form-group">											
 											<label class="control-label col-md-2">SR-IOV:</label>
 											<div class="col-md-2">
-												<input data-bind="value: pcie.SR_IOV" type="checkbox" class="checkbox" placeholder="">
+												<input data-bind="checked: pcie.SR_IOV" type="checkbox" class="checkbox" placeholder="">
 											</div>		
 											<label class="control-label col-md-2">Device pass through:</label>
 											<div class="col-md-2">
-												<input data-bind="value: pcie.device_pass_through" type="checkbox" class="checkbox" placeholder="">
+												<input data-bind="checked: pcie.device_pass_through" type="checkbox" class="checkbox" placeholder="">
 											</div>	
 										</div>
 									</div>
@@ -443,11 +443,11 @@
 						<div class="form-group">
 							<label class="control-label col-md-2">Access:</label>
 							<div class="col-md-2">
-								<input  data-bind="value: access" type="checkbox" class="checkbox" placeholder="">
+								<input  data-bind="checked: access" type="checkbox" class="checkbox" placeholder="">
 							</div>
 							<label class="control-label col-md-2">External access:</label>
 							<div class="col-md-2">
-								<input  data-bind="value: external_access" type="checkbox" class="checkbox" placeholder="">
+								<input  data-bind="checked: external_access" type="checkbox" class="checkbox" placeholder="">
 							</div>
 						</div>
 						<div class="form-group">
@@ -463,11 +463,11 @@
 						<div class="form-group">
 							<label class="control-label col-md-2">DHCP:</label>
 							<div class="col-md-2">
-								<input  data-bind="value: dhcp" type="checkbox" class="checkbox" placeholder="">
+								<input  data-bind="checked: dhcp" type="checkbox" class="checkbox" placeholder="">
 							</div>
 							<label class="control-label col-md-2">QOS:</label>
 							<div class="col-md-2">
-								<input  data-bind="value: qos" type="checkbox" class="checkbox" placeholder="">
+								<input  data-bind="checked: qos" type="checkbox" class="checkbox" placeholder="">
 							</div>
 						</div>
 						<div data-bind="visible: $parent.virtual_links().length > 1" class="form-group" align="right">	
@@ -806,6 +806,9 @@
 	</div>
 	<div id="successVnfDialog" title="Success" hidden>
 		<h4>New VNF is created!</h4>
+	</div>
+	<div id="successVnfDialogUpdated" title="Success" hidden>
+		<h4>VNF is updated!</h4>
 	</div>
 	<div id="errorDialog" title="Error" hidden>
 	</div>
