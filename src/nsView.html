@@ -29,11 +29,18 @@
 		<div class="navbar-header">
 		  <a class="navbar-brand" href="home.html">SONATA SDK Editor</a>
 		</div>
+		<!--
 		<ul class="nav navbar-nav">
 		   <li><a class="top-navigation-menu" href="home.html">Home</a></li>
 		   <li><a class="top-navigation-menu" href="workspace.html">Workspace Name</a></li>
 		   <li><a class="top-navigation-menu" href="project.html">Project Name</a></li>
 		   <li class="active"><a class="top-navigation-menu" href="ns.html">Network Service Name</a></li>
+		</ul> -->
+		<ul class="nav navbar-nav">
+			<li><a class="top-navigation-menu" onclick="history.go(-3);">Home</a></li>
+			<li><a class="top-navigation-menu" id="nav_workspace" onclick="history.go(-2);">Workspace Name</a></li>
+			<li><a class="top-navigation-menu" id="nav_project" onclick="history.go(-1);">Project Name</a></li>
+			<li class="active"><a class="top-navigation-menu" id="nav_ns" onclick="history.go(0);">Network Service Name</a></li>
 		</ul>
 	</nav>
 
@@ -151,7 +158,9 @@
 													</div>
 												
 												</li>
-												<li role="presentation"><a href="#">Hardwares</a></li>
+												<li role="presentation"><a href="#">Endpoints</a></li>
+													<div class="panel" id="show-endpoints">
+													</div>
 											</ul>
 										</div>	
 									</div>
