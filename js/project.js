@@ -40,9 +40,10 @@ function loadServices() {
 			withCredentials : true
 		},
 		success : function (data) {
+			console.log("services:");
+			console.log(data);
 			//display available services and their onclick event.
 			services = data;
-
 			for (i = 0; i < services.length; i++) {
 				var serviceName = services[i].name;
 				availableItems.push("NS: " + serviceName);
@@ -56,18 +57,41 @@ function loadServices() {
 				var tdType = document.createElement("td");
 				tdType.innerHTML = "NS";
 				var tdOptions = document.createElement("td");
-				tdOptions.innerHTML = "Edit";
-				var trService = document.createElement("tr");
+				var optionTable = document.createElement("table");
+				var trOptionTable = document.createElement("tr");
+				var tdEdit = document.createElement("td");
+				tdEdit.className = "btn btn-primary btn-sm";
+				tdEdit.style.marginLeft = "10px";
+				tdEdit.style.marginRight = "15px";
+				tdEdit.innerHTML = "Edit";
+				var tdClone = document.createElement("td");
+				tdClone.className = "btn btn-primary btn-sm";
+				tdClone.style.marginRight = "15px";
+				tdClone.innerHTML = "Clone";
+				var tdDelete = document.createElement("td");
+				tdDelete.className = "btn btn-danger btn-sm";
+				tdDelete.innerHTML = "Delete";
+				trOptionTable.appendChild(tdEdit);
+				trOptionTable.appendChild(tdClone);
+				trOptionTable.appendChild(tdDelete);
+				optionTable.appendChild(trOptionTable);
+				tdOptions.appendChild(optionTable);
 				trService.appendChild(tdName);
 				trService.appendChild(tdInfo);
 				trService.appendChild(tdType);
 				trService.appendChild(tdOptions);
 				document.getElementById("display_NS_VNFS").appendChild(trService);
 				(function (serviceName, serviceId) {
-					trService.addEventListener('click', function () {
-						goToServiceView(serviceName, serviceId);
+					tdEdit.addEventListener('click', function () {
+						editService(serviceName, serviceId);
 					}, false);
-				})(serviceName, serviceId)
+					tdClone.addEventListener('click', function () {
+						cloneService(serviceName, serviceId);
+					}, false);
+					tdDelete.addEventListener('click', function () {
+						deleteService(serviceId);
+					}, false);
+					})(serviceName, serviceId)
 			}
 		}
 	});
@@ -82,6 +106,8 @@ function loadVnfs() {
 			withCredentials : true
 		},
 		success : function (data) {
+			console.log("vnfs:");
+			console.log(data);
 			//display available vnfs and their onclick event.
 			vnfs = data;
 			for (i = 0; i < vnfs.length; i++) {
@@ -155,9 +181,45 @@ function loadList(selectedIndex) {
 		break;
 	}
 }
+function deleteService(ServiceId) {
+	$("#ConfirmDeletionDialog_Service").dialog({
+		modal : true,
+		draggable : false,
+		buttons : {
+			Yes : function () {
+				$(this).dialog("close");
+				$.ajax({
+					url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/" + serviceId,
+					dataType : "json",
+					type : 'DELETE',
+					xhrFields : {
+						withCredentials : true
+					},
+					success : function (data) {
+						$("#DeleteServiceDialog").dialog({
+							modal : true,
+							draggable : false,
+							buttons : {
+								Ok : function () {
+									$(this).dialog("close");
+									window.location.reload();
+								}
+							}
+						});
+					}
+				});
+			},
+			No : function () {
+				$(this).dialog("close");
+			}
+
+		},
+
+	});
+}
 
 function deleteVnf(vnfId) {
-	$("#ConfirmDeletionDialog").dialog({
+	$("#ConfirmDeletionDialog_Vnf").dialog({
 		modal : true,
 		draggable : false,
 		buttons : {
@@ -193,6 +255,11 @@ function deleteVnf(vnfId) {
 	});
 }
 
+function cloneService(serviceName, serviceId) {
+	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&serviceName=" + serviceName + "&serviceId=" + serviceId+"&operation="+"clone";
+
+}
+
 function cloneVnf(vnfName, vnfId) {
 	window.location.href = "vnfView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&vnfName=" + vnfName + "&vnfId=" + vnfId + "&operation=" + "clone";
 
@@ -203,11 +270,11 @@ function createNewVnf() {
 }
 
 function createNewService() {
-	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"];
+	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"]+ "&operation=" + "create";
 }
 
-function goToServiceView(serviceName, serviceId) {
-	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&serviceName=" + serviceName + "&serviceId=" + serviceId;
+function editService(serviceName, serviceId) {
+	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&serviceName=" + serviceName + "&serviceId=" + serviceId+"&operation="+"edit";
 }
 
 function editVnf(vnfName, vnfId) {

@@ -1,35 +1,34 @@
-var serverURL = "http://131.234.73.193:5000/";
 var queryString = {};
 var workspaceModel;
 
 var Platform=function()
 {
-	this.platformName=ko.observable("");
-	this.platformURL=ko.observable("");
+	this.name=ko.observable("");
+	this.url=ko.observable("");
 	this.init=function(data)
 	{
-		this.platformName(data.platformName);
-		this.platformURL(data.platformURL);
+		this.name(data.name);
+		this.url(data.url);
 		return this;
 	}
 }
 
 var Catalogue=function()
 {
-	this.catalogueName=ko.observable("");
-	this.catalogueURL=ko.observable("");
+	this.name=ko.observable("");
+	this.url=ko.observable("");
 	this.init=function(data)
 	{
-		this.catalogueName(data.catalogueName);
-		this.catalogueURL(data.catalogueURL);
+		this.name(data.name);
+		this.url(data.url);
 		return this;
 	}
 }
 var WorkspaceModel=function()
 {
 	this.name=ko.observable(queryString["wsName"]);
-	this.platforms=ko.observableArray([new Platform()]);
-	this.catalogues=ko.observableArray([new Catalogue()]);
+	this.platforms=ko.observableArray();
+	this.catalogues=ko.observableArray();
 	this.addPlatform=function()
 	{
 		this.platforms.push(new Platform());
@@ -46,13 +45,60 @@ var WorkspaceModel=function()
 	{
 		this.catalogues.remove(catalogue);
 	}.bind(this);
+	this.init=function(data)
+	{
+		this.name=data.name;
+		if(data.platforms.length!=0)
+			this.platforms($.map(data.platforms, function(item){return new Platform().init(item)}));
+		if(data.catalogues.length!=0)
+			this.catalogues($.map(data.catalogues, function(item){return new Catalogue().init(item)}));
+		return this;
+	}
 }
 
 function cancelConfiguration() {
 	window.location.href = history.back();
 }
 function saveConfiguration() {
-	window.location.href = history.back();
+	if($('form').parsley().isValid())
+	{
+		var configurationJson=ko.toJSON(workspaceModel);
+		console.log("New configuration:");
+		console.log(configurationJson);
+		$.ajax({
+			url : serverURL + "workspaces/" + queryString["wsId"] ,
+			method : 'PUT',
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			xhrFields : {
+				withCredentials : true
+			},
+			data : configurationJson,
+			success : function (data) {
+				$("#successSaveConfiDialog").dialog({
+					modal : true,
+					draggable : false,
+					buttons : {
+						ok : function () {
+							$(this).dialog("close");
+						}
+					}
+				});
+			},
+			error : function (err) {
+				$('#errorDialog').text(err.responseText);
+				$('#errorDialog').dialog({
+					modal : true,
+					buttons : {
+						Ok : function () {
+							$(this).dialog("close");
+						}
+					}
+				});
+			}
+		});
+		window.location.href = history.back();
+	}
 }
 
 $(document).ready(function () {
@@ -60,23 +106,13 @@ $(document).ready(function () {
 	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
 	workspaceModel=new WorkspaceModel();
 	$.ajax({
-		url : serverURL + "workspaces/" + queryString["wsId"]+"/platforms/",
+		url : serverURL + "workspaces/" + queryString["wsId"],
 		dataType : "json",
 		xhrFields : {
 			withCredentials : true
 		},
 		success : function (data) {
-			workspaceModel.platforms($.map(data, function(item){return new Platform().init(item)}));
-		}
-	});
-	$.ajax({
-		url : serverURL + "workspaces/" + queryString["wsId"]+"/catalogues/",
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			workspaceModel.catalogues($.map(catalogues, function(item){return new Catalogue().init(item)}));
+			workspaceModel.init(data);
 		}
 	});
 	ko.applyBindings(workspaceModel);
