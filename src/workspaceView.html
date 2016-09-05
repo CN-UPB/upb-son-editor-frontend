@@ -31,30 +31,48 @@
 		</nav>
 
 		<div class="container">
-			<form class="form-horizontal" role="form">
-				<div class="form-group">
-					<label class="control-label col-md-4">Please select a project: </label>
-					<div class="col-md-4">
-						<input id="search_pt" type="text" class="form-control" placeholder="Search..." required>
-							<div id="displayPT">
-							</div>	
-						</div>
-						<button id="configuration_btn" type="button" class="btn btn-link col-md-1" onclick="goToConfigurationView();">
-											Configuration
-						</button>
-					</div>	
-			</form>
-			<div id="createProjectDialog" title="Create new project" hidden>
-				<h4>Please input the name of the new project:</h4>
-				<input id ='ptNameInput' placeholder="Enter name of project"/>
+			<div class="row">
+				<div class="col-md-3">
+					<label class="control-label">Please select a project: </label>
+				</div>
+				<div class="col-md-3">
+					<input id="search_pt" type="text" class="form-control" placeholder="Search..." required>
+				</div>
+				<div class="col-md-4">
+					<button class="btn btn-primary" onclick="showCreateDialog();">New Project</button>
+					<button id="configuration_btn" type="button" class="btn btn-primary" onclick="goToConfigurationView();">Configurate workspace</button>
+				</div>	
 			</div>
-			<ul class="pager">
-				<li>
-					<a onclick="history.go(-1);">Previous</a>
-				</li>
-			</ul>
+			<div class="row top-buffer" style="margin-top:50px;">
+				<div class="col-md-6">
+					<table class="table table-bordered">
+						<thead>
+							 <tr>
+								<th width=50%>Name</th>
+								<th>Options</th>
+							</tr>
+						</thead>
+						<tbody id="display_ptTable">
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
-
+		<div id="createProjectDialog" title="Create new project" hidden>
+			<h4>Please input the name of the new project:</h4>
+			<input id ='ptNameInput' placeholder="Enter name of project"/>
+		</div>
+		<div id="ConfirmDeletionDialog" title="Confirm deletion" hidden>
+			<h4>Do you really want to delete the project?</h4>
+		</div>
+		<div id="DeletePtDialog" title="Successfully deleted" hidden>
+			<h4>Project is deleted!</h4>
+		</div>
+		<ul class="pager">
+			<li>
+				<a onclick="history.go(-1);">Previous</a>
+			</li>
+		</ul>
 	</body>
 </html>
 

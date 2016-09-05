@@ -29,16 +29,31 @@
 		</nav> 
 
 		<div class="container">
-			<form class="form-horizontal" role="form">
-				<div class="form-group">
-					<label class="control-label col-md-4">Please select a workspace: </label>
-					<div class="col-md-4">
-						<input id="search_ws" type="text" class="form-control" placeholder="Search..." required/>
-						<div id="displayWS">
-						</div>
-					</div>	
+			<div class="row">
+				<div class="col-md-3">
+					<label class="control-label">Please select a workspace: </label>
 				</div>
-			</form>		
+				<div class="col-md-3">
+					<input id="search_ws" type="text" class="form-control" placeholder="Search..."/>
+				</div>	
+				<div class="col-md-4">
+					<button class="btn btn-primary" onclick="showCreateDialog();">New Workspace</button>
+				</div>
+			</div>
+			<div class="row top-buffer" style="margin-top:50px;">
+				<div class="col-md-6">
+					<table class="table table-bordered">
+						<thead>
+							 <tr>
+								<th width=50%>Name</th>
+								<th>Options</th>
+							</tr>
+						</thead>
+						<tbody id="display_wsTable">
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 		
 		<div id="loginDialog" title="Please Login" hidden>
@@ -53,6 +68,13 @@
 
 		<div id="errorDialog" title="Error"/>
 
+		<div id="ConfirmDeletionDialog" title="Confirm deletion" hidden>
+			<h4>Do you really want to delete the workspace?</h4>
+		</div>
+
+		<div id="DeleteWsDialog" title="Successfully deleted" hidden>
+			<h4>Workspace is deleted!</h4>
+		</div>
 	</body>
 </html>
 

@@ -10,31 +10,43 @@ $(document).ready(function () {
 			withCredentials : true
 		},
 		success : function (data) {
-			//display "Create new workspace" and its onclick event(show dialog to ask inputs).
-			var newLink = document.createElement("a");
-			newLink.innerHTML = "Create new workspace";
-			newLink.className = "list-group-item";
-			$("#displayWS").append(newLink);
-			$(newLink).click(function () {
-				showCreateDialog();
-			});
-			//display available workspaces and their onclick event.
+			//display available workspaces in the table and their onclick event.
 			workspaces = data;
 			for (i = 0; i < workspaces.length; i++) {
 				var wsName=workspaces[i].name;
 				var wsId = workspaces[i].id;
-				var wsLink = document.createElement("a");
 				var workspace = workspaces[i];
 				availableWorkspaces.push(wsName);
 				wsDictionary[workspace.name] = workspace.id;
-				wsLink.innerHTML = wsName;
-				wsLink.className = "list-group-item";
-				$("#displayWS").append(wsLink);
-				(function (wsName,wsId) {
-					$(wsLink).click(function () {
+				var tdName = document.createElement("td");
+				tdName.innerHTML = wsName;
+				var tdOptions = document.createElement("td");
+				var optionTable = document.createElement("table");
+				var trOptionTable = document.createElement("tr");
+				var tdEdit = document.createElement("td");
+				tdEdit.className = "btn btn-primary btn-sm";
+				tdEdit.style.marginLeft = "10px";
+				tdEdit.style.marginRight = "15px";
+				tdEdit.innerHTML = "Edit";
+				var tdDelete = document.createElement("td");
+				tdDelete.className = "btn btn-danger btn-sm";
+				tdDelete.innerHTML = "Delete";
+				trOptionTable.appendChild(tdEdit);
+				trOptionTable.appendChild(tdDelete);
+				optionTable.appendChild(trOptionTable);
+				tdOptions.appendChild(optionTable);
+				var trWs = document.createElement("tr");
+				trWs.appendChild(tdName);
+				trWs.appendChild(tdOptions);
+				document.getElementById("display_wsTable").appendChild(trWs);
+				(function(wsName,wsId){
+					tdEdit.addEventListener('click', function () {
 						goToWorkspaceView(wsName, wsId);
-					});
-				})(wsName,wsId)
+					}, false);
+					tdDelete.addEventListener('click', function () {
+						deleteWs(wsId);
+					}, false);
+				})(wsName, wsId)
 			}
 			//search bar(uses jquery ui Autocomplete)
 			$("#search_ws").autocomplete({
@@ -101,4 +113,41 @@ function createNewWorkspace(wsName) {
 
 function goToWorkspaceView(wsName, wsId) {
 	window.location.href = "workspaceView.html?wsName=" + wsName + "&wsId=" + wsId;
+}
+
+function deleteWs(wsId) {
+	$("#ConfirmDeletionDialog").dialog({
+		modal : true,
+		draggable : false,
+		buttons : {
+			Yes : function () {
+				$(this).dialog("close");
+				$.ajax({
+					url : serverURL + "workspaces/" + wsId,
+					dataType : "json",
+					type : 'DELETE',
+					xhrFields : {
+						withCredentials : true
+					},
+					success : function (data) {
+						$("#DeleteWsDialog").dialog({
+							modal : true,
+							draggable : false,
+							buttons : {
+								Ok : function () {
+									$(this).dialog("close");
+									window.location.reload();
+								}
+							}
+						});
+					}
+				});
+			},
+			No : function () {
+				$(this).dialog("close");
+			}
+
+		},
+
+	});
 }

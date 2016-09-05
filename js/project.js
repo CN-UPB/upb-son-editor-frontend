@@ -116,12 +116,12 @@ function loadVnfs() {
 				trOptionTable.appendChild(tdDelete);
 				optionTable.appendChild(trOptionTable);
 				tdOptions.appendChild(optionTable);
-				var trService = document.createElement("tr");
-				trService.appendChild(tdName);
-				trService.appendChild(tdInfo);
-				trService.appendChild(tdType);
-				trService.appendChild(tdOptions);
-				document.getElementById("display_NS_VNFS").appendChild(trService);
+				var trVnf = document.createElement("tr");
+				trVnf.appendChild(tdName);
+				trVnf.appendChild(tdInfo);
+				trVnf.appendChild(tdType);
+				trVnf.appendChild(tdOptions);
+				document.getElementById("display_NS_VNFS").appendChild(trVnf);
 				(function (vnfName, vnfId) {
 					tdEdit.addEventListener('click', function () {
 						editVnf(vnfName, vnfId);

@@ -15,14 +15,6 @@ $(document).ready(function () {
 			withCredentials : true
 		},
 		success : function (data) {
-			//display "Create new project" and its onclick event(show dialog to ask inputs).
-			var newLink = document.createElement("a");
-			newLink.innerHTML = "Create new project";
-			newLink.className = "list-group-item";
-			$("#displayPT").append(newLink);
-			$(newLink).click(function () {
-				showCreateDialog();
-			});
 			//display available projects and their onclick event.
 			projects = data;
 			console.log("projects:")
@@ -30,17 +22,37 @@ $(document).ready(function () {
 			for (i = 0; i < projects.length; i++) {
 				var ptName = projects[i].name;
 				var ptId = projects[i].id;
-				var ptLink = document.createElement("a");
 				var project = projects[i];
 				availableProjects.push(project.name);
 				ptDictionary[project.name] = project.id;
-				ptLink.innerHTML = project.name;
-				ptLink.className = "list-group-item";
-				$("#displayPT").append(ptLink);
-				(function (ptName, ptId) {
-					$(ptLink).click(function () {
+				var tdName = document.createElement("td");
+				tdName.innerHTML = ptName;
+				var tdOptions = document.createElement("td");
+				var optionTable = document.createElement("table");
+				var trOptionTable = document.createElement("tr");
+				var tdEdit = document.createElement("td");
+				tdEdit.className = "btn btn-primary btn-sm";
+				tdEdit.style.marginLeft = "10px";
+				tdEdit.style.marginRight = "15px";
+				tdEdit.innerHTML = "Edit";
+				var tdDelete = document.createElement("td");
+				tdDelete.className = "btn btn-danger btn-sm";
+				tdDelete.innerHTML = "Delete";
+				trOptionTable.appendChild(tdEdit);
+				trOptionTable.appendChild(tdDelete);
+				optionTable.appendChild(trOptionTable);
+				tdOptions.appendChild(optionTable);
+				var trWs = document.createElement("tr");
+				trWs.appendChild(tdName);
+				trWs.appendChild(tdOptions);
+				document.getElementById("display_ptTable").appendChild(trWs);
+				(function(ptName,ptId){
+					tdEdit.addEventListener('click', function () {
 						goToProjectView(ptName, ptId);
-					});
+					}, false);
+					tdDelete.addEventListener('click', function () {
+						deleteWs(ptId);
+					}, false);
 				})(ptName, ptId)
 			}
 
@@ -113,4 +125,41 @@ function goToConfigurationView() {
 
 function goToProjectView(ptName, ptId) {
 	window.location.href = "projectView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + ptName + "&ptId=" + ptId;
+}
+
+function deleteWs(ptId) {
+	$("#ConfirmDeletionDialog").dialog({
+		modal : true,
+		draggable : false,
+		buttons : {
+			Yes : function () {
+				$(this).dialog("close");
+				$.ajax({
+					url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + ptId,
+					dataType : "json",
+					type : 'DELETE',
+					xhrFields : {
+						withCredentials : true
+					},
+					success : function (data) {
+						$("#DeletePtDialog").dialog({
+							modal : true,
+							draggable : false,
+							buttons : {
+								Ok : function () {
+									$(this).dialog("close");
+									window.location.reload();
+								}
+							}
+						});
+					}
+				});
+			},
+			No : function () {
+				$(this).dialog("close");
+			}
+
+		},
+
+	});
 }
