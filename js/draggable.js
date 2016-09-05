@@ -38,6 +38,8 @@ $(document).ready(function() {
 		jsPlumb.ready(function() {
 		
 		queryString = getQueryString();
+		document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
+		document.getElementById("nav_project").text = "Project: " + queryString["ptName"];
 		wsId = queryString["wsId"];
 		ptId = queryString["ptId"];
 				
