@@ -5,10 +5,12 @@ var Platform=function()
 {
 	this.name=ko.observable("");
 	this.url=ko.observable("");
+	this.id =ko.observable(-1);
 	this.init=function(data)
 	{
 		this.name(data.name);
 		this.url(data.url);
+		this.id(data.id)
 		return this;
 	}
 }
@@ -17,10 +19,12 @@ var Catalogue=function()
 {
 	this.name=ko.observable("");
 	this.url=ko.observable("");
+	this.id =ko.observable(-1);
 	this.init=function(data)
 	{
 		this.name(data.name);
 		this.url(data.url);
+		this.id(data.id)
 		return this;
 	}
 }
@@ -47,7 +51,7 @@ var WorkspaceModel=function()
 	}.bind(this);
 	this.init=function(data)
 	{
-		this.name=data.name;
+		this.name(data.name);
 		if(data.platforms.length!=0)
 			this.platforms($.map(data.platforms, function(item){return new Platform().init(item)}));
 		if(data.catalogues.length!=0)
