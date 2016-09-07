@@ -1,0 +1,11 @@
+ .labelClass {
+    width:250px;
+    clear:left;
+    text-align:left;
+    padding-right:10px;
+	margin-bottom: 20px;
+}
+
+input, labelClass {
+    float:left;
+}

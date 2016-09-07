@@ -202,8 +202,8 @@ function createNewVnf() {
 	window.location.href = "vnfView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&operation=" + "create";
 }
 
-function createNewService() {
-	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"];
+function createNewService(vendor, name, version) {
+	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&nsVendor=" + vendor + "&nsName=" + name + "&nsVersion=" + version;
 }
 
 function goToServiceView(serviceName, serviceId) {
@@ -213,3 +213,24 @@ function goToServiceView(serviceName, serviceId) {
 function editVnf(vnfName, vnfId) {
 	window.location.href = "vnfView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&vnfName=" + vnfName + "&vnfId=" + vnfId + "&operation=" + "edit";
 }
+
+//create new networkservice dialog (uses jquery ui Dialog)
+function showCreateNSDialog() {
+	$("#createNetworkserviceDialog").dialog({
+		modal : true,
+		draggable : false,
+		buttons : {
+			Cancel : function () {
+				$(this).dialog("close");
+			},
+			"Create" : function () {
+				onclick=createNewService();
+				createNewService($('#nsVendorInput').val(), $('#nsNameInput').val(), $('#nsVersionInput').val());
+				$(this).dialog("close");
+			}
+		}
+	});
+}
+
+
+
