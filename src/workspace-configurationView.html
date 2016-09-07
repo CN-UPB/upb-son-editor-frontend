@@ -38,13 +38,13 @@
 		</nav>
 
 		<div class="container">
-			<form data-parsley-validate="" class="form-horizontal" role="form">
+			<form data-parsley-validate class="form-horizontal" role="form">
 				<div class="form-group" align="left">
 					<div class="col-md-2">
 						<label class="control-label">Workspace name:</label>
 					</div>
 					<div class="col-md-4">
-						<input data-parsley-trigger="input" data-parsley-pattern="^[A-Za-z-_]+$"  data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+						<input title="No numbers and strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_]+$"  data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group">
@@ -55,11 +55,11 @@
 								<div id="plattform" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input data-parsley-trigger="input" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input title="No numbers and strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
-										<input data-parsley-trigger="input" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-trigger="change" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<div class="form-group" align="right">
 										<button class="editorButtons delete" data-bind="click: $parent.deletePlatform">Delete</button>								
@@ -77,11 +77,11 @@
 								<div id="catalogue" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input data-parsley-trigger="input" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input title="No numbers and strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
-										<input data-parsley-trigger="input" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-trigger="change" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<div class="form-group" align="right">
 										<button class="editorButtons delete" data-bind="click: $parent.deleteCatalogue">Delete</button>								
@@ -100,6 +100,11 @@
 					<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
 				</div>
 			</form>
+		</div>
+		<div id="successSaveConfiDialog" title="Success" hidden>
+			<h4>Workspace configuration is updated!</h4>
+		</div>
+		<div id="errorDialog" title="Error" hidden>
 		</div>
 	</body>
 </html>

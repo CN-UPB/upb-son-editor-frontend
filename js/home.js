@@ -1,6 +1,7 @@
 var workspaces = [];
 
 $(document).ready(function () {
+	$( "[title]" ).tooltip();
 	var availableWorkspaces = ["Create new workspace"];
 	var wsDictionary = {};
 	$.ajax({
@@ -74,8 +75,11 @@ function showCreateDialog() {
 				$(this).dialog("close");
 			},
 			"Create" : function () {
-				createNewWorkspace($('#wsNameInput').val());
-				$(this).dialog("close");
+				if($('form').parsley().isValid())
+				{
+					createNewWorkspace($('#wsNameInput').val());
+					$(this).dialog("close");
+				}
 			}
 		}
 	});

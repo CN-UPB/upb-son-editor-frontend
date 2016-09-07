@@ -31,7 +31,9 @@ var WorkspaceModel=function()
 	this.catalogues=ko.observableArray();
 	this.addPlatform=function()
 	{
-		this.platforms.push(new Platform());
+		this.platforms.push(new Platform());	
+		$( "[title]" ).tooltip();
+		
 	};
 	this.deletePlatform=function(platform)
 	{
@@ -40,6 +42,7 @@ var WorkspaceModel=function()
 	this.addCatalogue=function()
 	{
 		this.catalogues.push(new Catalogue());
+		$( "[title]" ).tooltip();
 	};
 	this.deleteCatalogue=function(catalogue)
 	{
@@ -57,7 +60,7 @@ var WorkspaceModel=function()
 }
 
 function cancelConfiguration() {
-	window.location.href = history.back();
+	window.location.href = history.go(-1);
 }
 function saveConfiguration() {
 	if($('form').parsley().isValid())
@@ -96,17 +99,28 @@ function saveConfiguration() {
 					}
 				});
 			}
-		});
-		window.location.href = history.back();
+		});	
 	}
 }
 
-$(document).ready(function () {
+$(document).ready(function () { 
+	$( "[title]" ).tooltip();
 	queryString = getQueryString();
 	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
 	workspaceModel=new WorkspaceModel();
-	$.ajax({
-		url : serverURL + "workspaces/" + queryString["wsId"],
+	loadConfiguration(queryString["wsId"]);
+	ko.applyBindings(workspaceModel);
+
+	$("#accordion").accordion({
+		active : false,
+		collapsible : false,
+		heightStyle : "content"
+	});
+});
+
+function loadConfiguration(wsId)
+{	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
 		dataType : "json",
 		xhrFields : {
 			withCredentials : true
@@ -115,11 +129,4 @@ $(document).ready(function () {
 			workspaceModel.init(data);
 		}
 	});
-	ko.applyBindings(workspaceModel);
-	$("#accordion").accordion({
-		active : false,
-		collapsible : false,
-		heightStyle : "content"
-	});
-});
-
+}

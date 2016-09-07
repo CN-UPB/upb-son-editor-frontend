@@ -3,6 +3,7 @@ var wsId = "";
 var queryString = {};
 
 $(document).ready(function () {
+	$( "[title]" ).tooltip();
 	queryString = getQueryString();
 	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
 	var availableProjects = ["Create new project"];
@@ -82,8 +83,11 @@ function showCreateDialog() {
 				$(this).dialog("close");
 			},
 			"Create" : function () {
-				createNewProject(wsId, $('#ptNameInput').val());
-				$(this).dialog("close");
+				if($('form').parsley().isValid())
+				{
+					createNewProject(wsId, $('#ptNameInput').val());
+					$(this).dialog("close");
+				}
 			}
 		}
 	});
