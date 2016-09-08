@@ -25,10 +25,10 @@
 				</div>
 				<ul class="nav navbar-nav">
 					<li>
-						<a onclick="history.go(-2);">Home</a>
+						<a onclick="goToHomeView();">Home</a>
 					</li>
 					<li>
-						<a id="nav_workspace" onclick="history.go(-1);">Workspace</a>
+						<a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a>
 					</li>
 					<li class="active">
 						<a onclick="history.go(0);">Configuration</a>
@@ -100,7 +100,7 @@
 					<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
 			</div>
 			<ul class="pager">
-				<li><a onclick="history.go(-1);">Previous</a></li>
+				<li><a onclick="goToWorkspaceView();">Previous</a></li>
 			</ul>
 		</div>
 		<div id="successSaveConfiDialog" title="Success" hidden>

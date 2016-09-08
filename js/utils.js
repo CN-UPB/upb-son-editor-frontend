@@ -11,6 +11,11 @@ function getQueryString() {
 	return queryString;
 };
 
+function goToHomeView()
+{
+	window.location.href="homeView.html";
+}
+
 //global error handler for ajax requests
 $(document).ajaxError(function (event, response, request) {
 	if (response.status == 401) //not authorized

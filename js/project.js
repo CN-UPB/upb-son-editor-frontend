@@ -299,3 +299,8 @@ function editService(serviceId) {
 function editVnf(vnfId) {
 	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit";
 }
+
+function goToWorkspaceView()
+{
+	window.location.href="workspaceView.html?wsId="+queryString["wsId"];
+}

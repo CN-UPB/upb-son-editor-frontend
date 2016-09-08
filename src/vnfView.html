@@ -25,9 +25,9 @@
       <a class="navbar-brand" href="homeView.html">SONATA SDK Editor</a>
     </div>
     <ul class="nav navbar-nav">
-	   <li><a onclick="history.go(-3);">Home</a></li>
-       <li><a id="nav_workspace" onclick="history.go(-2);">Workspace</a></li>
-       <li><a id="nav_project"onclick="history.go(-1);">Project</a></li>
+	   <li><a onclick="goToHomeView();">Home</a></li>
+       <li><a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a></li>
+       <li><a id="nav_project"onclick="goToProjectView();">Project</a></li>
 	   <li class="active"><a id="nav_vnf" onclick="history.go(0);" data-bind="text: name">VNF</a></li>
     </ul>
   </div>
@@ -813,7 +813,7 @@
 	<div id="errorDialog" title="Error" hidden>
 	</div>
 	<ul class="pager">
-			<li><a onclick="history.go(-1);">Previous</a></li>
+			<li><a onclick="goToProjectView();">Previous</a></li>
     </ul>
 </div>
 

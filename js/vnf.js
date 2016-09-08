@@ -698,4 +698,12 @@ function loadVnf(vnfId)
 		}
 	});
 }
+function goToWorkspaceView()
+{
+	window.location.href="workspaceView.html?wsId="+queryString["wsId"];
+}
 
+function goToProjectView()
+{
+	window.location.href="projectView.html?wsId="+queryString["wsId"]+"&ptId="+queryString["ptId"];
+}
