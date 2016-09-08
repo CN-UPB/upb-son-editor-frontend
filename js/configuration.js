@@ -10,7 +10,7 @@ var Platform=function()
 	{
 		this.name(data.name);
 		this.url(data.url);
-		this.id(data.id)
+		this.id(data.id);
 		return this;
 	}
 }
@@ -24,7 +24,7 @@ var Catalogue=function()
 	{
 		this.name(data.name);
 		this.url(data.url);
-		this.id(data.id)
+		this.id(data.id);
 		return this;
 	}
 }
