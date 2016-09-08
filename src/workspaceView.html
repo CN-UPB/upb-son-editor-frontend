@@ -41,7 +41,7 @@
 				</div>
 				<div class="col-md-4">
 					<button class="btn btn-primary" onclick="showCreateDialog();">New Project</button>
-					<button id="configuration_btn" type="button" class="btn btn-primary" onclick="goToConfigurationView();">Configurate workspace</button>
+					<button id="configuration_btn" type="button" class="btn btn-primary" onclick="goToConfigurationView();">Configure workspace</button>
 				</div>	
 			</div>
 			<div class="row top-buffer" style="margin-top:50px;">
@@ -62,9 +62,9 @@
 		<div id="createProjectDialog" title="Create new project" hidden>
 			<form data-parsley-validate>
 				<h4>Please input the name of the new project:</h4>
-				<input data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" 
+				<input data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$" data-parsley-minlength="2" 
 				id ='ptNameInput' placeholder="Enter name of project"
-				title="No numbers and strange symbols."/>
+				title="No strange symbols."/>
 			</form>
 		</div>
 		<div id="ConfirmDeletionDialog" title="Confirm deletion" hidden>

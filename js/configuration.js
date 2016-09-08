@@ -63,9 +63,6 @@ var WorkspaceModel=function()
 	}
 }
 
-function cancelConfiguration() {
-	window.location.href = history.go(-1);
-}
 function saveConfiguration() {
 	if($('form').parsley().isValid())
 	{
@@ -88,6 +85,7 @@ function saveConfiguration() {
 					buttons : {
 						ok : function () {
 							$(this).dialog("close");
+							window.location.reload();
 						}
 					}
 				});
@@ -110,9 +108,19 @@ function saveConfiguration() {
 $(document).ready(function () { 
 	$( "[title]" ).tooltip();
 	queryString = getQueryString();
-	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
+	wsId=queryString["wsId"];
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_workspace").text = "Workspace: " +data.name;
+		}
+	});
 	workspaceModel=new WorkspaceModel();
-	loadConfiguration(queryString["wsId"]);
+	loadConfiguration(wsId);
 	ko.applyBindings(workspaceModel);
 
 	$("#accordion").accordion({

@@ -5,10 +5,19 @@ var queryString = {};
 $(document).ready(function () {
 	$( "[title]" ).tooltip();
 	queryString = getQueryString();
-	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
+	wsId = queryString["wsId"];
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+		document.getElementById("nav_workspace").text = "Workspace: " + data.name;
+		}
+	});
 	var availableProjects = ["Create new project"];
 	var ptDictionary = {};
-	wsId = queryString["wsId"];
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/",
 		dataType : "json",
@@ -49,7 +58,7 @@ $(document).ready(function () {
 				document.getElementById("display_ptTable").appendChild(trWs);
 				(function(ptName,ptId){
 					tdEdit.addEventListener('click', function () {
-						goToProjectView(ptName, ptId);
+						goToProjectView(ptId);
 					}, false);
 					tdDelete.addEventListener('click', function () {
 						deleteWs(ptId);
@@ -65,7 +74,7 @@ $(document).ready(function () {
 						showCreateDialog();
 					} else {
 						var selectedId = ptDictionary[ui.item.label];
-						goToProjectView(ui.item.label, selectedId);
+						goToProjectView(selectedId);
 					}
 				}
 			});
@@ -107,7 +116,7 @@ function createNewProject(wsId, ptName) {
 			"name" : ptName
 		}),
 		success : function (data) {
-			goToProjectView(data.name, data.id);
+			goToProjectView(data.id);
 		},
 		error : function (err) {
 			$('#errorDialog').text(err.responseText);
@@ -124,11 +133,11 @@ function createNewProject(wsId, ptName) {
 }
 
 function goToConfigurationView() {
-	window.location.href = "workspace-configurationView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"];
+	window.location.href = "workspace-configurationView.html?wsId=" + queryString["wsId"];
 }
 
-function goToProjectView(ptName, ptId) {
-	window.location.href = "projectView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + ptName + "&ptId=" + ptId;
+function goToProjectView(ptId) {
+	window.location.href = "projectView.html?wsId=" + queryString["wsId"] +"&ptId=" + ptId;
 }
 
 function deleteWs(ptId) {

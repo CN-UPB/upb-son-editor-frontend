@@ -44,7 +44,7 @@
 						<label class="control-label">Workspace name:</label>
 					</div>
 					<div class="col-md-4">
-						<input title="No numbers and strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_]+$"  data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+						<input title="No strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$"  data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group">
@@ -55,7 +55,7 @@
 								<div id="plattform" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input title="No numbers and strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input title="No strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
@@ -77,7 +77,7 @@
 								<div id="catalogue" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input title="No numbers and strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input title="No strange symbols." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
@@ -94,12 +94,14 @@
 							</div>
 						</div>
 					</div>
-				</div>	
-				<div class="form-group"align="center"> 									
-					<button class="btn btn-default" onclick="cancelConfiguration();"> Cancel</button>
-					<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
-				</div>
+				</div>		
 			</form>
+			<div class="form-group"align="center"> 									
+					<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
+			</div>
+			<ul class="pager">
+				<li><a onclick="history.go(-1);">Previous</a></li>
+			</ul>
 		</div>
 		<div id="successSaveConfiDialog" title="Success" hidden>
 			<h4>Workspace configuration is updated!</h4>

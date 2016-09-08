@@ -552,10 +552,28 @@ var vnfViewModel = function() {
 /*Other page events*/
 $(document).ready(function () {
 	queryString = getQueryString();
-	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
-	document.getElementById("nav_project").text = "Project: " + queryString["ptName"];
-	if (queryString["vnfName"] != undefined)
-		document.getElementById("nav_vnf").text = "VNF: " + queryString["vnfName"];
+	var wsId=queryString["wsId"];
+	var ptId=queryString["ptId"];
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_workspace").text = "Workspace: " +data.name;
+		}
+	});
+		$.ajax({
+		url : serverURL + "workspaces/" + wsId+"/projects/" + ptId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_project").text = "Project: " +data.name;
+		}
+	});
 	units = document.getElementById("accordion_units");
 	vnfViewModel=new vnfViewModel();
 	if(queryString["operation"]!="create")
@@ -576,7 +594,7 @@ $(document).ready(function () {
 	
 });
 
-function submitTables() {
+function saveTables() {
 	var jsonData=ko.toJSON(vnfViewModel);
 	//correct some variable names
 	jsonData=jsonData.replace(/SR_IOV/g,"SR-IOV");
@@ -612,6 +630,7 @@ function updateVnf(jsonData)
 				buttons : {
 					ok : function () {
 						$(this).dialog("close");
+
 					}
 				}
 			});
@@ -646,6 +665,7 @@ function createNewVnf(jsonData) {
 				buttons : {
 					ok : function () {
 						$(this).dialog("close");
+						window.location.href = "vnfView.html?wsId=" + queryString["wsId"] +  "&ptId=" + queryString["ptId"] + "&vnfId=" + data.id + "&operation=" + "edit";
 					}
 				}
 			});
@@ -664,11 +684,6 @@ function createNewVnf(jsonData) {
 	});
 }
 
-
-function goToProjectView() {
-	window.location.href = "projectView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"];
-}
-
 function loadVnf(vnfId)
 {
 	$.ajax({
@@ -678,6 +693,7 @@ function loadVnf(vnfId)
 			withCredentials : true
 		},
 		success : function (data) {
+			document.getElementById("nav_vnf").text = "VNF: " + data.name;
 			vnfViewModel.init(data.descriptor);
 		}
 	});
