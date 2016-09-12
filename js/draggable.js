@@ -4,6 +4,7 @@ var nss=[];
 var queryString = {};
 var wsId = "";
 var ptId = "";
+var nsId = "";
 
 var vnfViewModel = function(){
 					this.vnfs = ko.observableArray([]);
@@ -40,9 +41,12 @@ $(document).ready(function() {
 		queryString = getQueryString();
 		document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
 		document.getElementById("nav_project").text = "Project: " + queryString["ptName"];
+		document.getElementById("nav_ns").text = "NS: " + queryString["nsName"];
 		wsId = queryString["wsId"];
 		ptId = queryString["ptId"];
-				
+		nsId = queryString["nsId"];
+		console.log(wsId,ptId,nsId);
+		
 		$.ajax({
 			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
 			dataType : "json",
@@ -119,6 +123,20 @@ $(document).ready(function() {
 		});
 		
 		
+		$(".connection-point").draggable({
+			helper: "clone", 
+			revert: "invalid"
+			});
+		$(".e-lan").draggable({
+			helper: "clone", 
+			revert: "invalid"
+			});
+		$(".e-line").draggable({
+			helper: "clone", 
+			revert: "invalid"
+			});
+		
+		
 		/* 
 		$(".vnf").draggable({
 			helper: "clone", 
@@ -148,7 +166,7 @@ $(document).ready(function() {
 		//--------------------------------------------------------
 		var countDropped = 1;
 		$( "#editor").droppable({
-			accept: " .vnf , .ns",
+			accept: " .vnf , .ns , .connection-point , .e-lan , .e-line ",
 			drop: function(event, ui) {
 
 				var data = ui.draggable.clone();
@@ -180,7 +198,25 @@ $(document).ready(function() {
 					data.removeClass('ns');
 					data.addClass('ns-after-drop');
 					data.removeClass('ui-draggable');
-				}	
+				}
+				else if (data.hasClass('connection-point') == true) {
+					console.log("inside connection-point condition");
+					data.removeClass('connection-point');
+					data.addClass('connection-point-after-drop');
+					data.removeClass('ui-draggable');
+				}
+				else if (data.hasClass('e-lan') == true) {
+					console.log("inside e-lan condition");
+					data.removeClass('e-lan');
+					data.addClass('e-lan-after-drop');
+					data.removeClass('ui-draggable');
+				}
+				else if (data.hasClass('e-line') == true) {
+					console.log("inside e-line condition");
+					data.removeClass('e-line');
+					data.addClass('e-line-after-drop');
+					data.removeClass('ui-draggable');
+				}
 				//-------------------- */
 				//console.log($(ui.draggable).position());
 				//var mouseX = $(ui.draggable).left;
