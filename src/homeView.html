@@ -66,7 +66,7 @@
 		<div id="createWorkspaceDialog" title="Create new workspace" hidden>
 			<form data-parsley-validate>
 				<h4>Please input the name of the new workspace:</h4>
-				<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$" data-parsley-pattern-message="Only alphabetic, numeric characters are allowed." data-parsley-minlength="2"
+				<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed."
 				id ='wsNameInput' placeholder="Enter name of workspace"/>
 			</form>
 		</div>

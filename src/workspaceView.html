@@ -63,7 +63,7 @@
 		<div id="createProjectDialog" title="Create new project" hidden>
 			<form data-parsley-validate>
 				<h4>Please input the name of the new project:</h4>
-				<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$" data-parsley-pattern-message="Only alphabetic, numeric characters are allowed." data-parsley-minlength="2" 
+				<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed."
 				id ='ptNameInput' placeholder="Enter name of project"
 				/>
 			</form>

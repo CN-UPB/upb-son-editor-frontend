@@ -43,7 +43,7 @@
 						<label class="control-label">Workspace name:</label>
 					</div>
 					<div class="col-md-4">
-						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$" data-parsley-pattern-message="Only alphabetic, numeric characters are allowed." data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group">
@@ -54,7 +54,7 @@
 								<div id="plattform" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$" data-parsley-pattern-message="Only alphabetic, numeric characters are allowed."  data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
@@ -76,7 +76,7 @@
 								<div id="catalogue" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z-_0-9]+$" data-parsley-pattern-message="Only alphabetic, numeric characters are allowed."  data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
