@@ -42,25 +42,25 @@
 							<div class="form-group">
 								<label class="control-label col-md-2">Descriptor version:</label>
 								<div class="col-md-2">
-									<input title="The version of the description definition used to describe the function descriptor." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-bind="value: descriptor_version" type="text" class="form-control" placeholder=""></input>
+									<input data-parsley-required="true" title="The version of the description definition used to describe the function descriptor." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: descriptor_version" type="text" class="form-control" placeholder=""></input>
 								</div>
 								<label class="control-label col-md-2">Schema (optional):</label>
 								<div class="col-md-2">
-									<input data-bind="value: schema" type="text" class="form-control" placeholder=""></input>
+									<input title="provides a link to the schema that is used to describe the network function and can be used to validate the VNF descriptor file. This is related to the original JSON schema specification." data-bind="value: schema" type="text" class="form-control" placeholder=""></input>
 								</div>
 								<label class="control-label col-md-2">Vendor:</label>
 								<div class="col-md-2">
-									<input title="The vendor id allows to identify a VNF descriptor uniquely across all function descriptor vendors." data-parsley-trigger="change" data-parsley-pattern= "^[a-z0-9\\-_.]+$" data-bind="value: vendor" type="text" class="form-control" placeholder=""></input>
+									<input data-parsley-required="true" title="The vendor id allows to identify a VNF descriptor uniquely across all function descriptor vendors." data-parsley-trigger="change" data-parsley-pattern= "^[a-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic(lowercase), numeric characters and \_. are allowed." data-bind="value: vendor" type="text" class="form-control" placeholder=""></input>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="control-label col-md-2">Name:</label>
 								<div class="col-md-2">
-									<input  title="The name of the function description." data-parsley-trigger="change" data-parsley-pattern="^[a-z0-9\\-_.]+$" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+									<input data-parsley-required="true" title="The name of the function description." data-parsley-trigger="change" data-parsley-pattern="^[a-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic(lowercase), numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 								</div>
 								<label class="control-label col-md-2">Version:</label>
 								<div class="col-md-2">
-									<input title="The version of the function descriptor." data-parsley-trigger="change" data-parsley-pattern="^[0-9\\-_.]+$" data-bind="value: version" type="text" class="form-control" placeholder=""></input>
+									<input data-parsley-required="true" title="The version of the function descriptor." data-parsley-trigger="change" data-parsley-pattern="^[0-9\\-_.]+$" data-parsley-pattern-message="Only numbers and \_. are allowed." data-bind="value: version" type="text" class="form-control" placeholder=""></input>
 								</div>
 								<label class="control-label col-md-2">Author (optional):</label>
 								<div class="col-md-2">
@@ -87,17 +87,17 @@
 									</div>
 									<label class="control-label col-md-2">id:</label>
 									<div class="col-md-2">
-										<input title="A unique identifier of this FSM within the scope of this VNF descriptor." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title="A unique identifier of this FSM within the scope of this VNF descriptor." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="control-label col-md-2">Image:</label>
 									<div class="col-md-2">
-										<input title="The reference to a Docker image." data-bind="value: image" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title="The reference to a Docker image." data-bind="value: image" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-2">Image md5:</label>
 									<div class="col-md-2">
-										<input title="An MD5 hash of the Docker image." data-parsley-trigger="change" data-parsley-pattern="^[A-Fa-f0-9]{32}$" data-bind="value: image_md5" type="text" class="form-control" placeholder=""></input>
+										<input title="An MD5 hash of the Docker image." data-parsley-trigger="change" data-parsley-pattern="^[A-Fa-f0-9]{32}$" data-parsley-pattern-message="Only 32 alphabetic(A-F,a-f) or numeric characters are allowed." data-bind="value: image_md5" type="text" class="form-control" placeholder=""></input>
 									</div>
 								</div>
 								<hr></hr>
@@ -105,7 +105,7 @@
 									<h4>Resource Requirements</h4>
 									<label class="control-label col-md-2">Docker version:</label>
 									<div class="col-md-2">
-										<input title="The version of Docker needed for this FSM." data-parsley-trigger="change" data-parsley-pattern="^(== |>= |<= |!= )?[0-9\\-_.]+$" data-bind="value: resource_requirements.docker_version" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title="The version of Docker needed for this FSM." data-parsley-trigger="change" data-parsley-pattern="^(== |>= |<= |!= )?[0-9\\-_.]+$" data-parsley-pattern-message="Only numbers and \_. are allowed." data-bind="value: resource_requirements.docker_version" type="text" class="form-control" placeholder=""></input>
 									</div>
 								</div>
 								<hr></hr>
@@ -115,11 +115,11 @@
 										<div class="form-group">
 											<label class="control-label col-md-2">Key:</label>
 											<div class="col-md-2">
-												<input data-bind="value: key" type="text" class="form-control" placeholder=""></input>
+												<input data-parsley-required="true" data-bind="value: key" type="text" class="form-control" placeholder=""></input>
 											</div>
 											<label class="control-label col-md-2">Value:</label>
 											<div class="col-md-2">
-												<input data-bind="value: value" type="text" class="form-control" placeholder=""></input>
+												<input data-parsley-required="true" data-bind="value: value" type="text" class="form-control" placeholder=""></input>
 											</div>									
 										</div>
 										<div class="form-group" align="right">
@@ -149,11 +149,11 @@
 										<div class="form-group">
 											<label class="control-label col-md-2">id:</label>
 											<div class="col-md-2">
-												<input title="A unique identifier of this VDU within the scope of this VNF descriptor." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
+												<input data-parsley-required="true" title="A unique identifier of this VDU within the scope of this VNF descriptor." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
 											</div>
-											<label class="control-label col-md-2">VM image (optional):</label>
+											<label class="control-label col-md-2">VM image:</label>
 											<div class="col-md-2">
-												<input title="The reference to a virtual machine image." data-bind="value: vm_image" type="text" class="form-control" placeholder=""></input>
+												<input data-parsley-required="true" title="The reference to a virtual machine image." data-bind="value: vm_image" type="text" class="form-control" placeholder=""></input>
 											</div>		
 										</div>
 										<div class="form-group">
@@ -163,7 +163,7 @@
 											</div>
 											<label class="control-label col-md-2">VM image md5 (optional):</label>
 											<div class="col-md-2">
-												<input title="An MD5 hash of the virtual machine image." data-parsley-trigger="change" data-parsley-pattern="^[A-Fa-f0-9]{32}$" data-bind="value: vm_image_md5" type="text" class="form-control" placeholder=""></input>
+												<input title="An MD5 hash of the virtual machine image." data-parsley-trigger="change" data-parsley-pattern="^[A-Fa-f0-9]{32}$" data-parsley-pattern-message="Only 32 alphabetic(A-F,a-f) or numeric characters are allowed." data-bind="value: vm_image_md5" type="text" class="form-control" placeholder=""></input>
 											</div>
 										</div>
 										<hr></hr>
@@ -178,7 +178,7 @@
 													</div>	
 													<label class="control-label col-md-2">Version:</label>
 													<div class="col-md-2">
-														<input title="The version of the hypervisor needed for this VDU." data-parsley-trigger="change" data-parsley-pattern="^(== |>= |<= |!= )?[0-9\\-_.]+$" data-bind="value: hypervisor_parameters.version" type="text" class="form-control" placeholder=""></input>
+														<input title="The version of the hypervisor needed for this VDU." data-parsley-trigger="change" data-parsley-pattern="^(== |>= |<= |!= )?[0-9\\-_.]+$" data-parsley-pattern-message="Only numbers and \_-. are allowed." data-bind="value: hypervisor_parameters.version" type="text" class="form-control" placeholder=""></input>
 													</div>	
 												</div>
 												<h5>VSwitch Capabilities</h5>
@@ -189,7 +189,7 @@
 													</div>	
 													<label class="control-label col-md-2">Version:</label>
 													<div class="col-md-2">
-														<input title="The version of vswitch to use." data-parsley-trigger="change" data-parsley-pattern="^(== |>= |<= |!= )?[0-9\\-_.]+$" data-bind="value: vswitch_capabilities.version" type="text" class="form-control" placeholder=""></input>
+														<input title="The version of vswitch to use." data-parsley-trigger="change" data-parsley-pattern="^(== |>= |<= |!= )?[0-9\\-_.]+$" data-parsley-pattern-message="Only numbers and \_-. are allowed." data-bind="value: vswitch_capabilities.version" type="text" class="form-control" placeholder=""></input>
 													</div>	
 												</div>
 												<div class="form-group">
@@ -202,7 +202,7 @@
 												<div class="form-group">
 													<label class="control-label col-md-2">VCPUS:</label>
 													<div class="col-md-2">
-														<input  "The number of (virtualized) CPU cores." title=data-bind="value: cpu.vcpus"type="text" class="form-control" placeholder=""></input>
+														<input data-parsley-required="true" title="The number of (virtualized) CPU cores." data-parsley-type="integer" data-parsley-min="0"	data-bind="value: cpu.vcpus"type="text" class="form-control" placeholder=""></input>
 													</div>	
 													<label class="control-label col-md-2">CPU support accelerator:</label>
 													<div class="col-md-2">
@@ -213,11 +213,11 @@
 												<div class="form-group">										
 													<label class="control-label col-md-2">Size:</label>
 													<div class="col-md-2">
-														<input title="The size of the memory for this VDU." data-bind="value: memory.size" type="text" class="form-control" placeholder=""></input>
+														<input data-parsley-required="true" title="The size of the memory for this VDU." data-parsley-type="number" data-parsley-min="0" data-bind="value: memory.size" type="text" class="form-control" placeholder=""></input>
 													</div>	
 													<label class="control-label col-md-2">Size unit:</label>
 													<div class="col-md-2">
-														<input title="The unit the host memory is measured in. Default is MB (Megabyte)." data-bind="value: memory.size_unit"type="text" class="form-control" placeholder=""></input>
+														<input title="The unit the host memory is measured in. Default is MB (Megabyte)." data-bind="value: memory.size_unit"type="text" class="form-control" placeholder="MB"></input>
 													</div>	
 												</div>
 												<div class="form-group">
@@ -234,7 +234,7 @@
 												<div class="form-group">										
 													<label class="control-label col-md-2">Size:</label>
 													<div class="col-md-2">
-														<input title="The size of the storage for this VDU." data-bind="value: storage.size"type="text" class="form-control" placeholder=""></input>
+														<input data-parsley-required="true" title="The size of the storage for this VDU." data-parsley-type="number" data-parsley-min="0" data-bind="value: storage.size"type="text" class="form-control" placeholder=""></input>
 													</div>	
 													<label class="control-label col-md-2">Size unit:</label>
 													<div class="col-md-2">
@@ -251,11 +251,12 @@
 												<div class="form-group">										
 													<label class="control-label col-md-2">Network interface bandwidth:</label>
 													<div class="col-md-2">
-														<input title="The size of the bandwidth for this VDU." data-bind="value: network.network_interface_bandwidth"type="text" class="form-control" placeholder=""></input>
+														<input title="The size of the bandwidth for this VDU." data-parsley-type="number"  data-parsley-min="0" data-bind="value: network.network_interface_bandwidth"type="text" class="form-control" placeholder=""></input>
 													</div>	
 													<label class="control-label col-md-2">Network interface bandwidth unit:</label>
 													<div class="col-md-2">
-														<input title="The unit of the network interface bandwidth. Default is bps (bit per second)." data-bind="value: network.network_interface_bandwidth_unit" type="text" class="form-control" placeholder=""></input>				</div>	
+														<input title="The unit of the network interface bandwidth. Default is bps (bit per second)." data-bind="value: network.network_interface_bandwidth_unit" type="text" class="form-control" placeholder="bps"></input>
+													</div>	
 												</div>
 												<h5>Network Interface Card Capabilities</h5>
 												<div class="form-group">										
@@ -295,11 +296,11 @@
 												<div id="connection_point" class="form-group">											
 													<label class="control-label col-md-2">id:</label>
 													<div class="col-md-2">
-														<input title="A VNF-unique id of the connection point. Can be used for references." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
+														<input data-parsley-required="true" title="A VNF-unique id of the connection point. Can be used for references." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
 													</div>	
 													<label class="control-label col-md-2">Type:</label>
 													<div class="col-md-2">
-														<input title="The type of connection point, such as a virtual port, a virtual NIC address, a physical port, a physcial NIC address, or the endpoint of a VPN tunnel." data-bind="value: type" type="text" class="form-control" placeholder=""></input>
+														<input data-parsley-required="true" title="The type of connection point, such as a virtual port, a virtual NIC address, a physical port, a physcial NIC address, or the endpoint of a VPN tunnel." data-bind="value: type" type="text" class="form-control" placeholder=""></input>
 													</div>
 												</div>
 												<div class="form-group">
@@ -324,27 +325,27 @@
 												<div id="monitoring_parameter"  class="form-group">										
 													<label class="control-label col-md-2">Name:</label>
 													<div class="col-md-2">
-														<input data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+														<input data-parsley-required="true" title="The name of the parameter to monitor. The name has to be supported by the service platform or the FSM." data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-pattern-message="Only alphabets and -_ are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 													</div>	
 													<label class="control-label col-md-2">Unit:</label>
 													<div class="col-md-2">
-														<input data-bind="value: unit" type="text" class="form-control" placeholder=""></input>
+														<input data-parsley-required="true" title="The unit used to monitor (or represent) the parameter." data-bind="value: unit" type="text" class="form-control" placeholder=""></input>
 													</div>											
 												</div>		
 												<div class="form-group">	
 													<label class="control-label col-md-2">Frequency:</label>
 													<div class="col-md-2">
-														<input data-bind="value: frequency" type="text" class="form-control" placeholder=""></input>
+														<input title="The sample rate of the monitoring parameter." data-parsley-type="number" data-parsley-min="0" data-bind="value: frequency" type="text" class="form-control" placeholder=""></input>
 													</div>	
 													<label class="control-label col-md-2">Frequency unit:</label>
 													<div class="col-md-2">
-														<input data-bind="value: frequency_unit" type="text" class="form-control" placeholder=""></input>
+														<input title="The unit of the sample frequency." data-bind="value: frequency_unit" type="text" class="form-control" placeholder="Hz"></input>
 													</div>	
 												</div>
 												<div class="form-group">	
 													<label class="control-label col-md-2">Command:</label>
 													<div class="col-md-2">
-														<input data-bind="value: command" type="text" class="form-control" placeholder=""></input>
+														<input title="A command that is executed in order to perform custom monitoring." data-bind="value: command" type="text" class="form-control" placeholder=""></input>
 													</div>									
 												</div>
 												<div class="form-group" align="right">	
@@ -361,11 +362,11 @@
 											<div id="scale_in_out">
 												<label class="control-label col-md-2">Minimum:</label>
 												<div class="col-md-2">
-													<input title= "The minimum number of VDUs instantiated at any time." data-bind="value: scale_in_out.minimum" type="text" class="form-control" placeholder=""></input>
+													<input title= "The minimum number of VDUs instantiated at any time." data-parsley-type="integer" data-parsley-min="0"data-bind="value: scale_in_out.minimum" type="text" class="form-control" placeholder="1"></input>
 												</div>	
 												<label class="control-label col-md-2">Maximum:</label>
 												<div class="col-md-2">
-													<input title="The maximum number of VDUs instantiated at any time. 0 means unlimited." data-bind="value: scale_in_out.maximum" type="text" class="form-control" placeholder=""></input>
+													<input title="The maximum number of VDUs instantiated at any time. 0 means unlimited." data-parsley-type="integer" data-parsley-min="0"	data-bind="value: scale_in_out.maximum" type="text" class="form-control" placeholder="1"></input>
 												</div>				
 											</div>
 										</div>	
@@ -416,17 +417,17 @@
 								<div class="form-group">
 									<label class="control-label col-md-2">id:</label>
 									<div class="col-md-2">
-										<input  title="A VNF-unique id of the virtual link. Can be used for references." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
+										<input  data-parsley-required="true" title="A VNF-unique id of the virtual link. Can be used for references." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-2">Connectivity type:</label>
 									<div class="col-md-2">
-										<input  title="The connectivity type, such as point-to-point, point-to-multipoint, and multipoint-to-multipoint." data-bind="value: connectivity_type" type="text" class="form-control" placeholder=""></input>
+										<input  data-parsley-required="true" title="The connectivity type, such as point-to-point, point-to-multipoint, and multipoint-to-multipoint." data-bind="value: connectivity_type" type="text" class="form-control" placeholder=""></input>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="control-label col-md-2">Connection points reference:</label>
 									<div class="col-md-2">
-										<input title="The references to the connection points connected to this virtual link." data-bind="value: connection_points_reference" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title="The references to the connection points connected to this virtual link." data-bind="value: connection_points_reference" type="text" class="form-control" placeholder=""></input>
 									</div>
 								</div>
 								<div class="form-group">
@@ -652,7 +653,7 @@
 											<div class="form-group">
 												<label class="control-label col-md-2">Value:</label>
 												<div class="col-md-2">
-													<input data-bind="value: value" type="text" class="form-control" placeholder=""></input>								
+													<input data-parsley-type="integer"	data-bind="value: value" type="text" class="form-control" placeholder=""></input>								
 												</div>
 												<label class="control-label col-md-2">Formula:</label>
 												<div class="col-md-2">
@@ -678,11 +679,11 @@
 												<div  class="form-group">
 													<label class="control-label col-md-2">Interval:</label>
 													<div class="col-md-2">
-														<input data-bind="value: interval" type="text" class="form-control" placeholder=""></input>								
+														<input data-parsley-type="integer"	data-bind="value: interval" type="text" class="form-control" placeholder=""></input>								
 													</div>
 													<label class="control-label col-md-2">Breaches Count:</label>
 													<div class="col-md-2">
-														<input data-bind="value: breaches_count" type="text" class="form-control" placeholder=""></input>								
+														<input data-parsley-type="integer"	data-bind="value: breaches_count" type="text" class="form-control" placeholder=""></input>								
 													</div>											
 												</div>
 												<div class="form-group" align="right">	
@@ -698,7 +699,7 @@
 												<div class="col-md-2">
 													<input data-bind="value: penalty.type" type="text" class="form-control" placeholder=""></input>								
 												</div>	
-												<label class="control-label col-md-2">Expression:</label>
+												<label data-parsley-type="integer"	class="control-label col-md-2">Expression:</label>
 												<div class="col-md-2">
 													<input data-bind="value: penalty.expression" type="text" class="form-control" placeholder=""></input>								
 												</div>
@@ -742,7 +743,7 @@
 								<div class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input title="The name of the monitoring rule." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title="The name of the monitoring rule." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-2">Description (optional):</label>
 									<div class="col-md-6">
@@ -753,7 +754,7 @@
 								<div class="form-group">
 									<label class="control-label col-md-2">Duration:</label>
 									<div class="col-md-2">
-										<input title="The duration the condtion has to be met before an event is fired." data-bind="value: duration" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title="The duration the condtion has to be met before an event is fired." data-parsley-type="number" data-bind="value: duration" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-2">Duratuion unit (optional):</label>
 									<div class="col-md-2">
@@ -761,7 +762,7 @@
 									</div>
 									<label class="control-label col-md-2">Condition:</label>
 									<div class="col-md-2">
-										<input title="The condition, a boolean expression, that must be met to fire the event." data-bind="value: condition" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title="The condition, a boolean expression, that must be met to fire the event." data-bind="value: condition" type="text" class="form-control" placeholder=""></input>
 									</div>
 								</div>				
 								<hr></hr>
@@ -769,11 +770,11 @@
 									<h4>Notification</h4>
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input title= "The name of the notification" data-bind="value: notification.name" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title= "The name of the notification" data-bind="value: notification.name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-2">Type:</label>
 									<div class="col-md-2">
-										<input title="The type of message that is send to the message bus." data-bind="value: notification.type" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" title="The type of message that is send to the message bus." data-bind="value: notification.type" type="text" class="form-control" placeholder=""></input>
 									</div>
 								</div>
 								<div class="form-group" align="right">	

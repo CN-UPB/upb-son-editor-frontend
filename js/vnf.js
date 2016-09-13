@@ -593,51 +593,9 @@ var vnfViewModel = function () {
 	};
 };
 /*Other page events*/
-$(document).ready(function () {
-	$( "[title]" ).tooltip();
-	queryString = getQueryString();
-	var wsId = queryString["wsId"];
-	var ptId = queryString["ptId"];
-	$.ajax({
-		url : serverURL + "workspaces/" + wsId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
-		}
-	});
-	$.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			document.getElementById("nav_project").text = "Project: " + data.name;
-		}
-	});
-	vnfViewModel = new vnfViewModel();
-	if (queryString["operation"] != "create") {
-		loadVnf(queryString["vnfId"]);
-	}
-	ko.applyBindings(vnfViewModel);
-	$("#accordion_units").accordion({
-		active : false,
-		collapsible : true,
-		heightStyle : "content"
-	});
-	$("#accordion").accordion({
-		active : false,
-		collapsible : true,
-		heightStyle : "content"
-	});
-
-});
 
 function saveTables() {
-	//if ($('form').parsley().isValid()) {
+	if ($('form').parsley().isValid()) {
 		var jsonData = ko.toJSON(vnfViewModel);
 		//correct some variable names
 		jsonData = jsonData.replace(/SR_IOV/g, "SR-IOV");
@@ -650,7 +608,7 @@ function saveTables() {
 		} else {
 			updateVnf(jsonData);
 		}
-	//}
+	}
 }
 
 function updateVnf(jsonData) {
@@ -688,6 +646,7 @@ function updateVnf(jsonData) {
 		}
 	});
 }
+
 function createNewVnf(jsonData) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/",
@@ -739,6 +698,7 @@ function loadVnf(vnfId) {
 		}
 	});
 }
+
 function goToWorkspaceView() {
 	window.location.href = "workspaceView.html?wsId=" + queryString["wsId"];
 }
@@ -746,3 +706,46 @@ function goToWorkspaceView() {
 function goToProjectView() {
 	window.location.href = "projectView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"];
 }
+
+$(document).ready(function () {	
+	queryString = getQueryString();
+	var wsId = queryString["wsId"];
+	var ptId = queryString["ptId"];
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
+		}
+	});
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_project").text = "Project: " + data.name;
+		}
+	});
+	vnfViewModel = new vnfViewModel();
+	if (queryString["operation"] != "create") {
+		loadVnf(queryString["vnfId"]);
+	}
+	$('form').parsley().validate();
+	ko.applyBindings(vnfViewModel);
+	$("#accordion_units").accordion({
+		active : false,
+		collapsible : true,
+		heightStyle : "content"
+	});
+	$("#accordion").accordion({
+		active : false,
+		collapsible : true,
+		heightStyle : "content"
+	});
+	$( "[title]" ).tooltip();
+});

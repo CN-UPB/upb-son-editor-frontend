@@ -1,13 +1,11 @@
 var queryString = {};
 var workspaceModel;
 
-var Platform=function()
-{
-	this.name=ko.observable("");
-	this.url=ko.observable("");
-	this.id =ko.observable(-1);
-	this.init=function(data)
-	{
+var Platform = function () {
+	this.name = ko.observable("");
+	this.url = ko.observable("");
+	this.id = ko.observable(-1);
+	this.init = function (data) {
 		this.name(data.name);
 		this.url(data.url);
 		this.id(data.id);
@@ -15,62 +13,63 @@ var Platform=function()
 	}
 }
 
-var Catalogue=function()
-{
-	this.name=ko.observable("");
-	this.url=ko.observable("");
-	this.id =ko.observable(-1);
-	this.init=function(data)
-	{
+var Catalogue = function () {
+	this.name = ko.observable("");
+	this.url = ko.observable("");
+	this.id = ko.observable(-1);
+	this.init = function (data) {
 		this.name(data.name);
 		this.url(data.url);
 		this.id(data.id);
 		return this;
 	}
 }
-var WorkspaceModel=function()
-{
-	this.name=ko.observable(queryString["wsName"]);
-	this.platforms=ko.observableArray();
-	this.catalogues=ko.observableArray();
-	this.addPlatform=function()
-	{
-		this.platforms.push(new Platform());	
-		$( "[title]" ).tooltip();
-		
+
+var WorkspaceModel = function () {
+	this.name = ko.observable(queryString["wsName"]);
+	this.platforms = ko.observableArray();
+	this.catalogues = ko.observableArray();
+	this.addPlatform = function () {
+		this.platforms.push(new Platform());
+		$("form").parsley().reset();
+		$("form").parsley().validate();
 	};
-	this.deletePlatform=function(platform)
-	{
+	this.deletePlatform = function (platform) {
 		this.platforms.remove(platform);
-	}.bind(this);
-	this.addCatalogue=function()
-	{
+	}
+	.bind(this);
+	this.addCatalogue = function () {
 		this.catalogues.push(new Catalogue());
-		$( "[title]" ).tooltip();
+		$("form").parsley().reset();
+		$("form").parsley().validate();
 	};
-	this.deleteCatalogue=function(catalogue)
-	{
+	this.deleteCatalogue = function (catalogue) {
 		this.catalogues.remove(catalogue);
-	}.bind(this);
-	this.init=function(data)
-	{
+	}
+	.bind(this);
+	this.init = function (data) {
 		this.name(data.name);
-		if(data.platforms.length!=0)
-			this.platforms($.map(data.platforms, function(item){return new Platform().init(item)}));
-		if(data.catalogues.length!=0)
-			this.catalogues($.map(data.catalogues, function(item){return new Catalogue().init(item)}));
+		if (data.platforms.length != 0)
+			this.platforms($.map(data.platforms, function (item) {
+					return new Platform().init(item)
+				}));
+		if (data.catalogues.length != 0)
+			this.catalogues($.map(data.catalogues, function (item) {
+					return new Catalogue().init(item)
+				}));
+		$("form").parsley().reset();
+		$("form").parsley().validate();
 		return this;
 	}
 }
 
 function saveConfiguration() {
-	if($('form').parsley().isValid())
-	{
-		var configurationJson=ko.toJSON(workspaceModel);
+	if ($("form").parsley().isValid()) {
+		var configurationJson = ko.toJSON(workspaceModel);
 		console.log("New configuration:");
 		console.log(configurationJson);
 		$.ajax({
-			url : serverURL + "workspaces/" + queryString["wsId"] ,
+			url : serverURL + "workspaces/" + queryString["wsId"],
 			method : 'PUT',
 			contentType : "application/json; charset=utf-8",
 			dataType : 'json',
@@ -101,37 +100,22 @@ function saveConfiguration() {
 					}
 				});
 			}
-		});	
+		});
+	} else {
+		$("#FailedValidationDialog").dialog({
+			modal : true,
+			draggable : false,
+			buttons : {
+				ok : function () {
+					$(this).dialog("close");
+				}
+			}
+		});
 	}
 }
 
-$(document).ready(function () { 
-	$( "[title]" ).tooltip();
-	queryString = getQueryString();
-	wsId=queryString["wsId"];
+function loadConfiguration(wsId) {
 	$.ajax({
-		url : serverURL + "workspaces/" + wsId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			document.getElementById("nav_workspace").text = "Workspace: " +data.name;
-		}
-	});
-	workspaceModel=new WorkspaceModel();
-	loadConfiguration(wsId);
-	ko.applyBindings(workspaceModel);
-
-	$("#accordion").accordion({
-		active : false,
-		collapsible : false,
-		heightStyle : "content"
-	});
-});
-
-function loadConfiguration(wsId)
-{	$.ajax({
 		url : serverURL + "workspaces/" + wsId,
 		dataType : "json",
 		xhrFields : {
@@ -143,7 +127,29 @@ function loadConfiguration(wsId)
 	});
 }
 
-function goToWorkspaceView()
-{
-	window.location.href="workspaceView.html?wsId="+queryString["wsId"];
+function goToWorkspaceView() {
+	window.location.href = "workspaceView.html?wsId=" + queryString["wsId"];
 }
+
+$(document).ready(function () {
+	queryString = getQueryString();
+	wsId = queryString["wsId"];
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
+		}
+	});
+	workspaceModel = new WorkspaceModel();
+	loadConfiguration(wsId);
+	ko.applyBindings(workspaceModel);
+	$("#accordion").accordion({
+		active : false,
+		collapsible : false,
+		heightStyle : "content"
+	});
+});
