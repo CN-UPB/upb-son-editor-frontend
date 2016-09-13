@@ -11,6 +11,7 @@ var FunctionSpecificManager = function () {
 	this.options = ko.observableArray([new Option()]);
 	this.addOption = function () {
 		this.options.push(new Option());
+		$("form").parsley().validate();
 	}
 	.bind(this);
 	this.deleteOption = function (option) {
@@ -62,6 +63,7 @@ var VirtualDeploymentUnit = function () {
 
 	this.addRequirement = function () {
 		this.resource_requirements.push(new ResourceRequirement());
+		$("form").parsley().validate();
 	}
 	this.deleteRequirement = function (requirement) {
 		this.resource_requirements.remove(requirement);
@@ -70,6 +72,7 @@ var VirtualDeploymentUnit = function () {
 
 	this.addPoint = function () {
 		this.connection_points.push(new ConnectionPoint());
+		$("form").parsley().validate();
 	}
 	this.removePoint = function (point) {
 		this.connection_points.remove(point);
@@ -78,6 +81,7 @@ var VirtualDeploymentUnit = function () {
 
 	this.addParameter = function () {
 		this.monitoring_parameters.push(new MonitoringParameter());
+		$("form").parsley().validate();
 	}
 	this.deleteParameter = function (parameter) {
 		this.monitoring_parameters.remove(parameter);
@@ -355,6 +359,7 @@ var DeploymentFlavour = function () {
 
 	this.addVduReference = function () {
 		this.vdu_reference.push(new Text());
+		$("form").parsley().validate();
 	};
 	this.deleteVduReference = function (vduReference) {
 		this.vdu_reference.remove(vduReference);
@@ -363,6 +368,7 @@ var DeploymentFlavour = function () {
 
 	this.addVlinkReference = function () {
 		this.vlink_reference.push(new Text());
+		$("form").parsley().validate();
 	};
 	this.deleteVlinkReference = function (vduReference) {
 		this.vlink_reference.remove(vduReference);
@@ -371,6 +377,8 @@ var DeploymentFlavour = function () {
 
 	this.addAssuranceParameter = function () {
 		this.assurance_parameters.push(new AssuranceParameter());
+		$("form").parsley().validate();
+		$("form").parsley().validate();
 	};
 	this.deleteAssuranceParameter = function (assuranceParameter) {
 		this.assurance_parameters.remove(assuranceParameter);
@@ -436,6 +444,8 @@ var AssuranceParameter = function () {
 
 	this.addViolation = function () {
 		this.violation.push(new Violation());
+		$("form").parsley().validate();
+		$("form").parsley().validate();
 	};
 	this.deleteViolation = function (violation) {
 		this.violation.remove(violation);
@@ -506,6 +516,7 @@ var vnfViewModel = function () {
 
 	this.addFunctionSpecificManager = function () {
 		this.function_specific_managers.push(new FunctionSpecificManager());
+		$("form").parsley().validate();
 	};
 	this.deleteFunctionSpecificManager = function (functionSpecificManager) {
 		this.function_specific_managers.remove(functionSpecificManager);
@@ -515,6 +526,7 @@ var vnfViewModel = function () {
 	this.addVirtualDeploymentUnit = function () {
 		this.virtual_deployment_units.push(new VirtualDeploymentUnit());
 		$("#accordion_units").accordion("refresh");
+		$("form").parsley().validate();
 	};
 	this.deleteVirtualDeploymentUnit = function (virtualDeploymentUnit) {
 		this.virtual_deployment_units.remove(virtualDeploymentUnit);
@@ -523,6 +535,7 @@ var vnfViewModel = function () {
 
 	this.addConnectionPoint = function () {
 		this.connection_points.push(new ConnectionPoint());
+		$("form").parsley().validate();
 	};
 	this.deleteConnectionPoint = function (connectionPoint) {
 		this.connection_points.remove(connectionPoint);
@@ -531,6 +544,7 @@ var vnfViewModel = function () {
 
 	this.addVirtualLink = function () {
 		this.virtual_links.push(new VirtualLink());
+		$("form").parsley().validate();
 	};
 	this.deleteVirtualLink = function (virtualLink) {
 		this.virtual_links.remove(virtualLink);
@@ -539,6 +553,7 @@ var vnfViewModel = function () {
 
 	this.addDeploymentFlavour = function () {
 		this.deployment_flavours.push(new DeploymentFlavour());
+		$("form").parsley().validate();
 	};
 	this.deleteDeploymentFlavour = function (deploymentFlavour) {
 		this.deployment_flavours.remove(deploymentFlavour);
@@ -547,6 +562,7 @@ var vnfViewModel = function () {
 
 	this.addLifecycleEvent = function () {
 		this.lifecycle_events.push(new LifecycleEvent());
+		$("form").parsley().validate();
 	};
 	this.deleteLifecycleEvent = function (lifecycleEvent) {
 		this.lifecycle_events.remove(lifecycleEvent);
@@ -555,6 +571,7 @@ var vnfViewModel = function () {
 
 	this.addMonitoringRule = function () {
 		this.monitoring_rules.push(new MonitoringRule());
+		$("form").parsley().validate();
 	};
 	this.deleteMonitoringRule = function (monitoring_rule) {
 		this.monitoring_rules.remove(monitoring_rule);
@@ -590,12 +607,14 @@ var vnfViewModel = function () {
 		vnfViewModel.monitoring_rules($.map(vnf.monitoring_rules, function (item) {
 				return new MonitoringRule().init(item)
 			}));
+		$("form").parsley().validate();
 	};
 };
 /*Other page events*/
 
 function saveTables() {
-	if ($('form').parsley().isValid()) {
+	$("form").parsley().validate();
+	if ($("form").parsley().isValid()) {
 		var jsonData = ko.toJSON(vnfViewModel);
 		//correct some variable names
 		jsonData = jsonData.replace(/SR_IOV/g, "SR-IOV");
@@ -608,6 +627,18 @@ function saveTables() {
 		} else {
 			updateVnf(jsonData);
 		}
+	}
+	else
+	{
+		$("#FailedValidationDialog").dialog({
+			modal : true,
+			draggable : false,
+			buttons : {
+				ok : function () {
+					$(this).dialog("close");
+				}
+			}
+		});
 	}
 }
 
@@ -735,7 +766,6 @@ $(document).ready(function () {
 	if (queryString["operation"] != "create") {
 		loadVnf(queryString["vnfId"]);
 	}
-	$('form').parsley().validate();
 	ko.applyBindings(vnfViewModel);
 	$("#accordion_units").accordion({
 		active : false,

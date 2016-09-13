@@ -31,7 +31,6 @@ var WorkspaceModel = function () {
 	this.catalogues = ko.observableArray();
 	this.addPlatform = function () {
 		this.platforms.push(new Platform());
-		$("form").parsley().reset();
 		$("form").parsley().validate();
 	};
 	this.deletePlatform = function (platform) {
@@ -40,7 +39,6 @@ var WorkspaceModel = function () {
 	.bind(this);
 	this.addCatalogue = function () {
 		this.catalogues.push(new Catalogue());
-		$("form").parsley().reset();
 		$("form").parsley().validate();
 	};
 	this.deleteCatalogue = function (catalogue) {
@@ -57,13 +55,13 @@ var WorkspaceModel = function () {
 			this.catalogues($.map(data.catalogues, function (item) {
 					return new Catalogue().init(item)
 				}));
-		$("form").parsley().reset();
 		$("form").parsley().validate();
 		return this;
 	}
 }
 
 function saveConfiguration() {
+	$("form").parsley().validate();
 	if ($("form").parsley().isValid()) {
 		var configurationJson = ko.toJSON(workspaceModel);
 		console.log("New configuration:");
