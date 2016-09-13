@@ -498,13 +498,13 @@ var Notification = function () {
 }
 
 var vnfViewModel = function () {
-	this.schema = ko.observable("example-schema");
-	this.descriptor_version = ko.observable("vnfd-schema-01");
-	this.vendor = ko.observable("de.upb.cs.fg-cn-sandman1");
-	this.name = ko.observable("example_name");
-	this.version = ko.observable("1337");
-	this.author = ko.observable("Your Name");
-	this.description = ko.observable("An example description");
+	this.schema = ko.observable();
+	this.descriptor_version = ko.observable();
+	this.vendor = ko.observable();
+	this.name = ko.observable();
+	this.version = ko.observable();
+	this.author = ko.observable();
+	this.description = ko.observable();
 
 	this.function_specific_managers = ko.observableArray();
 	this.virtual_deployment_units = ko.observableArray([new VirtualDeploymentUnit()]);
@@ -769,7 +769,7 @@ $(document).ready(function () {
 	ko.applyBindings(vnfViewModel);
 	$("#accordion_units").accordion({
 		active : false,
-		collapsible : true,
+		collapsible : false,
 		heightStyle : "content"
 	});
 	$("#accordion").accordion({

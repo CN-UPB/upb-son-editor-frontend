@@ -37,7 +37,7 @@
 			<form data-parsley-validate class="form-horizontal" role="form">
 				<div class="form-group">
 					<div id="accordion">
-						<h3>General Descriptor Section</h3>
+						<h3>General Descriptor Section (Required)</h3>
 						<div>
 							<div class="form-group">
 								<label class="control-label col-md-2">Descriptor version:</label>
@@ -74,71 +74,7 @@
 								</div>
 							</div>
 						</div>
-						<h3>Function Specific Managers Section</h3>
-						<div>
-							<div data-bind="foreach: function_specific_managers">
-								<!-- ko if: $index() != 0 -->
-								<hr></hr>
-								<!-- /ko -->
-								<div class="form-group">
-									<label class="control-label col-md-2">Description:</label>
-									<div class="col-md-2">
-										<input title="An arbitrary description of the FSM." data-bind="value: description" type="text" class="form-control" placeholder=""></input>
-									</div>
-									<label class="control-label col-md-2">id:</label>
-									<div class="col-md-2">
-										<input data-parsley-required="true" title="A unique identifier of this FSM within the scope of this VNF descriptor." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="control-label col-md-2">Image:</label>
-									<div class="col-md-2">
-										<input data-parsley-required="true" title="The reference to a Docker image." data-bind="value: image" type="text" class="form-control" placeholder=""></input>
-									</div>
-									<label class="control-label col-md-2">Image md5:</label>
-									<div class="col-md-2">
-										<input title="An MD5 hash of the Docker image." data-parsley-trigger="change" data-parsley-pattern="^[A-Fa-f0-9]{32}$" data-parsley-pattern-message="Only 32 alphabetic(A-F,a-f) or numeric characters are allowed." data-bind="value: image_md5" type="text" class="form-control" placeholder=""></input>
-									</div>
-								</div>
-								<hr></hr>
-								<div class="form-group">
-									<h4>Resource Requirements</h4>
-									<label class="control-label col-md-2">Docker version:</label>
-									<div class="col-md-2">
-										<input data-parsley-required="true" title="The version of Docker needed for this FSM." data-parsley-trigger="change" data-parsley-pattern="^(== |>= |<= |!= )?[0-9\\-_.]+$" data-parsley-pattern-message="Only numbers and \_. are allowed." data-bind="value: resource_requirements.docker_version" type="text" class="form-control" placeholder=""></input>
-									</div>
-								</div>
-								<hr></hr>
-								<div class="form-group">
-									<h4>Options </h4>
-									<div data-bind="foreach: options"id="options">
-										<div class="form-group">
-											<label class="control-label col-md-2">Key:</label>
-											<div class="col-md-2">
-												<input data-parsley-required="true" data-bind="value: key" type="text" class="form-control" placeholder=""></input>
-											</div>
-											<label class="control-label col-md-2">Value:</label>
-											<div class="col-md-2">
-												<input data-parsley-required="true" data-bind="value: value" type="text" class="form-control" placeholder=""></input>
-											</div>									
-										</div>
-										<div class="form-group" align="right">
-											<button class="editorButtons delete" data-bind="click: $parent.deleteOption">Delete Option</button>								
-										</div>
-									</div>
-									<div class="form-group" align="right">	
-										<button class="editorButtons add" data-bind="click: addOption">Add Option</button>	
-									</div>
-								</div>
-								<div class="form-group" align="right">	
-									<button class="btn btn-danger" data-bind="click: $parent.deleteFunctionSpecificManager">Delete Function Specific Manager</button>
-								</div>
-							</div>
-							<div class="form-group" align="right">	
-								<button class="btn btn-primary" data-bind="click: addFunctionSpecificManager">Add Function Specific Manager</button>	
-							</div>
-						</div>
-						<h3>Virtual Deployment Units Section</h3>
+						<h3>Virtual Deployment Units Section (Required)</h3>
 						<div>
 							<div id="virtual_deployment_units">
 								<div data-bind="foreach: virtual_deployment_units" id="accordion_units">
@@ -376,7 +312,71 @@
 							<div align="right">	
 								<button class="btn btn-primary" style="margin-top:15px;" data-bind="click: addVirtualDeploymentUnit">Add Virtual Deployment Unit</button>	
 							</div>
-						</div>	
+						</div>					
+						<h3>Function Specific Managers Section</h3>
+						<div>
+							<div data-bind="foreach: function_specific_managers">
+								<!-- ko if: $index() != 0 -->
+								<hr></hr>
+								<!-- /ko -->
+								<div class="form-group">
+									<label class="control-label col-md-2">Description:</label>
+									<div class="col-md-2">
+										<input title="An arbitrary description of the FSM." data-bind="value: description" type="text" class="form-control" placeholder=""></input>
+									</div>
+									<label class="control-label col-md-2">id:</label>
+									<div class="col-md-2">
+										<input data-parsley-required="true" title="A unique identifier of this FSM within the scope of this VNF descriptor." data-bind="value: id" type="text" class="form-control" placeholder=""></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-2">Image:</label>
+									<div class="col-md-2">
+										<input data-parsley-required="true" title="The reference to a Docker image." data-bind="value: image" type="text" class="form-control" placeholder=""></input>
+									</div>
+									<label class="control-label col-md-2">Image md5:</label>
+									<div class="col-md-2">
+										<input title="An MD5 hash of the Docker image." data-parsley-trigger="change" data-parsley-pattern="^[A-Fa-f0-9]{32}$" data-parsley-pattern-message="Only 32 alphabetic(A-F,a-f) or numeric characters are allowed." data-bind="value: image_md5" type="text" class="form-control" placeholder=""></input>
+									</div>
+								</div>
+								<hr></hr>
+								<div class="form-group">
+									<h4>Resource Requirements</h4>
+									<label class="control-label col-md-2">Docker version:</label>
+									<div class="col-md-2">
+										<input data-parsley-required="true" title="The version of Docker needed for this FSM." data-parsley-trigger="change" data-parsley-pattern="^(== |>= |<= |!= )?[0-9\\-_.]+$" data-parsley-pattern-message="Only numbers and \_. are allowed." data-bind="value: resource_requirements.docker_version" type="text" class="form-control" placeholder=""></input>
+									</div>
+								</div>
+								<hr></hr>
+								<div class="form-group">
+									<h4>Options </h4>
+									<div data-bind="foreach: options"id="options">
+										<div class="form-group">
+											<label class="control-label col-md-2">Key:</label>
+											<div class="col-md-2">
+												<input data-parsley-required="true" data-bind="value: key" type="text" class="form-control" placeholder=""></input>
+											</div>
+											<label class="control-label col-md-2">Value:</label>
+											<div class="col-md-2">
+												<input data-parsley-required="true" data-bind="value: value" type="text" class="form-control" placeholder=""></input>
+											</div>									
+										</div>
+										<div class="form-group" align="right">
+											<button class="editorButtons delete" data-bind="click: $parent.deleteOption">Delete Option</button>								
+										</div>
+									</div>
+									<div class="form-group" align="right">	
+										<button class="editorButtons add" data-bind="click: addOption">Add Option</button>	
+									</div>
+								</div>
+								<div class="form-group" align="right">	
+									<button class="btn btn-danger" data-bind="click: $parent.deleteFunctionSpecificManager">Delete Function Specific Manager</button>
+								</div>
+							</div>
+							<div class="form-group" align="right">	
+								<button class="btn btn-primary" data-bind="click: addFunctionSpecificManager">Add Function Specific Manager</button>	
+							</div>
+						</div>
 						<h3>Connection Points Section</h3>
 						<div>
 							<div data-bind="foreach: connection_points">
