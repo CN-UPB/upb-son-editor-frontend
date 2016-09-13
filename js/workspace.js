@@ -3,7 +3,6 @@ var wsId = "";
 var queryString = {};
 
 $(document).ready(function () {
-	$( "[title]" ).tooltip();
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
 	$.ajax({

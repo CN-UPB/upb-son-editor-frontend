@@ -44,7 +44,7 @@
 								<div class="col-md-2">
 									<input data-parsley-required="true" title="The version of the description definition used to describe the function descriptor." data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: descriptor_version" type="text" class="form-control" placeholder=""></input>
 								</div>
-								<label class="control-label col-md-2">Schema (optional):</label>
+								<label class="control-label col-md-2">Schema :</label>
 								<div class="col-md-2">
 									<input title="provides a link to the schema that is used to describe the network function and can be used to validate the VNF descriptor file. This is related to the original JSON schema specification." data-bind="value: schema" type="text" class="form-control" placeholder=""></input>
 								</div>
@@ -62,13 +62,13 @@
 								<div class="col-md-2">
 									<input data-parsley-required="true" title="The version of the function descriptor." data-parsley-trigger="change" data-parsley-pattern="^[0-9\\-_.]+$" data-parsley-pattern-message="Only numbers and \_. are allowed." data-bind="value: version" type="text" class="form-control" placeholder=""></input>
 								</div>
-								<label class="control-label col-md-2">Author (optional):</label>
+								<label class="control-label col-md-2">Author :</label>
 								<div class="col-md-2">
 									<input title="The person or organization that created the VNF descriptor." data-bind="value: author" type="text" class="form-control" placeholder=""></input>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-md-2">Description (optional):</label>
+								<label class="control-label col-md-2">Description :</label>
 								<div class="col-md-10">
 									<input title="A longer description of the network function." data-bind="value: description" type="text" class="form-control" placeholder=""></input>
 								</div>
@@ -110,7 +110,7 @@
 								</div>
 								<hr></hr>
 								<div class="form-group">
-									<h4>Options (optional)</h4>
+									<h4>Options </h4>
 									<div data-bind="foreach: options"id="options">
 										<div class="form-group">
 											<label class="control-label col-md-2">Key:</label>
@@ -131,11 +131,11 @@
 									</div>
 								</div>
 								<div class="form-group" align="right">	
-									<button class="editorButtons delete" data-bind="click: $parent.deleteFunctionSpecificManager">Delete Function Specific Manager</button>
+									<button class="btn btn-danger" data-bind="click: $parent.deleteFunctionSpecificManager">Delete Function Specific Manager</button>
 								</div>
 							</div>
 							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addFunctionSpecificManager">Add Function Specific Manager</button>	
+								<button class="btn btn-primary" data-bind="click: addFunctionSpecificManager">Add Function Specific Manager</button>	
 							</div>
 						</div>
 						<h3>Virtual Deployment Units Section</h3>
@@ -143,7 +143,7 @@
 							<div id="virtual_deployment_units">
 								<div data-bind="foreach: virtual_deployment_units" id="accordion_units">
 									<h3>Unit
-									<button class="editorButtons delete" data-bind="visible: $parent.virtual_deployment_units().length > 1, click: $parent.deleteVirtualDeploymentUnit">Delete Virtual Deployment Unit</button>
+									<button class="btn btn-danger" data-bind="visible: $parent.virtual_deployment_units().length > 1, click: $parent.deleteVirtualDeploymentUnit">Delete Virtual Deployment Unit</button>
 									</h3>
 									<div id="unit_table1">
 										<div class="form-group">
@@ -157,11 +157,11 @@
 											</div>		
 										</div>
 										<div class="form-group">
-											<label class="control-label col-md-2">VM image format (optional):</label>
+											<label class="control-label col-md-2">VM image format :</label>
 											<div class="col-md-2">
 												<input title="The format of the virtual machine image." data-bind="value: vm_image_format"type="text" class="form-control" placeholder=""></input>
 											</div>
-											<label class="control-label col-md-2">VM image md5 (optional):</label>
+											<label class="control-label col-md-2">VM image md5 :</label>
 											<div class="col-md-2">
 												<input title="An MD5 hash of the virtual machine image." data-parsley-trigger="change" data-parsley-pattern="^[A-Fa-f0-9]{32}$" data-parsley-pattern-message="Only 32 alphabetic(A-F,a-f) or numeric characters are allowed." data-bind="value: vm_image_md5" type="text" class="form-control" placeholder=""></input>
 											</div>
@@ -290,7 +290,7 @@
 										</div>
 										<hr></hr>
 										<div class="form-group">	
-											<h4>Connection Points (optional)</h4>								
+											<h4>Connection Points </h4>								
 											<div data-bind="foreach: connection_points" id="connection_points">
 												<h5>Point</h5>
 												<div id="connection_point" class="form-group">											
@@ -319,7 +319,7 @@
 										</div>
 										<hr></hr>
 										<div class="form-group">
-											<h4>Monitoring parameters (optional)</h4>
+											<h4>Monitoring parameters </h4>
 											<div data-bind="foreach: monitoring_parameters" id="monitoring_parameters">
 												<h5>Parameter</h5>
 												<div id="monitoring_parameter"  class="form-group">										
@@ -358,7 +358,7 @@
 										</div>
 										<hr></hr>
 										<div class="form-group">
-											<h4>Scale in out (optional)</h4> 
+											<h4>Scale in out </h4> 
 											<div id="scale_in_out">
 												<label class="control-label col-md-2">Minimum:</label>
 												<div class="col-md-2">
@@ -373,8 +373,8 @@
 									</div>		
 								</div>	
 							</div>
-							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addVirtualDeploymentUnit">Add Virtual Deployment Unit</button>	
+							<div align="right">	
+								<button class="btn btn-primary" data-bind="click: addVirtualDeploymentUnit">Add Virtual Deployment Unit</button>	
 							</div>
 						</div>	
 						<h3>Connection Points Section</h3>
@@ -393,18 +393,18 @@
 									<div class="col-md-2">
 										<input title="The type of connection point, such as a virtual port, a virtual NIC address, a physical port, a physcial NIC address, or the endpoint of a VPN tunnel." data-bind="value: type" type="text" class="form-control" placeholder=""></input>
 									</div>
-									<label class="control-label col-md-2">Virtual link reference (optional):</label>
+									<label class="control-label col-md-2">Virtual link reference :</label>
 									<div class="col-md-2">
 										<input title="A reference to a virtual link, i.e. the virtual_links:id." data-bind="value: virtual_link_reference" type="text" class="form-control" placeholder=""></input>
 									</div>
 								</div>
-								<div data-bind="visible: $parent.connection_points().length > 1" class="form-group" align="right">	
-									<button class="editorButtons delete" data-bind="click: $parent.deleteConnectionPoint">Delete Connection Point</button>
+								<div data-bind="click: $parent.deleteParameter"" class="form-group" align="right">	
+									<button class="btn btn-danger" data-bind="click: $parent.deleteConnectionPoint">Delete Connection Point</button>
 								</div>
 
 							</div>
 							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addConnectionPoint">Add Connection Point</button>
+								<button class="btn btn-primary" data-bind="click: addConnectionPoint">Add Connection Point</button>
 							</div>
 						</div>
 						<h3>Virtual Links Section</h3>
@@ -460,13 +460,13 @@
 										<input  data-bind="checked: qos" type="checkbox" name="qos" class="checkbox" placeholder=""></input>
 									</div>
 								</div>
-								<div data-bind="visible: $parent.virtual_links().length > 1" class="form-group" align="right">	
-									<button class="editorButtons delete" data-bind="click: $parent.deleteVirtualLink">Delete Virtual Link</button>
+								<div data-bind="click: $parent.deleteParameter" class="form-group" align="right">	
+									<button class="btn btn-danger" data-bind="click: $parent.deleteVirtualLink">Delete Virtual Link</button>
 								</div>
 
 							</div>
 							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addVirtualLink">Add Virtual Link</button>
+								<button class="btn btn-primary" data-bind="click: addVirtualLink">Add Virtual Link</button>
 							</div>
 						</div>
 						<h3>VNF Lifecycle Events Section</h3>
@@ -684,11 +684,11 @@
 													<label class="control-label col-md-2">Breaches Count:</label>
 													<div class="col-md-2">
 														<input data-parsley-type="integer"	data-bind="value: breaches_count" type="text" class="form-control" placeholder=""></input>								
-													</div>											
-												</div>
-												<div class="form-group" align="right">	
+													</div>	
+													<div align="right">	
 													<button class="editorButtons delete" data-bind="click: $parent.deleteViolation">Delete</button>
-												</div>
+													</div>													
+												</div>				
 											</div>
 											<div class="form-group" align="right">	
 												<button class="editorButtons add" data-bind="click: addViolation">Add Violation</button>	
@@ -725,12 +725,12 @@
 									</div>
 								</div>
 								<div class="form-group" align="right">	
-									<button class="editorButtons delete" data-bind="click: $parent.deleteDeploymentFlavour">Delete Deployment Flavour</button>
+									<button class="btn btn-danger"data-bind="click: $parent.deleteDeploymentFlavour">Delete Deployment Flavour</button>
 								</div>
 
 							</div>
 							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addDeploymentFlavour">Add Deployment Flavour</button>	
+								<button class="btn btn-primary" data-bind="click: addDeploymentFlavour">Add Deployment Flavour</button>	
 							</div>				
 						</div>
 						<h3>Monitoring Rules</h3>
@@ -745,7 +745,7 @@
 									<div class="col-md-2">
 										<input data-parsley-required="true" title="The name of the monitoring rule." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
-									<label class="control-label col-md-2">Description (optional):</label>
+									<label class="control-label col-md-2">Description :</label>
 									<div class="col-md-6">
 										<input title="An arbitrary descritpion of this monitoring rule." data-bind="value: description" type="text" class="form-control" placeholder=""></input>
 									</div>
@@ -756,7 +756,7 @@
 									<div class="col-md-2">
 										<input data-parsley-required="true" title="The duration the condtion has to be met before an event is fired." data-parsley-type="number" data-bind="value: duration" type="text" class="form-control" placeholder=""></input>
 									</div>
-									<label class="control-label col-md-2">Duratuion unit (optional):</label>
+									<label class="control-label col-md-2">Duratuion unit :</label>
 									<div class="col-md-2">
 										<input title= "The unit of the durration." data-bind="value: duration_unit" type="text" class="form-control" placeholder=""></input>
 									</div>
@@ -778,12 +778,12 @@
 									</div>
 								</div>
 								<div class="form-group" align="right">	
-									<button class="editorButtons delete" data-bind="click: $parent.deleteMonitoringRule">Delete Monitoring Rule</button>
+									<button class="btn btn-danger" data-bind="click: $parent.deleteMonitoringRule">Delete Monitoring Rule</button>
 								</div>
 
 							</div>
 							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addMonitoringRule">Add Monitoring Rule</button>	
+								<button class="btn btn-primary" data-bind="click: addMonitoringRule">Add Monitoring Rule</button>	
 							</div>
 						</div>
 					</div>

@@ -1,7 +1,6 @@
 var workspaces = [];
 
 $(document).ready(function () {
-	$( "[title]" ).tooltip();
 	var availableWorkspaces = ["Create new workspace"];
 	var wsDictionary = {};
 	$.ajax({

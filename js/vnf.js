@@ -8,7 +8,7 @@ var FunctionSpecificManager = function () {
 	this.image = ko.observable("");
 	this.image_md5 = ko.observable("");
 	this.resource_requirements = new ResourceRequirements();
-	this.options = ko.observableArray([new Option()]);
+	this.options = ko.observableArray();
 	this.addOption = function () {
 		this.options.push(new Option());
 		$("form").parsley().validate();
@@ -56,9 +56,9 @@ var VirtualDeploymentUnit = function () {
 	this.vm_image = ko.observable("");
 	this.vm_image_format = ko.observable("");
 	this.vm_image_md5 = ko.observable("");
-	this.resource_requirements = ko.observableArray([new ResourceRequirement()]);
-	this.connection_points = ko.observableArray([new ConnectionPoint()]);
-	this.monitoring_parameters = ko.observableArray([new MonitoringParameter()]);
+	this.resource_requirements = ko.observableArray();
+	this.connection_points = ko.observableArray();
+	this.monitoring_parameters = ko.observableArray();
 	this.scale_in_out = new ScaleInOut();
 
 	this.addRequirement = function () {
@@ -353,9 +353,9 @@ var DeploymentFlavour = function () {
 	this.id = ko.observable("");
 	this.flavour_key = ko.observable("");
 	this.constraint = ko.observable("");
-	this.vdu_reference = ko.observableArray([new Text()]);
-	this.vlink_reference = ko.observableArray([new Text()]);
-	this.assurance_parameters = ko.observableArray([new AssuranceParameter()]);
+	this.vdu_reference = ko.observableArray();
+	this.vlink_reference = ko.observableArray();
+	this.assurance_parameters = ko.observableArray();
 
 	this.addVduReference = function () {
 		this.vdu_reference.push(new Text());
@@ -434,7 +434,7 @@ var Penalty = function () {
 }
 
 var AssuranceParameter = function () {
-	this.violation = ko.observableArray([new Violation()]);
+	this.violation = ko.observableArray();
 	this.value = ko.observable("");
 	this.penalty = new Penalty();
 	this.formula = ko.observable("");
@@ -506,13 +506,13 @@ var vnfViewModel = function () {
 	this.author = ko.observable("Your Name");
 	this.description = ko.observable("An example description");
 
-	this.function_specific_managers = ko.observableArray([new FunctionSpecificManager()]);
+	this.function_specific_managers = ko.observableArray();
 	this.virtual_deployment_units = ko.observableArray([new VirtualDeploymentUnit()]);
-	this.connection_points = ko.observableArray([new ConnectionPoint()]);
-	this.virtual_links = ko.observableArray([new VirtualLink()]);
+	this.connection_points = ko.observableArray();
+	this.virtual_links = ko.observableArray();
 	this.lifecycle_events = ko.observableArray([new LifecycleEvent()]);
-	this.deployment_flavours = ko.observableArray([new DeploymentFlavour()]);
-	this.monitoring_rules = ko.observableArray([new MonitoringRule()]);
+	this.deployment_flavours = ko.observableArray();
+	this.monitoring_rules = ko.observableArray();
 
 	this.addFunctionSpecificManager = function () {
 		this.function_specific_managers.push(new FunctionSpecificManager());
@@ -550,7 +550,7 @@ var vnfViewModel = function () {
 		this.virtual_links.remove(virtualLink);
 	}
 	.bind(this);
-
+	
 	this.addDeploymentFlavour = function () {
 		this.deployment_flavours.push(new DeploymentFlavour());
 		$("form").parsley().validate();
