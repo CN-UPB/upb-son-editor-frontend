@@ -17,6 +17,7 @@
 		<script src="../js/vnf.js"></script>
 		<script src="../js/utils.js"></script>
 		<script src="../js/knockout.mapping-latest.js"></script>
+		<script src='//cdn.tinymce.com/4/tinymce.min.js'></script>
 	</head>
 	<body>
 		<nav class="navbar navbar-default">
@@ -34,7 +35,10 @@
 		</nav>
 		<!--jquery ui-->
 		<div class="container">
-			<form data-parsley-validate class="form-horizontal" role="form">
+			<div align="right"> 	
+				<button id="switchButton" class="btn btn-primary" onclick="switchViews();"style="margin-bottom:15px;">Switch to YAML editor</button>
+			</div>
+			<form data-parsley-validate id="vnfForm" class="form-horizontal" role="form">
 				<div class="form-group">
 					<div id="accordion">
 						<h3>General Descriptor Section (Required)</h3>
@@ -789,12 +793,17 @@
 					</div>
 				</div>
 			</form>
-			<div align="center"> 	
+			<div id="saveButton" align="center"> 	
 				<button class="btn btn-primary" onclick="saveTables();">Save</button>
 			</div>
-			<ul class="pager">
+			<ul id="previous" class="pager">
 				<li><a onclick="goToProjectView();">Previous</a></li>
 			</ul>
+			<div id="textDiv" align="center" style="margin-bottom:15px">
+				<textarea id="yamlFile">
+				test
+				</textarea>
+			</div>
 		</div>	
 		<div id="successVnfDialog" title="Success" hidden>
 			<h4>New VNF is created!</h4>

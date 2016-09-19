@@ -95,6 +95,7 @@ function loadServices() {
 				trOptionTable.appendChild(tdDelete);
 				optionTable.appendChild(trOptionTable);
 				tdOptions.appendChild(optionTable);
+				var trService = document.createElement("tr");
 				trService.appendChild(tdName);
 				trService.appendChild(tdInfo);
 				trService.appendChild(tdType);

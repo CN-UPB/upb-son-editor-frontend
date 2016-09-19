@@ -1,7 +1,8 @@
 var queryString = {};
 var vnfViewModel;
-
-/*1.Function Specific Managers Section*/
+var vnfForm;
+var textDiv;
+var container;
 var FunctionSpecificManager = function () {
 	this.description = ko.observable("");
 	this.id = ko.observable("");
@@ -18,7 +19,6 @@ var FunctionSpecificManager = function () {
 		this.options.remove(option);
 	}
 	.bind(this);
-
 	this.init = function (data) {
 		this.description(data.description);
 		this.id(data.id);
@@ -31,7 +31,6 @@ var FunctionSpecificManager = function () {
 		return this;
 	};
 }
-
 var ResourceRequirements = function () {
 	this.docker_version = ko.observable("");
 	this.init = function (data) {
@@ -39,7 +38,6 @@ var ResourceRequirements = function () {
 		return this;
 	}
 }
-
 var Option = function () {
 	this.key = ko.observable("");
 	this.value = ko.observable("");
@@ -49,8 +47,6 @@ var Option = function () {
 		return this;
 	}
 }
-
-/*2.Virtual Deployment Units Section*/
 var VirtualDeploymentUnit = function () {
 	this.id = ko.observable("");
 	this.vm_image = ko.observable("");
@@ -60,7 +56,6 @@ var VirtualDeploymentUnit = function () {
 	this.connection_points = ko.observableArray();
 	this.monitoring_parameters = ko.observableArray();
 	this.scale_in_out = new ScaleInOut();
-
 	this.addRequirement = function () {
 		this.resource_requirements.push(new ResourceRequirement());
 		$("form").parsley().validate();
@@ -69,7 +64,6 @@ var VirtualDeploymentUnit = function () {
 		this.resource_requirements.remove(requirement);
 	}
 	.bind(this);
-
 	this.addPoint = function () {
 		this.connection_points.push(new ConnectionPoint());
 		$("form").parsley().validate();
@@ -78,7 +72,6 @@ var VirtualDeploymentUnit = function () {
 		this.connection_points.remove(point);
 	}
 	.bind(this);
-
 	this.addParameter = function () {
 		this.monitoring_parameters.push(new MonitoringParameter());
 		$("form").parsley().validate();
@@ -87,7 +80,6 @@ var VirtualDeploymentUnit = function () {
 		this.monitoring_parameters.remove(parameter);
 	}
 	.bind(this);
-
 	this.init = function (data) {
 		this.id(data.id);
 		this.vm_image(data.vm_image);
@@ -106,7 +98,6 @@ var VirtualDeploymentUnit = function () {
 		return this;
 	}
 }
-
 var MonitoringParameter = function () {
 	this.name = ko.observable("");
 	this.unit = ko.observable("");
@@ -122,7 +113,6 @@ var MonitoringParameter = function () {
 		return this;
 	}
 }
-
 var MonitoringRequirement = function () {
 	this.name = ko.observable("");
 	this.unit = ko.observable("");
@@ -132,99 +122,106 @@ var MonitoringRequirement = function () {
 		return this;
 	}
 }
-
 var HypervisorParameters = function () {
 	this.type = ko.observable("");
 	this.version = ko.observable("");
 	this.init = function (data) {
-		this.type(data.type);
-		this.version(data.version);
+		if (data != undefined) {
+			this.type(data.type);
+			this.version(data.version);
+		}
 		return this;
 	}
 }
-
 var VswitchCapabilities = function () {
 	this.version = ko.observable("");
 	this.type = ko.observable("");
 	this.overlay_tunnel = ko.observable("");
 	this.init = function (data) {
-		this.version(data.version);
-		this.type(data.type);
-		this.overlay_tunnel(data.overlay_tunnel);
+		if (data != undefined) {
+			this.version(data.version);
+			this.type(data.type);
+			this.overlay_tunnel(data.overlay_tunnel);
+		}
 		return this;
 	}
 }
-
 var CPU = function () {
 	this.vcpus = ko.observable(0);
 	this.cpu_support_accelerator = ko.observable("");
 	this.init = function (data) {
-		this.vcpus(data.vcpus);
-		this.cpu_support_accelerator(data.cpu_support_accelerator);
+		if (data != undefined) {
+			this.vcpus(data.vcpus);
+			this.cpu_support_accelerator(data.cpu_support_accelerator);
+		}
 		return this;
 	}
 }
-
 var Memory = function () {
 	this.size = ko.observable(0);
 	this.size_unit = ko.observable("MB");
 	this.large_pages_required = ko.observable(false);
 	this.numa_allocation_policy = ko.observable("");
 	this.init = function (data) {
-		this.size(data.size);
-		this.size_unit(data.size_unit);
-		this.large_pages_required(data.large_pages_required),
-		this.numa_allocation_policy(data.numa_allocation_policy);
+		if (data != undefined) {
+			this.size(data.size);
+			this.size_unit(data.size_unit);
+			this.large_pages_required(data.large_pages_required),
+			this.numa_allocation_policy(data.numa_allocation_policy);
+		}
 		return this;
 	}
 }
-
 var Storage = function () {
 	this.size = ko.observable(0);
 	this.size_unit = ko.observable("MB");
 	this.persistence = ko.observable(false);
 	this.init = function (data) {
-		this.size(data.size);
-		this.size_unit(data.size_unit);
-		this.persistence(data.persistence);
+		if (data != undefined) {
+			this.size(data.size);
+			this.size_unit(data.size_unit);
+			this.persistence(data.persistence);
+		}
 		return this;
 	}
 }
-
 var PCIE = function () {
 	this.SR_IOV = ko.observable(false);
 	this.device_pass_through = ko.observable(false);
 	this.init = function (data) {
-		this.SR_IOV(data["SR-IOV"]);
-		this.device_pass_through(data.device_pass_through);
+		if (data != undefined) {
+			this.SR_IOV(data["SR-IOV"]);
+			this.device_pass_through(data.device_pass_through);
+		}
 		return this;
 	}
 }
-
 var NICCaps = function () {
 	this.SR_IOV = ko.observable(false);
 	this.mirroring = ko.observable(false);
 	this.init = function (data) {
-		this.SR_IOV(data["SR-IOV"]);
-		this.mirroring(data.mirroring);
+		if (data != undefined) {
+			this.SR_IOV(data["SR-IOV"]);
+			this.mirroring(data.mirroring);
+		}
 		return this;
 	}
 }
-
 var Network = function () {
 	this.network_interface_bandwidth = ko.observable(0);
 	this.network_interface_bandwidth_unit = ko.observable("");
 	this.network_interface_card_capabilities = new NICCaps();
 	this.data_processing_acceleration_library = ko.observable("");
 	this.init = function (data) {
-		this.network_interface_bandwidth(data.network_interface_bandwidth);
-		this.network_interface_bandwidth_unit(data.network_interface_bandwidth_unit);
-		this.network_interface_card_capabilities.init(data.network_interface_card_capabilities);
-		this.data_processing_acceleration_library(data.data_processing_acceleration_library);
+		if (data != undefined) {
+			this.network_interface_bandwidth(data.network_interface_bandwidth);
+			this.network_interface_bandwidth_unit(data.network_interface_bandwidth_unit);
+			this.network_interface_card_capabilities.init(data.network_interface_card_capabilities);
+			this.data_processing_acceleration_library(data.data_processing_acceleration_library);
+		}
 		return this;
 	}
 }
-
 var ScaleInOut = function () {
 	this.minimum = ko.observable(1);
 	this.maximum = ko.observable(1);
@@ -236,7 +233,6 @@ var ScaleInOut = function () {
 		return this;
 	}
 }
-
 var ResourceRequirement = function () {
 	this.hypervisor_parameters = new HypervisorParameters();
 	this.vswitch_capabilities = new VswitchCapabilities();
@@ -246,18 +242,18 @@ var ResourceRequirement = function () {
 	this.network = new Network();
 	this.pcie = new PCIE();
 	this.init = function (data) {
-		this.hypervisor_parameters.init(data.hypervisor_parameters);
-		this.vswitch_capabilities.init(data.vswitch_capabilities);
-		this.cpu.init(data.cpu);
-		this.memory.init(data.memory);
-		this.storage.init(data.storage);
-		this.network.init(data.network);
-		this.pcie.init(data.pcie);
+		if (data != undefined) {
+			this.hypervisor_parameters.init(data.hypervisor_parameters);
+			this.vswitch_capabilities.init(data.vswitch_capabilities);
+			this.cpu.init(data.cpu);
+			this.memory.init(data.memory);
+			this.storage.init(data.storage);
+			this.network.init(data.network);
+			this.pcie.init(data.pcie);
+		}
 		return this;
 	}
 }
-
-/*3.Connection Points Section*/
 var ConnectionPoint = function () {
 	this.id = ko.observable("");
 	this.type = ko.observable("");
@@ -269,8 +265,6 @@ var ConnectionPoint = function () {
 		return this;
 	}
 }
-
-/*4.Virtual Links Section*/
 var VirtualLink = function () {
 	this.id = ko.observable("");
 	this.connectivity_type = ko.observable("");
@@ -294,8 +288,6 @@ var VirtualLink = function () {
 		return this;
 	};
 }
-
-/*5.VNF Lifecycle Events Section*/
 var Event = function () {
 	this.command = ko.observable("");
 	this.template_file = ko.observable("");
@@ -309,14 +301,12 @@ var Event = function () {
 		return this;
 	}
 }
-
 var Events = function () {
 	this.start = new Event();
 	this.stop = new Event();
 	this.restart = new Event();
 	this.scale_in = new Event();
 	this.scale_out = new Event();
-
 	this.init = function (data) {
 		this.start.init(data.start);
 		this.stop.init(data.stop);
@@ -326,7 +316,6 @@ var Events = function () {
 		return this;
 	}
 }
-
 var LifecycleEvent = function () {
 	this.authentication_username = ko.observable("");
 	this.driver = ko.observable("");
@@ -335,7 +324,6 @@ var LifecycleEvent = function () {
 	this.vnf_container = ko.observable("");
 	this.events = new Events();
 	this.flavor_id_ref = ko.observable("");
-
 	this.init = function (data) {
 		this.authentication_username(data.authentication_username);
 		this.driver(data.driver);
@@ -347,8 +335,6 @@ var LifecycleEvent = function () {
 		return this;
 	}
 }
-
-/*6.Deployment Flavours Section*/
 var DeploymentFlavour = function () {
 	this.id = ko.observable("");
 	this.flavour_key = ko.observable("");
@@ -356,7 +342,6 @@ var DeploymentFlavour = function () {
 	this.vdu_reference = ko.observableArray();
 	this.vlink_reference = ko.observableArray();
 	this.assurance_parameters = ko.observableArray();
-
 	this.addVduReference = function () {
 		this.vdu_reference.push(new Text());
 		$("form").parsley().validate();
@@ -365,7 +350,6 @@ var DeploymentFlavour = function () {
 		this.vdu_reference.remove(vduReference);
 	}
 	.bind(this);
-
 	this.addVlinkReference = function () {
 		this.vlink_reference.push(new Text());
 		$("form").parsley().validate();
@@ -374,7 +358,6 @@ var DeploymentFlavour = function () {
 		this.vlink_reference.remove(vduReference);
 	}
 	.bind(this);
-
 	this.addAssuranceParameter = function () {
 		this.assurance_parameters.push(new AssuranceParameter());
 		$("form").parsley().validate();
@@ -400,7 +383,6 @@ var DeploymentFlavour = function () {
 		return this;
 	}
 }
-
 var Text = function () {
 	this.text = ko.observable("");
 	this.init = function (data) {
@@ -408,7 +390,6 @@ var Text = function () {
 		return this;
 	}
 }
-
 var Violation = function () {
 	this.interval = ko.observable("");
 	this.breaches_count = ko.observable("");
@@ -418,7 +399,6 @@ var Violation = function () {
 		return this;
 	}
 }
-
 var Penalty = function () {
 	this.type = ko.observable("");
 	this.expression = ko.observable("");
@@ -432,7 +412,6 @@ var Penalty = function () {
 		return this;
 	}
 }
-
 var AssuranceParameter = function () {
 	this.violation = ko.observableArray();
 	this.value = ko.observable("");
@@ -441,7 +420,6 @@ var AssuranceParameter = function () {
 	this.rel_id = ko.observable("");
 	this.id = ko.observable("");
 	this.unit = ko.observable("");
-
 	this.addViolation = function () {
 		this.violation.push(new Violation());
 		$("form").parsley().validate();
@@ -451,7 +429,6 @@ var AssuranceParameter = function () {
 		this.violation.remove(violation);
 	}
 	.bind(this);
-
 	this.init = function (data) {
 		this.violation($.map(data.violation, function (item) {
 				return new Violation().init(item)
@@ -465,8 +442,6 @@ var AssuranceParameter = function () {
 		return this;
 	}
 }
-
-/*7.Monitoring Rules*/
 var MonitoringRule = function () {
 	this.name = ko.observable("");
 	this.description = ko.observable("");
@@ -474,29 +449,27 @@ var MonitoringRule = function () {
 	this.duration_unit = ko.observable("");
 	this.condition = ko.observable("");
 	this.notification = new Notification();
-
 	this.init = function (data) {
-		this.name(data.name);
-		this.description(data.description);
-		this.duration(data.duration);
-		this.duration_unit(data.duration_unit);
-		this.condition(data.condition);
-		this.notification.init(data.notification);
+		if (data != undefined) {
+			this.name(data.name);
+			this.description(data.description);
+			this.duration(data.duration);
+			this.duration_unit(data.duration_unit);
+			this.condition(data.condition);
+			this.notification.init(data.notification);
+		}
 		return this;
 	}
 }
-
 var Notification = function () {
 	this.name = ko.observable("");
 	this.type = ko.observable("");
-
 	this.init = function (data) {
 		this.name(data.name);
 		this.type(data.type);
 		return this;
 	}
 }
-
 var vnfViewModel = function () {
 	this.schema = ko.observable();
 	this.descriptor_version = ko.observable();
@@ -505,7 +478,6 @@ var vnfViewModel = function () {
 	this.version = ko.observable();
 	this.author = ko.observable();
 	this.description = ko.observable();
-
 	this.function_specific_managers = ko.observableArray();
 	this.virtual_deployment_units = ko.observableArray([new VirtualDeploymentUnit()]);
 	this.connection_points = ko.observableArray();
@@ -513,7 +485,6 @@ var vnfViewModel = function () {
 	this.lifecycle_events = ko.observableArray([new LifecycleEvent()]);
 	this.deployment_flavours = ko.observableArray();
 	this.monitoring_rules = ko.observableArray();
-
 	this.addFunctionSpecificManager = function () {
 		this.function_specific_managers.push(new FunctionSpecificManager());
 		$("form").parsley().validate();
@@ -522,7 +493,6 @@ var vnfViewModel = function () {
 		this.function_specific_managers.remove(functionSpecificManager);
 	}
 	.bind(this);
-
 	this.addVirtualDeploymentUnit = function () {
 		this.virtual_deployment_units.push(new VirtualDeploymentUnit());
 		$("#accordion_units").accordion("refresh");
@@ -532,7 +502,6 @@ var vnfViewModel = function () {
 		this.virtual_deployment_units.remove(virtualDeploymentUnit);
 	}
 	.bind(this);
-
 	this.addConnectionPoint = function () {
 		this.connection_points.push(new ConnectionPoint());
 		$("form").parsley().validate();
@@ -541,7 +510,6 @@ var vnfViewModel = function () {
 		this.connection_points.remove(connectionPoint);
 	}
 	.bind(this);
-
 	this.addVirtualLink = function () {
 		this.virtual_links.push(new VirtualLink());
 		$("form").parsley().validate();
@@ -550,7 +518,6 @@ var vnfViewModel = function () {
 		this.virtual_links.remove(virtualLink);
 	}
 	.bind(this);
-	
 	this.addDeploymentFlavour = function () {
 		this.deployment_flavours.push(new DeploymentFlavour());
 		$("form").parsley().validate();
@@ -559,7 +526,6 @@ var vnfViewModel = function () {
 		this.deployment_flavours.remove(deploymentFlavour);
 	}
 	.bind(this);
-
 	this.addLifecycleEvent = function () {
 		this.lifecycle_events.push(new LifecycleEvent());
 		$("form").parsley().validate();
@@ -568,7 +534,6 @@ var vnfViewModel = function () {
 		this.lifecycle_events.remove(lifecycleEvent);
 	}
 	.bind(this);
-
 	this.addMonitoringRule = function () {
 		this.monitoring_rules.push(new MonitoringRule());
 		$("form").parsley().validate();
@@ -577,7 +542,6 @@ var vnfViewModel = function () {
 		this.monitoring_rules.remove(monitoring_rule);
 	}
 	.bind(this);
-
 	this.init = function (vnf) {
 		vnfViewModel.schema(vnf.schema);
 		vnfViewModel.descriptor_version(vnf.descriptor_version);
@@ -610,26 +574,20 @@ var vnfViewModel = function () {
 		$("form").parsley().validate();
 	};
 };
-/*Other page events*/
-
 function saveTables() {
 	$("form").parsley().validate();
 	if ($("form").parsley().isValid()) {
 		var jsonData = ko.toJSON(vnfViewModel);
-		//correct some variable names
 		jsonData = jsonData.replace(/SR_IOV/g, "SR-IOV");
 		jsonData = jsonData.replace(/scale_in_out/g, "scale-in-out");
 		jsonData = jsonData.replace(/scale_in/g, "scale-in");
 		jsonData = jsonData.replace(/scale_out/g, "scale-out");
-		//console.log(jsonData);
 		if (queryString["operation"] != "edit") {
 			createNewVnf(jsonData);
 		} else {
 			updateVnf(jsonData);
 		}
-	}
-	else
-	{
+	} else {
 		$("#FailedValidationDialog").dialog({
 			modal : true,
 			draggable : false,
@@ -641,7 +599,6 @@ function saveTables() {
 		});
 	}
 }
-
 function updateVnf(jsonData) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/" + queryString["vnfId"],
@@ -659,7 +616,6 @@ function updateVnf(jsonData) {
 				buttons : {
 					ok : function () {
 						$(this).dialog("close");
-
 					}
 				}
 			});
@@ -677,7 +633,6 @@ function updateVnf(jsonData) {
 		}
 	});
 }
-
 function createNewVnf(jsonData) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/",
@@ -713,7 +668,6 @@ function createNewVnf(jsonData) {
 		}
 	});
 }
-
 function loadVnf(vnfId) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/" + vnfId,
@@ -725,20 +679,101 @@ function loadVnf(vnfId) {
 			document.getElementById("nav_vnf").text = "VNF: " + data.name;
 			vnfViewModel.init(data.descriptor);
 			$("#accordion_units").accordion("refresh");
-		    $( "[title]" ).tooltip();
+			$("[title]").tooltip();
 		}
 	});
 }
-
 function goToWorkspaceView() {
 	window.location.href = "workspaceView.html?wsId=" + queryString["wsId"];
 }
-
 function goToProjectView() {
 	window.location.href = "projectView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"];
 }
+function readJsonObject(str, obj) {
+	var yamlData = "";
+	var i = 0;
+	for (var key in obj) {
+		if (i == 0) {
+			if (str != "")
+				yamlData += "-";
+			yamlData += str + key + ": ";
+		} else {
+			yamlData += str + str + key + ": ";
+		}
+		i++;
+		var val = obj[key];
+		var valType = typeof obj[key];
+		if (valType == "string") {
+			if (val.length == 0) {
+				yamlData += '""' + "<br>";
+			} else {
+				yamlData += obj[key] + "<br>";
+			}
+		} else {
+			if (val.length == 0) {
+				yamlData += "[]" + "<br>";
+			} else {
+				yamlData += "<br>";
+				for (var k in val) {
+					yamlData += readJsonObject("&nbsp;", val[k]);
+				}
+			}
+		}
+	}
+	return yamlData;
+}
 
-$(document).ready(function () {	
+function convertToYaml() {
+	var jsonData = ko.toJSON(vnfViewModel);
+	jsonData = jsonData.replace(/SR_IOV/g, "SR-IOV");
+	jsonData = jsonData.replace(/scale_in_out/g, "scale-in-out");
+	jsonData = jsonData.replace(/scale_in/g, "scale-in");
+	jsonData = jsonData.replace(/scale_out/g, "scale-out");
+	var jsonObj = JSON.parse(jsonData);
+	//console.log(jsonObj);
+	var yamlData = readJsonObject("", jsonObj);
+	return yamlData;
+}
+
+function updateViewModel(yamlData) {
+	console.log(yamlData);
+	yamlData = yamlData.replace(/<p>/g, "");
+	yamlData = yamlData.replace(/&nbsp;/g, "");
+	yamlData = yamlData.replace(/SR-IOV/g, "SR_IOV");
+	yamlData = yamlData.replace(/scale-in-out/g, "scale_in_out");
+	yamlData = yamlData.replace(/scale-in/g, "scale_in");
+	yamlData = yamlData.replace(/scale-out/g, "scale_out");
+	var words = yamlData.split("<br>");
+}
+
+function switchViews() {
+	var switchButton = document.getElementById("switchButton");
+	var previous = document.getElementById("previous");
+	var saveButton = document.getElementById("saveButton");
+	if (switchButton.innerHTML == "Switch to YAML editor") {
+		switchButton.innerHTML = "Switch to normal editor";
+		var yamlData = convertToYaml();
+		tinyMCE.activeEditor.setContent(yamlData);
+		vnfForm.style.visibility = "hidden";
+		textDiv.style.visibility = "visible";
+		container.appendChild(saveButton);
+		container.appendChild(previous);
+		container.appendChild(vnfForm);
+
+	} else {
+		switchButton.innerHTML = "Switch to YAML editor";
+		var yamlData = tinyMCE.activeEditor.getContent({
+				format : 'raw'
+			});
+		updateViewModel(yamlData);
+		vnfForm.style.visibility = "visible";
+		textDiv.style.visibility = "hidden";
+		container.insertBefore(previous, textDiv);
+		container.insertBefore(saveButton, previous);
+		container.insertBefore(vnfForm, saveButton);
+	}
+}
+$(document).ready(function () {
 	queryString = getQueryString();
 	var wsId = queryString["wsId"];
 	var ptId = queryString["ptId"];
@@ -777,5 +812,20 @@ $(document).ready(function () {
 		collapsible : true,
 		heightStyle : "content"
 	});
-	$( "[title]" ).tooltip();
+	$("[title]").tooltip();
+	tinymce.init({
+		selector : 'textarea',
+		height : 500,
+		menubar : false,
+		toolbar : 'undo redo | bold italic ',
+		setup : function (ed) {
+			ed.on('init', function () {
+				this.getDoc().body.style.fontSize = '15px';
+			});
+		}
+	});
+	vnfForm = document.getElementById("vnfForm");
+	textDiv = document.getElementById("textDiv");
+	textDiv.style.visibility = "hidden";
+	container = vnfForm.parentNode;
 });
