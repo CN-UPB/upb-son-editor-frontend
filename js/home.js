@@ -98,7 +98,7 @@ function createNewWorkspace(wsName) {
 			"name" : wsName
 		}),
 		success : function (data) {
-			goToWorkspaceView(data.name, data.id);
+			goToWorkspaceView(data.id);
 		},
 		error : function (err) {
 			$('#errorDialog').text(err.responseText);
