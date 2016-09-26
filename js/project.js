@@ -9,9 +9,6 @@ var itemDictionary = {};
 
 $(document).ready(function () {
 	queryString = getQueryString();
-	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
-	document.getElementById("nav_project").text = "Project: " + queryString["ptName"];
-	document.getElementById("nav_ns").text = "Network Service: " + queryString["nsName"];
 	wsId = queryString["wsId"];
 	ptId = queryString["ptId"];
 	nsId = queryString["nsId"];
