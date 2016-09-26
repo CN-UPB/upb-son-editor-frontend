@@ -6,9 +6,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"></link>
+		<link rel="stylesheet" href="../css/editorStyle.css"></link>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+		<script src="../js/parsley.js"></script>
 		<script src="../js/constants.js"></script>
 		<script src="../js/home.js"></script> 
 		<script src="../js/utils.js"></script>
@@ -62,8 +64,11 @@
 		</div>
 		
 		<div id="createWorkspaceDialog" title="Create new workspace" hidden>
-			<h4>Please input the name of the new workspace:</h4>
-			<input id ='wsNameInput' placeholder="Enter name of workspace"/>
+			<form data-parsley-validate>
+				<h4>Please input the name of the new workspace:</h4>
+				<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed."
+				id ='wsNameInput' placeholder="Enter name of workspace"/>
+			</form>
 		</div>
 
 		<div id="errorDialog" title="Error"/>

@@ -6,6 +6,7 @@ var ptId = "";
 var nsId = "";
 var availableItems = [];
 var itemDictionary = {};
+
 $(document).ready(function () {
 	queryString = getQueryString();
 	document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
@@ -14,6 +15,27 @@ $(document).ready(function () {
 	wsId = queryString["wsId"];
 	ptId = queryString["ptId"];
 	nsId = queryString["nsId"];
+
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_workspace").text = "Workspace: " +data.name;
+		}
+	});
+		$.ajax({
+		url : serverURL + "workspaces/" + wsId+"/projects/" + ptId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_project").text = "Project: " +data.name;
+		}
+	});
 	loadServices();
 	loadVnfs();
 	//search bar(uses jquery ui Autocomplete)
@@ -79,22 +101,25 @@ function loadServices() {
 				trOptionTable.appendChild(tdDelete);
 				optionTable.appendChild(trOptionTable);
 				tdOptions.appendChild(optionTable);
+				var trService = document.createElement("tr");
 				trService.appendChild(tdName);
 				trService.appendChild(tdInfo);
 				trService.appendChild(tdType);
 				trService.appendChild(tdOptions);
 				document.getElementById("display_NS_VNFS").appendChild(trService);
-				(function (serviceName, serviceId) {
+				(function (serviceId) {
 					tdEdit.addEventListener('click', function () {
-						goToServiceView(serviceName, sericeId);
+
+						editService(serviceId);
+
 					}, false);
 					tdClone.addEventListener('click', function () {
-						cloneService(serviceName, serviceId);
+						cloneService(serviceId);
 					}, false);
 					tdDelete.addEventListener('click', function () {
 						deleteService(nsId);
 					}, false);
-					})(serviceName, serviceId)
+					})(serviceId)
 			}
 		}
 	});
@@ -151,17 +176,17 @@ function loadVnfs() {
 				trVnf.appendChild(tdType);
 				trVnf.appendChild(tdOptions);
 				document.getElementById("display_NS_VNFS").appendChild(trVnf);
-				(function (vnfName, vnfId) {
+				(function (vnfId) {
 					tdEdit.addEventListener('click', function () {
-						editVnf(vnfName, vnfId);
+						editVnf(vnfId);
 					}, false);
 					tdClone.addEventListener('click', function () {
-						cloneVnf(vnfName, vnfId);
+						cloneVnf(vnfId);
 					}, false);
 					tdDelete.addEventListener('click', function () {
 						deleteVnf(vnfId);
 					}, false);
-				})(vnfName, vnfId)
+				})(vnfId)
 			}
 		}
 	});
@@ -184,7 +209,7 @@ function loadList(selectedIndex) {
 		break;
 	}
 }
-function deleteService(ServiceId) {
+function deleteService(serviceId) {
 	$("#ConfirmDeletionDialog_Service").dialog({
 		modal : true,
 		draggable : false,
@@ -222,7 +247,7 @@ function deleteService(ServiceId) {
 }
 
 function deleteVnf(vnfId) {
-	$("#ConfirmDeletionDialog_Vnf").dialog({
+	$("#ConfirmDeletionDialog_VNF").dialog({
 		modal : true,
 		draggable : false,
 		buttons : {
@@ -258,19 +283,20 @@ function deleteVnf(vnfId) {
 	});
 }
 
-function cloneService(serviceName, serviceId) {
-	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&serviceName=" + serviceName + "&serviceId=" + serviceId+"&operation="+"clone";
+function cloneService(serviceId) {
+	window.location.href = "nsView.html?wsId=" + queryString["wsId"] +  "&ptId=" + queryString["ptId"] + "&serviceId=" + serviceId+"&operation="+"clone";
 
 }
 
-function cloneVnf(vnfName, vnfId) {
-	window.location.href = "vnfView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&vnfName=" + vnfName + "&vnfId=" + vnfId + "&operation=" + "clone";
+function cloneVnf(vnfId) {
+	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] +  "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "clone";
 
 }
 
 function createNewVnf() {
-	window.location.href = "vnfView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&operation=" + "create";
+	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] +  "&ptId=" + queryString["ptId"] + "&operation=" + "create";
 }
+
 
 
 /*function createNewService(name, id) {
@@ -281,12 +307,13 @@ function createNewService(nsName, nsId) {
 	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] +  "&nsName=" + nsName + "&nsId=" + nsId;
 }
 
-function editService(serviceName, serviceId) {
-	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&serviceName=" + serviceName + "&serviceId=" + serviceId + "&operation=" + "edit";
+function editService(serviceId) {
+	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] +  "&serviceId=" + serviceId+"&operation="+"edit";
+
 }
 
-function editVnf(vnfName, vnfId) {
-	window.location.href = "vnfView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&vnfName=" + vnfName + "&vnfId=" + vnfId + "&operation=" + "edit";
+function editVnf(vnfId) {
+	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit";
 }
 
 //create new networkservice dialog (uses jquery ui Dialog)

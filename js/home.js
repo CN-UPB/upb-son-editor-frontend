@@ -41,7 +41,7 @@ $(document).ready(function () {
 				document.getElementById("display_wsTable").appendChild(trWs);
 				(function(wsName,wsId){
 					tdEdit.addEventListener('click', function () {
-						goToWorkspaceView(wsName, wsId);
+						goToWorkspaceView(wsId);
 					}, false);
 					tdDelete.addEventListener('click', function () {
 						deleteWs(wsId);
@@ -56,7 +56,7 @@ $(document).ready(function () {
 						showCreateDialog();
 					} else {
 						var selectedId = wsDictionary[ui.item.label];
-						goToWorkspaceView(ui.item.label, selectedId);
+						goToWorkspaceView(selectedId);
 					}
 				}
 			});
@@ -74,8 +74,11 @@ function showCreateDialog() {
 				$(this).dialog("close");
 			},
 			"Create" : function () {
-				createNewWorkspace($('#wsNameInput').val());
-				$(this).dialog("close");
+				if($('form').parsley().isValid())
+				{
+					createNewWorkspace($('#wsNameInput').val());
+					$(this).dialog("close");
+				}
 			}
 		}
 	});
@@ -111,8 +114,8 @@ function createNewWorkspace(wsName) {
 	});
 }
 
-function goToWorkspaceView(wsName, wsId) {
-	window.location.href = "workspaceView.html?wsName=" + wsName + "&wsId=" + wsId;
+function goToWorkspaceView(wsId) {
+	window.location.href = "workspaceView.html?wsId=" + wsId;
 }
 
 function deleteWs(wsId) {

@@ -22,8 +22,8 @@
       <a class="navbar-brand" href="homeView.html">SONATA SDK Editor</a>
     </div>
     <ul class="nav navbar-nav">
-	   <li><a onclick="history.go(-2);">Home</a></li>
-       <li><a id="nav_workspace" onclick="history.go(-1);">Workspace</a></li>
+	   <li><a onclick="goToHomeView();">Home</a></li>
+       <li><a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a></li>
        <li class="active"><a id="nav_project" onclick="history.go(0);">Project</a></li>
     </ul>
   </div>
@@ -43,7 +43,7 @@
 	</div>
 	 <div class="col-md-4">
 			<button class="btn btn-primary" onclick="showCreateNSDialog()">New NS</button>
-			<button class="btn btn-primary" onclick="createNewVnf();">New VNF</button>	
+			<button class="btn btn-primary" onclick="createNewVnf();">New VNF</button>				
 	</div>
 </div>
 <div class="row top-buffer" style="margin-top:50px;">
@@ -62,7 +62,9 @@
 		</table>
 	</div>
 </div>
-
+<ul class="pager">
+			<li><a onclick="goToWorkspaceView();">Previous</a></li>
+</ul>
 </div>
 <div id="ConfirmDeletionDialog_VNF" title="Confirm deletion" hidden>
 	<h4>Do you really want to delete the VNF?</h4>

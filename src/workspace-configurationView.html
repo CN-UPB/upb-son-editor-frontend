@@ -25,10 +25,10 @@
 				</div>
 				<ul class="nav navbar-nav">
 					<li>
-						<a onclick="history.go(-2);">Home</a>
+						<a onclick="goToHomeView();">Home</a>
 					</li>
 					<li>
-						<a id="nav_workspace" onclick="history.go(-1);">Workspace</a>
+						<a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a>
 					</li>
 					<li class="active">
 						<a onclick="history.go(0);">Configuration</a>
@@ -36,15 +36,14 @@
 				</ul>
 			</div>
 		</nav>
-
 		<div class="container">
-			<form data-parsley-validate="" class="form-horizontal" role="form">
+			<form data-parsley-validate class="form-horizontal" role="form">
 				<div class="form-group" align="left">
 					<div class="col-md-2">
 						<label class="control-label">Workspace name:</label>
 					</div>
 					<div class="col-md-4">
-						<input data-parsley-trigger="input" data-parsley-pattern="^[A-Za-z-_]+$"  data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group">
@@ -55,11 +54,11 @@
 								<div id="plattform" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input data-parsley-trigger="input" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
-										<input data-parsley-trigger="input" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<div class="form-group" align="right">
 										<button class="editorButtons delete" data-bind="click: $parent.deletePlatform">Delete</button>								
@@ -77,11 +76,11 @@
 								<div id="catalogue" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input data-parsley-trigger="input" data-parsley-pattern="^[A-Za-z-_]+$" data-parsley-minlength="2" data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
-										<input data-parsley-trigger="input" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<div class="form-group" align="right">
 										<button class="editorButtons delete" data-bind="click: $parent.deleteCatalogue">Delete</button>								
@@ -94,12 +93,22 @@
 							</div>
 						</div>
 					</div>
-				</div>	
-				<div class="form-group"align="center"> 									
-					<button class="btn btn-default" onclick="cancelConfiguration();"> Cancel</button>
-					<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
-				</div>
+				</div>		
 			</form>
+			<div align="center"> 									
+				<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
+			</div>
+			<ul class="pager">
+				<li><a onclick="goToWorkspaceView();">Previous</a></li>
+			</ul>
+		</div>
+		<div id="successSaveConfiDialog" title="Success" hidden>
+			<h4>Workspace configuration is updated!</h4>
+		</div>
+		<div id="errorDialog" title="Error" hidden>
+		</div>
+		<div id="FailedValidationDialog" title="Failed" hidden>
+			<h4>Please refill the invalid fileds!</h4>
 		</div>
 	</body>
 </html>

@@ -4,6 +4,7 @@ var nss=[];
 var queryString = {};
 var wsId = "";
 var ptId = "";
+var nsId = "";
 
 var vnfViewModel = function(){
 					this.vnfs = ko.observableArray([]);
@@ -38,12 +39,54 @@ $(document).ready(function() {
 		jsPlumb.ready(function() {
 		
 		queryString = getQueryString();
+
 		document.getElementById("nav_workspace").text = "Workspace: " + queryString["wsName"];
 		document.getElementById("nav_project").text = "Project: " + queryString["ptName"];
 		document.getElementById("nav_ns").text = "Network Service: " + queryString["nsName"];
+
 		wsId = queryString["wsId"];
 		ptId = queryString["ptId"];
-				
+		nsId = queryString["nsId"];
+
+		// ajax calls for navigation bar to fetch workspace name, project name, and network service name
+		$.ajax({
+			url : serverURL + "workspaces/" + wsId,
+			dataType : "json",
+			xhrFields : {
+				withCredentials : true
+			},
+			success : function (data) {
+				document.getElementById("nav_workspace").text = "Workspace: " +data.name;
+			}
+		});
+		$.ajax({
+			url : serverURL + "workspaces/" + wsId+"/projects/" + ptId,
+			dataType : "json",
+			xhrFields : {
+				withCredentials : true
+			},
+			success : function (data) {
+				document.getElementById("nav_project").text = "Project: " +data.name;
+			}
+		});		
+		
+		$.ajax({
+			url : serverURL + "workspaces/" + wsId+"/projects/" + ptId + "/services/" + nsId,
+			dataType : "json",
+			xhrFields : {
+				withCredentials : true
+			},
+			success : function (data) {
+				document.getElementById("nav_ns").text = "NS: " +data.name;
+			}
+		});
+		
+		
+		
+		
+		
+		console.log(wsId,ptId,nsId);
+		
 		$.ajax({
 			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
 			dataType : "json",
@@ -120,6 +163,21 @@ $(document).ready(function() {
 		});
 		
 		
+		$(".connection-point").draggable({
+			helper: "clone", 
+			revert: "invalid"
+			});
+		$(".e-lan").draggable({
+			helper: "clone", 
+			revert: "invalid"
+			});
+		/*
+		$(".e-line").draggable({
+			helper: "clone", 
+			revert: "invalid"
+			});
+		*/
+		
 		/* 
 		$(".vnf").draggable({
 			helper: "clone", 
@@ -149,7 +207,7 @@ $(document).ready(function() {
 		//--------------------------------------------------------
 		var countDropped = 1;
 		$( "#editor").droppable({
-			accept: " .vnf , .ns",
+			accept: " .vnf , .ns , .connection-point , .e-lan , .e-line ",
 			drop: function(event, ui) {
 
 				var data = ui.draggable.clone();
@@ -168,20 +226,39 @@ $(document).ready(function() {
 				//var vnfClassName = data.attr('class');
 				//console.log(vnfClassName);
 				if (data.hasClass('vnf') == true) { 
-				//code not tested due to server error
+				
 				// remove the 'vnf' class from the source vnf , add new class 'vnf-after-drop' to the clone
 					console.log("inside vnf condition");
 					data.removeClass('vnf');
 					data.addClass('vnf-after-drop');
 					data.removeClass('ui-draggable');
 				}
-				// --------------------- code not tested due to server error
+				
 				else if (data.hasClass('ns') == true) {
 					console.log("inside ns condition");
 					data.removeClass('ns');
 					data.addClass('ns-after-drop');
 					data.removeClass('ui-draggable');
-				}	
+				}
+				else if (data.hasClass('connection-point') == true) {
+					console.log("inside connection-point condition");
+					data.removeClass('connection-point');
+					data.addClass('connection-point-after-drop');
+					data.removeClass('ui-draggable');
+				}
+				else if (data.hasClass('e-lan') == true) {
+					console.log("inside e-lan condition");
+					data.removeClass('e-lan');
+					data.addClass('e-lan-after-drop');
+					data.removeClass('ui-draggable');
+				}
+				/*
+				else if (data.hasClass('e-line') == true) {
+					console.log("inside e-line condition");
+					data.removeClass('e-line');
+					data.addClass('e-line-after-drop');
+					data.removeClass('ui-draggable');
+				} */
 				//-------------------- */
 				//console.log($(ui.draggable).position());
 				//var mouseX = $(ui.draggable).left;
@@ -201,13 +278,13 @@ $(document).ready(function() {
 				document.getElementById("editor").appendChild(data[0]);
 				
 				// Give the resizable properties to the dragged vnf
-				
+				/*
 				data.resizable({
 					//handles: 'all', 
 					animate: true, 
 					ghost: true
 					});
-				
+				*/
 				//console.log(event.clientX);
 				//console.log(event.clientY);
 			
@@ -230,7 +307,8 @@ $(document).ready(function() {
 						reattach: true,
 						scope: "blue",
 						connectorStyle: { strokeStyle: color2, lineWidth: 3 },
-						connector: ["Bezier", { curviness: 63 } ],
+						//connector: ["Bezier", { curviness: 63 } ],
+						connector: ["Flowchart"],
 						connectorHoverPaintStyle:{ 
 							 
 							strokeStyle: "orange" 
@@ -273,9 +351,11 @@ $(document).ready(function() {
 					
 						var deleteThisNode = confirm("Do you want to delete this node...");
 						if (deleteThisNode === true ) { 
+							
 							instance.detachAllConnections($(this));
 							instance.removeAllEndpoints($(this));
 							$(this).remove();
+							
 						}
 				}); 
 				
@@ -380,9 +460,12 @@ $(document).ready(function() {
 							updateConnections(info.connection, true);
 							//console.log(info);
 							//instance.removeAllEndpoints(info.sourceId);
-							instance.removeAllEndpoints(info.targetId);
+							
+							/*instance.removeAllEndpoints(info.targetId);*/
+							
 							//instance.remove(info.sourceId);
-							instance.remove(info.targetId);
+							
+							/*instance.remove(info.targetId);*/
 						}
 							
 						//else {
