@@ -370,7 +370,9 @@ function createNewNetworkservice() {
 }
 
 function goToServiceView(nsName, nsId) {
-	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] +  "&nsName=" + nsName + "&nsId=" + nsId;
+	//Removing the name parameter from URL
+	  window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + nsId;
+
 }
 
 $.get(serverURL + "/workspaces/" + wsId + "/projects/" + ptId + "/services/" + nsId )
