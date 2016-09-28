@@ -316,6 +316,8 @@ $(document).ready(function() {
 						beforeDrop: function (params) {
 							return confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
 						},
+						maxConnections: -1,
+						dragOptions: {},
 						dropOptions: exampleDropOptions
 						//anchors:["Right", "Left"],
 						//connector: ["StateMachine"]
@@ -396,6 +398,7 @@ $(document).ready(function() {
 						}
 						if (idx != -1) connections.splice(idx, 1);
 					}
+					console.log("number of connections:" + connections.length);
 					if (connections.length > 0) {
 						var s = "<span><strong>Connections</strong></span><br/><br/><table><tr><th>Scope</th><th>Source</th><th>Target</th></tr>";
 						for (var j = 0; j < connections.length; j++) {
@@ -437,9 +440,10 @@ $(document).ready(function() {
 						new animateConn(info.connection);
 						updateConnections(info.connection);
 					});
+					
 					instance.bind("connectionDetached", function (info, originalEvent) {
 						updateConnections(info.connection, true);
-					});
+					}); 
 
 					instance.bind("connectionMoved", function (info, originalEvent) {
 						//  only remove here, because a 'connection' event is also fired.
@@ -454,7 +458,7 @@ $(document).ready(function() {
 						var popupOkCancel = confirm("Do you want to delete this connection..??");
 						if (popupOkCancel === true) {
 							instance.detach(info);
-							updateConnections(info.connection, true);
+							//updateConnections(info.connection, true);
 							//console.log(info);
 							//instance.removeAllEndpoints(info.sourceId);
 							
