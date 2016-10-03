@@ -20,7 +20,9 @@
   <script type="text/javascript" src="../js/togglePanel.js"></script>
   <script type="text/javascript" src="../js/draggable.js"></script>
   <script src="../js/constants.js"></script>
+  <script src="../js/ns.js"></script>
   <script src="../js/utils.js"></script>
+  <link rel="stylesheet" media="screen" href="../css/nsView.css" />
 
 </head>
 
@@ -50,7 +52,7 @@
 				<div class="action-section">
 					<div class="row">
 						<div class="col-xs-4">
-							<a href=""><i class="fa fa-cog fa-2x" onclick="showDialog()"></i><br>Configure</a>
+						    <a href="#" onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</a>
 						</div>
 						
 						<div class="col-xs-4">
@@ -192,7 +194,47 @@
 	</div>
 
 
+<div id="createDialog" title="Create Networkservice Descriptor" hidden>
+	<h4>Sections of the Service Descriptor:</h4>
+		<div class="demo">
+            <div id="accordion">
+    				<h3>General Descriptor Section</h3>
+    			<div>
+    				<input class="labelClass" id ='nsVendorInput' placeholder="Enter Vendor details here" data-toggle="tooltip" 
+    				data-placement="top" title="will identify the NS uniquely across all NS vendors. It should at least be comprised of the reverse domain name that is under your controll. Moreover, it might have as many sub-groups as needed. For example: eu.sonata-nfv.nec."/>
 
+    				<input class="labelClass" id ='nsNameInput' placeholder="Enter Name here" data-toggle="tooltip" 
+    				data-placement="top" title="the name of the NS without its version. It can be created with any name written in lower letters and no strange symbols."/>
+
+    				<input class="labelClass" id ='nsVersionInput' placeholder="Enter Version here" data-toggle="tooltip" 
+    				data-placement="top" title="names the version of the NS descritor. Any typical version with numbers and dots, such as 1.0, 1.1, and 1.0.1 is allows here. The NS version must be increased with any new (changed) instance of the network function descriptor. Please note: The whole network service is composed of the descriptor and other artifacts, like VNFs. Thus, the network service may change, even if the description remains constant, just because another artifact changes. This might or might not be reflected in the version of the package descriptor."/>
+
+    				<input class="labelClass" id ='nsAuthorInput' placeholder="Enter Author details here (Optional)" data-toggle="tooltip" 
+    				data-placement="top" title="describes the author of the network service descriptor."/>
+
+    				<input class="labelClass" id ='nsDescriptionInput' placeholder="Enter Description here (Optional)" data-toggle="tooltip" 
+    				data-placement="top" title="provides an arbitrary description of the network service."/>
+    			</div>
+    				<h3>Network Functions Section</h3>
+    			<div></div>
+    				<h3>Connection Points Section</h3>
+    			<div></div>
+    				<h3>Virtual Links Section</h3>
+    			<div></div>
+    				<h3>Forwarding Graph Section</h3>
+    			<div></div>
+    				<h3>Vnf Lifecycle Events Section</h3>
+    			<div>
+    				<button type="button" class="btn btn-primary">Stop</button>
+    				<button type="button" class="btn btn-primary">Start</button>
+    			</div>
+    				<h3>Auto-scale policy Section</h3>
+    			<div></div>
+    				<h3>Monitoring Parameters Section</h3>
+    			<div></div>
+  			</div>
+		</div>
+</div>
 
 
 </body>
