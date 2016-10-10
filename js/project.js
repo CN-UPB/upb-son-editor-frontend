@@ -317,7 +317,7 @@ function editVnf(vnfId) {
 function showCreateNSDialog() {
 	$("#createNetworkserviceDialog").dialog({
 		modal : true,
-		draggable : false,
+		draggable : true,
 		buttons : {
 			Cancel : function (){
 				$(this).dialog("close");
