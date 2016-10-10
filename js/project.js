@@ -305,7 +305,7 @@ function createNewService(nsName, nsId) {
 }
 
 function editService(serviceId) {
-	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] +  "&serviceId=" + serviceId+"&operation="+"edit";
+	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] +  "&nsId=" + serviceId+"&operation="+"edit";
 
 }
 
