@@ -3,7 +3,7 @@ function showDialog() {
 	//alert("here");
 	$("#createDialog").dialog({
 		modal : true,
-		draggable : false,
+		draggable : true,
 		buttons : {
 			Cancel : function (){
 				$(this).dialog("close");
@@ -24,4 +24,8 @@ $(function() {
     $(".trigger").click(function() {
         $("#accordion").accordion("enable").accordion("activate", parseInt($(this).data("index"), 10)).accordion("disable");
     });
+});
+//showing msg on search bar
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
 });
