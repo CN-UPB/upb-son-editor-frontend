@@ -3,6 +3,8 @@ var vnfViewModel;
 var vnfForm;
 var textDiv;
 var container;
+var isYamlEditor=false;
+
 var FunctionSpecificManager = function () {
 	this.description = ko.observable("");
 	this.id = ko.observable("");
@@ -575,6 +577,16 @@ var vnfViewModel = function () {
 	};
 };
 function saveTables() {
+	if(isYamlEditor)
+	{	var yamlData = tinyMCE.activeEditor.getContent({
+				format : 'raw'
+			});
+		yamlData=yamlData.replace(/<br\s*[\/]?>/gi, "\n");
+		yamlData=yamlData.replace(/&nbsp;/g, " ")
+		yamlData=yamlData.replace(/<p>/g, "");
+		yamlData=yamlData.replace(/<\/p>/g, "");
+		updateViewModel(yamlData);
+	}
 	$("form").parsley().validate();
 	if ($("form").parsley().isValid()) {
 		var jsonData = ko.toJSON(vnfViewModel);
@@ -730,9 +742,7 @@ function convertToYaml() {
 	jsonData = jsonData.replace(/scale_in/g, "scale-in");
 	jsonData = jsonData.replace(/scale_out/g, "scale-out");
 	var jsonObj = JSON.parse(jsonData);
-	//console.log(jsonObj);
-	var yamlData = readJsonObject("", jsonObj);
-	return yamlData;
+	return jsyaml.safeDump(jsonObj,{indent: 4});
 }
 
 function updateViewModel(yamlData) {
@@ -743,16 +753,21 @@ function updateViewModel(yamlData) {
 	yamlData = yamlData.replace(/scale-in-out/g, "scale_in_out");
 	yamlData = yamlData.replace(/scale-in/g, "scale_in");
 	yamlData = yamlData.replace(/scale-out/g, "scale_out");
-	var words = yamlData.split("<br>");
+	var jsonObj = jsyaml.safeLoad(yamlData);
+	vnfViewModel.init(jsonObj);
+	$("#accordion_units").accordion("refresh");
 }
 
 function switchViews() {
 	var switchButton = document.getElementById("switchButton");
 	var previous = document.getElementById("previous");
 	var saveButton = document.getElementById("saveButton");
-	if (switchButton.innerHTML == "Switch to YAML editor") {
+	if (!isYamlEditor) {
 		switchButton.innerHTML = "Switch to normal editor";
+		isYamlEditor=true;
 		var yamlData = convertToYaml();
+		yamlData=yamlData.replace(/\r?\n/g, '<br/>');
+		yamlData=yamlData.replace(/\s/g, '&nbsp;')
 		tinyMCE.activeEditor.setContent(yamlData);
 		vnfForm.style.visibility = "hidden";
 		textDiv.style.visibility = "visible";
@@ -762,9 +777,14 @@ function switchViews() {
 
 	} else {
 		switchButton.innerHTML = "Switch to YAML editor";
+		isYamlEditor=false;
 		var yamlData = tinyMCE.activeEditor.getContent({
 				format : 'raw'
 			});
+		yamlData=yamlData.replace(/<br\s*[\/]?>/gi, "\n");
+		yamlData=yamlData.replace(/&nbsp;/g, " ")
+		yamlData=yamlData.replace(/<p>/g, "");
+		yamlData=yamlData.replace(/<\/p>/g, "");
 		updateViewModel(yamlData);
 		vnfForm.style.visibility = "visible";
 		textDiv.style.visibility = "hidden";
