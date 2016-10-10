@@ -268,7 +268,7 @@ $(document).ready(function() {
 					console.log(cur_ns.descriptor);
 				
 					//console.log(cur_ns.descriptor.contains("network_functions"));
-					console.log(cur_ns.descriptor.network_functions);
+					//console.log(cur_ns.descriptor.network_functions);
 					//console.log((cur_ns.descriptor.network_functions).length);
 				}
 			});
