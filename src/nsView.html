@@ -139,14 +139,7 @@
 												<li role="presentation"><a href="#">Virtual Network Function<span id="toggle-panel-left" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
 													<div class="panel" id="show-vnfs">
 														<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">
-															<div data-bind="attr: {'id': 'vnf_' + id}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
-															<!--
-															<div id="vnf1" class="vnf" > <p>vnf1</p></div>
-															<div id="vnf2" class="vnf" > <p>vnf2</p></div>
-															<div id="vnf3" class="vnf" > <p>vnf3</p></div>
-															<div id="vnf4" class="vnf" > <p>vnf4</p></div>
-															<div id="vnf5" class="vnf" > <p>vnf5</p></div>
-															<div id="vnf6" class="vnf" > <p>vnf6</p></div> -->
+															<div data-bind="attr: {'id': 'vnf_' + id}, drag: {value:$data}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
 														</div>
 													</div>
 													
@@ -155,19 +148,15 @@
 												<li role="presentation"><a href="#">Network Services<span id="toggle-panel-left-ns" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
 													<div class="panel" id="show-ns">
 														<div data-bind="foreach: nss" id="ns-panel" class="ns-list">
-															<div data-bind="attr: {'id': 'ns_' + id}" class="ns" ><p data-bind="text: name">ns1</p></div>
+															<div data-bind="attr: {'id': 'ns_' + id}, drag: {value:$data}" class="ns" ><p data-bind="text: name">ns1</p></div>
 														</div>
 													</div>
 												
 												</li>
 												<li role="presentation"><a href="#">Infrastructure<span id="toggle-panel-left-infrastructure" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
 													<div class="panel" id="show-infrastructure">
-														<div id="cp1" class="connection-point" > <p>CP</p></div>
-														<!--
-														<div id="cp2" class="connection-point" > <p>START</p></div>
-														<div id="cp3" class="connection-point" > <p>END</p></div> -->
+														<div id="cp" class="connection-point" > <p>CP</p></div>
 														<div id="e-lan" class="e-lan" > <p>E-LAN</p></div>
-														<!-- <div id="e-line" class="e-line" > <p>E-LINE</p></div> -->
 													</div>
 												</li>	
 											</ul>
@@ -175,7 +164,7 @@
 									</div>
 																	
 									<div class="col-sm-9 no-padding">
-										<div id="editor" class="editor-area">
+										<div id="editor" class="editor-area" data-bind="drop: {value: $data}">
 											<div id="connection-list" >
 												
 											</div>

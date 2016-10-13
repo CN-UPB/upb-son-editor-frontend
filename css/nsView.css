@@ -9,3 +9,14 @@
 input, labelClass {
     float:left;
 }
+
+.endpointLabel {
+    display:none;         /* foo is display:none to begin */
+	pointer-events: none;
+    background-color:white; 
+    z-index:25;
+    border:1px solid red;
+    font-size:10px;
+    padding:0.2em;
+    cursor:pointer;
+}
