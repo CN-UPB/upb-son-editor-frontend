@@ -20,6 +20,13 @@ var vnfViewModel = function(){
 					this.addNs=function(ns){
 						this.nss.push(ns);
 					}.bind(this);
+
+
+					this.network_functions = ko.observableArray([]);
+
+					this.addVnfToEditor=function(vnf){
+						this.network_functions.push(vnf);
+					}.bind(this);
 				}
  
 var vnfModel = new vnfViewModel();
@@ -79,13 +86,62 @@ $(document).ready(function() {
 				document.getElementById("nav_ns").text = "NS: " +data.name;
 			}
 		});
+	/*	
 		
-		
-		
-		
+		// Get the current service details to draw the state of that service
+		$.ajax({
+			url : serverURL + "/workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/" + queryString["nsId"],
+			method : 'GET',
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			xhrFields : {
+				withCredentials : true
+			},
+			success : function (ns_data) {
+				console.log("service " + nsId + " loaded..!!");
+				cur_ns = ns_data;
+				console.log(cur_ns);
+				console.log(cur_ns.descriptor);
+				
+
+				//console.log(cur_ns.descriptor.contains("network_functions"));
+				//console.log(cur_ns.descriptor.network_functions);
+				//console.log((cur_ns.descriptor.network_functions).length);
+
+				if(typeof cur_ns.descriptor.network_functions === 'undefined') {
+					console.log("inside this service, there is no vnf");
+				}
+				else{
+					//cur_ns.descriptor.author = "surendra Shankar kulkarni";
+					//updateService(vnf_data.id, vnf_data.vendor, vnf_data.name, vnf_data.version);
+					//updateService(vnf_data);
+					console.log("This network service contains "+(cur_ns.descriptor.network_functions).length+ " vnfs...");
+					console.log(cur_ns.descriptor.network_functions);
+					var windowHeight = $(window).innerHeight();
+					var max = windowHeight/2;
+					var min = windowHeight/4;
+					var $x = Math.random() * max;
+					var $y = Math.random() * min;
+					for (var i=0; i<(cur_ns.descriptor.network_functions).length; i++){
+						//console.log((cur_ns.descriptor.network_functions).length);
+						vnfModel.addVnfToEditor(cur_ns.descriptor.network_functions[i]);
+						$(".vnf-after-drop").draggable();
+						console.log($x +","+$y);
+						$(".vnf-after-drop").css({position:'relative', left: $x, top: $y});
+						$x = $x + 100;
+						$y = $y + 50;
+					}
+
+					//updateService(cur_ns);
+					//updateService_firstVNF(vnf_data);
+				}
+
+			}
+		}); */
 		
 		console.log(wsId,ptId,nsId);
 		
+		// Load VNFs in VNF-panel
 		$.ajax({
 			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
 			dataType : "json",
@@ -116,7 +172,7 @@ $(document).ready(function() {
 		
 		//ko.applyBindings(vnfModel); 
 		
-		
+		// Load Services in Service Panel
 		$.ajax({
 			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
 			dataType : "json",
@@ -199,7 +255,88 @@ $(document).ready(function() {
 						dropOptions: exampleDropOptions
 						//anchors:["Right", "Left"],
 						//connector: ["StateMachine"]
-					};		
+					};
+
+
+		// Get the current service details to draw the state of that service
+		$.ajax({
+			url : serverURL + "/workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/" + queryString["nsId"],
+			method : 'GET',
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			xhrFields : {
+				withCredentials : true
+			},
+			success : function (ns_data) {
+				console.log("service " + nsId + " loaded..!!");
+				cur_ns = ns_data;
+				console.log(cur_ns);
+				console.log(cur_ns.descriptor);
+				
+
+				//console.log(cur_ns.descriptor.contains("network_functions"));
+				//console.log(cur_ns.descriptor.network_functions);
+				//console.log((cur_ns.descriptor.network_functions).length);
+
+				if(typeof cur_ns.descriptor.network_functions === 'undefined') {
+					console.log("inside this service, there is no vnf");
+				}
+				else{
+					//cur_ns.descriptor.author = "surendra Shankar kulkarni";
+					//updateService(vnf_data.id, vnf_data.vendor, vnf_data.name, vnf_data.version);
+					//updateService(vnf_data);
+					console.log("This network service contains "+(cur_ns.descriptor.network_functions).length+ " vnfs...");
+					console.log(cur_ns.descriptor.network_functions);
+					var windowHeight = $(window).innerHeight();
+					var max = windowHeight/4;
+					var min = windowHeight/4;
+					var $x = Math.random() * max;
+					var $y = Math.random() * min;
+					for (var i=0; i<(cur_ns.descriptor.network_functions).length; i++){
+						//console.log((cur_ns.descriptor.network_functions).length);
+						vnfModel.addVnfToEditor(cur_ns.descriptor.network_functions[i]);
+						//$(".vnf-after-drop").draggable();
+						console.log($x +","+$y+","+"vnf_"+cur_ns.descriptor.network_functions[i].vnf_id);
+						$(".vnf-after-drop").css({position:'relative', left: $x, top: $y});
+						//$x = $x + 100;
+						//$y = $y + 50;
+
+						instance.addEndpoint("vnf_"+cur_ns.descriptor.network_functions[i].vnf_id, {
+							anchor:["Left"],
+							//anchor:[ "Perimeter", { shape:"Square", anchorCount:150 }],
+							connectorOverlays:[ 
+								[ "Arrow", { width:10, length:20, location: 0.45, id:"arrow" } ]
+								//[ "Label", { label:"foo", id:"label" } ]
+							]
+						}, common);
+				
+						instance.addEndpoint("vnf_"+cur_ns.descriptor.network_functions[i].vnf_id, {
+							anchor:["Right"],
+							//anchor:[ "Perimeter", { shape:"Square", anchorCount:150 }],
+							connectorOverlays:[ 
+								[ "Arrow", { width:10, length:20, location: 0.45, id:"arrow" } ]
+								//[ "Label", { label:"foo", id:"label" } ]
+							]
+						}, common);
+
+						//instance.recalculateOffsets("vnf_"+cur_ns.descriptor.network_functions[i].vnf_id);
+            			//instance.repaint("vnf_"+cur_ns.descriptor.network_functions[i].vnf_id);
+						instance.draggable("vnf_"+cur_ns.descriptor.network_functions[i].vnf_id, {containment:"parent"});
+
+
+					}
+						//instance.recalculateOffsets("vnf_"+cur_ns.descriptor.network_functions[i].vnf_id);
+            			//instance.repaint("vnf_"+cur_ns.descriptor.network_functions[i].vnf_id);
+            			instance.repaintEverything();
+					//updateService(cur_ns);
+					//updateService_firstVNF(vnf_data);
+				}
+
+			}
+		});
+
+
+
 		
 		$(".connection-point").draggable({
 			helper: "clone", 

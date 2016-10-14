@@ -175,11 +175,14 @@
 									</div>
 																	
 									<div class="col-sm-9 no-padding">
-										<div id="editor" class="editor-area">
+										<div data-bind="foreach: network_functions" id="editor" class="editor-area">
 											<div id="connection-list" >
 												
 											</div>
-											
+											<!--<div data-bind="foreach: network_functions" id="vnf-panel-editor" class="vnf-list-from-server"> -->
+												<div data-bind="attr: {'id': 'vnf_' + vnf_id}" class="vnf-after-drop" ><p data-bind="text: vnf_name">vnf1</p></div>
+
+											<!--</div> -->
 											<!--
 											<div class="scrollbar">
 
