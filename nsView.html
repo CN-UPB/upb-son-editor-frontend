@@ -158,12 +158,12 @@
 																	
 									<div class="col-sm-9 no-padding editor-area" id="editor">
 										<div id="connection-list" ></div>
-										<div data-bind="foreach: network_functions">
+										<div data-bind="foreach: network_functions" style="height:100%; width:100%; position:absolute">
 											<div data-bind="attr: {'id': 'vnf_' + vnf_id}" class="vnf-after-drop" >
 												<p data-bind="text: vnf_name">vnf1</p>
 											</div>
 										</div>
-										<div data-bind="foreach: network_services" >
+										<div data-bind="foreach: network_services" style="height:100%; width:100%; position:absolute">
 											<div data-bind="attr: {'id': 'ns_' + ns_id}" class="vnf-after-drop" >
 												<p data-bind="text: ns_name">vnf1</p>
 											</div>
