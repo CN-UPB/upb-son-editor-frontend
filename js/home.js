@@ -114,10 +114,6 @@ function createNewWorkspace(wsName) {
 	});
 }
 
-function goToWorkspaceView(wsId) {
-	window.location.href = "workspaceView.html?wsId=" + wsId;
-}
-
 function deleteWs(wsId) {
 	$("#ConfirmDeletionDialog").dialog({
 		modal : true,

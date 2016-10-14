@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <title>SONATA SDK Editor</title>
+   <title>SONATA SDK Editor - NS Editor</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -9,39 +9,32 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/1.4.1/jquery.jsPlumb-1.4.1-all-min.js"></script>
-  <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+  <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
   
   <!-- <link rel="stylesheet" href="/resources/demos/style.css" /> -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css" />
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css" />
-  <link rel="stylesheet" media="screen" href="../css/app.css" />
-  <script type="text/javascript" src="../js/togglePanel.js"></script>
-  <script type="text/javascript" src="../js/draggable.js"></script>
-  <script src="../js/constants.js"></script>
-  <script src="../js/ns.js"></script>
-  <script src="../js/utils.js"></script>
-  <link rel="stylesheet" media="screen" href="../css/nsView.css" />
+  <link rel="stylesheet" media="screen" href="css/app.css" />
+  <script type="text/javascript" src="js/togglePanel.js"></script>
+  <script type="text/javascript" src="js/draggable.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/ns.js"></script>
+  <script src="js/utils.js"></script>
+  <link rel="stylesheet" media="screen" href="css/nsView.css" />
 
 </head>
 
 <body>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="home.html">SONATA SDK Editor</a>
+		  <a class="navbar-brand" onclick="goToHomeView();">SONATA SDK Editor</a>
 		</div>
-		<!--
 		<ul class="nav navbar-nav">
-		   <li><a class="top-navigation-menu" href="home.html">Home</a></li>
-		   <li><a class="top-navigation-menu" href="workspace.html">Workspace Name</a></li>
-		   <li><a class="top-navigation-menu" href="project.html">Project Name</a></li>
-		   <li class="active"><a class="top-navigation-menu" href="ns.html">Network Service Name</a></li>
-		</ul> -->
-		<ul class="nav navbar-nav">
-			<li><a class="top-navigation-menu" onclick="history.go(-3);">Home</a></li>
-			<li><a class="top-navigation-menu" id="nav_workspace" onclick="history.go(-2);">Workspace Name</a></li>
-			<li><a class="top-navigation-menu" id="nav_project" onclick="history.go(-1);">Project Name</a></li>
+			<li><a class="top-navigation-menu" onclick="goToHomeView();">Home</a></li>
+			<li><a class="top-navigation-menu" id="nav_workspace" onclick="goToWorkspaceView();">Workspace Name</a></li>
+			<li><a class="top-navigation-menu" id="nav_project" onclick="goToProjectView();">Project Name</a></li>
 			<li class="active"><a class="top-navigation-menu" id="nav_ns" onclick="history.go(0);">Network Service Name</a></li>
 		</ul>
 	</nav>

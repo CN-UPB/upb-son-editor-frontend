@@ -57,7 +57,7 @@ $(document).ready(function () {
 				document.getElementById("display_ptTable").appendChild(trWs);
 				(function(ptName,ptId){
 					tdEdit.addEventListener('click', function () {
-						goToProjectView(ptId);
+						goToProjectView(wsId, ptId);
 					}, false);
 					tdDelete.addEventListener('click', function () {
 						deleteWs(ptId);
@@ -73,7 +73,7 @@ $(document).ready(function () {
 						showCreateDialog();
 					} else {
 						var selectedId = ptDictionary[ui.item.label];
-						goToProjectView(selectedId);
+						goToProjectView(wsId, selectedId);
 					}
 				}
 			});
@@ -115,7 +115,7 @@ function createNewProject(wsId, ptName) {
 			"name" : ptName
 		}),
 		success : function (data) {
-			goToProjectView(data.id);
+			goToProjectView(wsId, data.id);
 		},
 		error : function (err) {
 			$('#errorDialog').text(err.responseText);
@@ -133,10 +133,6 @@ function createNewProject(wsId, ptName) {
 
 function goToConfigurationView() {
 	window.location.href = "workspace-configurationView.html?wsId=" + queryString["wsId"];
-}
-
-function goToProjectView(ptId) {
-	window.location.href = "projectView.html?wsId=" + queryString["wsId"] +"&ptId=" + ptId;
 }
 
 function deleteWs(ptId) {

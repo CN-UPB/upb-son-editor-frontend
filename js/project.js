@@ -371,5 +371,3 @@ function goToServiceView(nsName, nsId) {
 	  window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + nsId;
 
 }
-
-$.get(serverURL + "/workspaces/" + wsId + "/projects/" + ptId + "/services/" + nsId )

@@ -125,10 +125,6 @@ function loadConfiguration(wsId) {
 	});
 }
 
-function goToWorkspaceView() {
-	window.location.href = "workspaceView.html?wsId=" + queryString["wsId"];
-}
-
 $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
