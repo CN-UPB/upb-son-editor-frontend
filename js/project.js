@@ -114,7 +114,7 @@ function loadServices() {
 						cloneService(serviceId);
 					}, false);
 					tdDelete.addEventListener('click', function () {
-						deleteService(nsId);
+						deleteService(serviceId);
 					}, false);
 					})(serviceId)
 			}

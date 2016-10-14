@@ -156,21 +156,19 @@
 										</div>	
 									</div>
 																	
-									<div class="col-sm-9 no-padding">
-										<div id="editor" class="editor-area" data-bind="drop: {value: $data}">
-											<div id="connection-list" >
-												
+									<div class="col-sm-9 no-padding editor-area" id="editor">
+										<div id="connection-list" ></div>
+										<div data-bind="foreach: network_functions">
+											<div data-bind="attr: {'id': 'vnf_' + vnf_id}" class="vnf-after-drop" >
+												<p data-bind="text: vnf_name">vnf1</p>
 											</div>
-											
-											<!--
-											<div class="scrollbar">
-
-
-											</div> -->
-										</div>	
-																			
-									</div>
-																			
+										</div>
+										<div data-bind="foreach: network_services" >
+											<div data-bind="attr: {'id': 'ns_' + ns_id}" class="vnf-after-drop" >
+												<p data-bind="text: ns_name">vnf1</p>
+											</div>
+										</div>								
+									</div>							
 								</div>
 						
 	</div>

@@ -2,14 +2,17 @@
 //var serverURL = "http://fg-cn-sandman2.cs.upb.de:5000/";
 var vnfs = [];
 var nss = [];
+var vnf_map = {};
+var ns_map = {};
 var queryString = {};
 var wsId = "";
 var ptId = "";
 var nsId = "";
 var cur_ns = {};
-
+var instance = {};
 var lastDraggedDescriptor = {};
-
+var countDropped = 0;
+var connectionPoints = 0;
 (function() {
     ko.bindingHandlers.drag = {
         init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
@@ -27,17 +30,28 @@ var lastDraggedDescriptor = {};
         }
     };
 })();
-
-
 var vnfViewModel = function() {
     this.vnfs = ko.observableArray([]);
     this.addVnf = function(vnf) {
         this.vnfs.push(vnf);
+        vnf_map[vnf.vendor + ":" + vnf.name + ":" + vnf.version] = vnf;
     }
     .bind(this);
     this.nss = ko.observableArray([]);
     this.addNs = function(ns) {
         this.nss.push(ns);
+        ns_map[ns.vendor + ":" + ns.name + ":" + ns.version] = ns;
+    }
+    .bind(this);
+    this.network_functions = ko.observableArray([]);
+    this.addVnfToEditor = function(vnf) {
+        this.network_functions.push(vnf);
+    }
+    .bind(this);
+
+    this.network_services = ko.observableArray([]);
+    this.addNsToEditor = function(ns) {
+        this.network_services.push(ns);
     }
     .bind(this);
 }
@@ -53,7 +67,7 @@ var nsViewModel = function(){
  
 var nsModel = new nsViewModel();
 */
-var calcAnchors = function(anchorCount) {
+function calcAnchors(anchorCount) {
     var r = 0.5
       , step = Math.PI * 2 / anchorCount
       , current = 0
@@ -61,26 +75,25 @@ var calcAnchors = function(anchorCount) {
     for (var i = 0; i < anchorCount; i++) {
         var x = r + (r * Math.sin(current))
           , y = r + (r * Math.cos(current));
-         //push values to perimeter of square
-        if (Math.abs(x-0.5)>Math.abs(y-0.5)){
-        	if (x>0.5){
-        		x=1;
-        	} else {
-        		x=0;
-        	}
+        //push values to perimeter of square
+        if (Math.abs(x - 0.5) > Math.abs(y - 0.5)) {
+            if (x > 0.5) {
+                x = 1;
+            } else {
+                x = 0;
+            }
         } else {
-        	if (y>0.5){
-        		y=1;
-        	} else {
-        		y=0;
-        	}
+            if (y > 0.5) {
+                y = 1;
+            } else {
+                y = 0;
+            }
         }
         a.push([x, y, 0, 0]);
         current += step;
     }
     return a;
 }
-
 var color2 = "#00f";
 var common = {
     endpoint: "Rectangle",
@@ -104,9 +117,9 @@ var common = {
         shape: "Square"
     }],
     beforeDrop: function(info) {
-    	console.log(info);
-    	return true;
-    //    return confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
+        console.log(info);
+        return true;
+        //    return confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
     },
     maxConnections: -1,
     dragOptions: {},
@@ -116,7 +129,7 @@ var common = {
         activeClass: "dragActive"
     }
 };
-var createEndpoints = function(instance, id, descriptor) {
+function createEndpoints(instance, id, descriptor) {
     var connectionPoints = descriptor['connection_points'];
     if (connectionPoints) {
         anchors = calcAnchors(connectionPoints.length);
@@ -191,66 +204,133 @@ $(document).ready(function() {
             document.getElementById("nav_project").text = "Project: " + data.name;
         }
     });
-    $.ajax({
-        url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/" + nsId,
-        dataType: "json",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function(data) {
-            document.getElementById("nav_ns").text = "NS: " + data.name;
-            console.log("service " + nsId + " loaded..!!");
-            cur_ns = data;
-            //console.log(cur_ns);
-        }
-    });
-    console.log(wsId, ptId, nsId);
-    $.ajax({
-        url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
-        dataType: "json",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function(data) {
-            vnfs = data;
-            for (var i = 0; i < vnfs.length; i++) {
-                vnfModel.addVnf(vnfs[i]);
+    function loadVNFs() {
+        return $.ajax({
+            url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
+            dataType: "json",
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(data) {
+                vnfs = data;
+                for (var i = 0; i < vnfs.length; i++) {
+                    vnfModel.addVnf(vnfs[i]);
+                }
+                /*    $(".vnf").draggable({
+					helper: "clone",
+					revert: "invalid"/* -----------------------
+			// this function will disable the dragged vnf after drag stops.
+			stop: function( event, ui ) {
+				console.log("Stop event is triggered for draggable...");
+				$(this).draggable({ disabled: true })
+				}); */
             }
-        /*    $(".vnf").draggable({
-                helper: "clone",
-                revert: "invalid"/* -----------------------
-		// this function will disable the dragged vnf after drag stops.
-		stop: function( event, ui ) {
-			console.log("Stop event is triggered for draggable...");
-			$(this).draggable({ disabled: true })
-            }); */
-        }
-    });
-    $.ajax({
-        url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
-        dataType: "json",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function(data) {
-            nss = data;
-            for (var i = 0; i < nss.length; i++) {
-                vnfModel.addNs(nss[i]);
+        });
+    }
+    function loadServices() {
+        return $.ajax({
+            url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
+            dataType: "json",
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(data) {
+                nss = data;
+                for (var i = 0; i < nss.length; i++) {
+                    vnfModel.addNs(nss[i]);
+                }
+                $(".ns").draggable({
+                    helper: "clone",
+                    revert: "invalid"/* ----------------------
+			// this function will disable the dragged vnf after drag stops.
+			stop: function( event, ui ) {
+				console.log("Stop event is triggered for draggable...");
+				$(this).draggable({ disabled: true });
+			} ----------------------- */
+                });
             }
-            $(".ns").draggable({
-                helper: "clone",
-                revert: "invalid"/* ----------------------
-		// this function will disable the dragged vnf after drag stops.
-		stop: function( event, ui ) {
-			console.log("Stop event is triggered for draggable...");
-			$(this).draggable({ disabled: true });
-		} ----------------------- */
-            });
-        }
+        });
+    }
+    //delay loading the current ns until the sidebar has loaded completely
+    $.when(loadVNFs(), loadServices()).done(function(r1, r2) {
+        $.ajax({
+            url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/" + nsId,
+            dataType: "json",
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(data) {
+                document.getElementById("nav_ns").text = "NS: " + data.name;
+                console.log("service " + nsId + " loaded..!!");
+                cur_ns = data;
+                console.log(cur_ns);
+                console.log(cur_ns.descriptor);
+                //console.log(cur_ns.descriptor.contains("network_functions"));
+                //console.log(cur_ns.descriptor.network_functions);
+                //console.log((cur_ns.descriptor.network_functions).length);
+                //cur_ns.descriptor.author = "surendra Shankar kulkarni";
+                //updateService(vnf_data.id, vnf_data.vendor, vnf_data.name, vnf_data.version);
+                //updateService(vnf_data);
+                console.log("This network service contains " + (cur_ns.descriptor.network_functions).length + " vnfs...");
+                console.log(cur_ns.descriptor.network_functions);
+                var windowHeight = $(window).innerHeight();
+                var windowWidth = $(window).innerWidth();
+                var max = windowWidth - 200;
+                var min = 25;
+                var $x = min
+                var $y = min
+                if (cur_ns.descriptor.network_functions != null ) {
+                    for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
+                        vnf = cur_ns.descriptor.network_functions[i];
+                        vnfModel.addVnfToEditor(vnf);
+                        var elem = $('#vnf_' + vnf.vnf_id);
+                        elem.css({
+                            position: 'absolute',
+                            left: $x,
+                            top: $y
+                        });
+                        $x = $x + 100;
+                        if ($x > max) {
+                            $x = min;
+                            $y = $y + 100;
+                        }
+                        createEndpoints(instance, elem[0].id, vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version].descriptor);
+                        instance.draggable(elem[0].id, {
+                            containment: "parent"
+                        });
+                        countDropped++;
+                    }
+                    $y = $y + 100;
+                    $x = min;
+                }
+                if (cur_ns.descriptor.network_services != null ) {
+                    for (var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
+                        ns = cur_ns.descriptor.network_services[i];
+                        vnfModel.addNsToEditor(ns);
+                        var elem = $('#ns_' + ns.ns_id);
+                        elem.css({
+                            position: 'absolute',
+                            left: $x,
+                            top: $y
+                        });
+                        $x = $x + 100;
+                        if ($x > max) {
+                            $x = min;
+                            $y = $y + 100;
+                        }
+                        createEndpoints(instance, elem[0].id, ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version].descriptor);
+                        instance.draggable(elem[0].id, {
+                            containment: "parent"
+                        });
+                        countDropped++;
+                    }
+                }
+            }
+        });
     });
     ko.applyBindings(vnfModel);
     jsPlumb.ready(function() {
-        var instance = jsPlumb.getInstance({
+        instance = jsPlumb.getInstance({
             DragOptions: {
                 cursor: 'pointer',
                 zIndex: 2000
@@ -315,8 +395,6 @@ $(document).ready(function() {
         });
         //console.log("------- Loaded setEditorHeight function ---------");
         //--------------------------------------------------------
-        var countDropped = 0;
-        var connectionPoints = 0;
         $("#editor").droppable({
             accept: " .vnf , .ns , .connection-point , .e-lan , .e-line ",
             drop: function(event, ui) {
@@ -344,52 +422,49 @@ $(document).ready(function() {
                     var server_vnfId = data.attr('id').slice(4, data.attr('id').length);
                     // remove the 'vnf' class from the source vnf , add new class 'vnf-after-drop' to the clone
                     reconfigureNode(data, "vnf");
-					vnf_data = lastDraggedDescriptor;
-					console.log(vnf_data);                            
-					if (!cur_ns.descriptor.network_functions) {
-						cur_ns.descriptor.network_functions = [];
-					}
-					cur_ns.descriptor.network_functions.push({
-						"ns_vendor": vnf_data.vendor,
-						"ns_name": vnf_data.name,
-						"ns_id": vnf_data.id.toString(),
-						"ns_version": vnf_data.version
-					});
-					console.log(cur_ns);
-					updateService(cur_ns);
-					createEndpoints(instance, data.attr('id'), vnf_data['descriptor'])
-                           
-                    
+                    vnf_data = lastDraggedDescriptor;
+                    console.log(vnf_data);
+                    if (!cur_ns.descriptor.network_functions) {
+                        cur_ns.descriptor.network_functions = [];
+                    }
+                    cur_ns.descriptor.network_functions.push({
+                        "vnf_vendor": vnf_data.vendor,
+                        "vnf_name": vnf_data.name,
+                        "vnf_id": vnf_data.name + "_" + countDropped,
+                        "vnf_version": vnf_data.version
+                    });
+                    console.log(cur_ns);
+                    updateService(cur_ns);
+                    createEndpoints(instance, data.attr('id'), vnf_data['descriptor'])
                 } else if (data.hasClass('ns') == true) {
                     console.log("inside ns condition");
                     var serverId = data.attr('id').slice(3, data.attr('id').length);
                     reconfigureNode(data, "ns");
-					ns_data = lastDraggedDescriptor;
-					if (!cur_ns.descriptor.network_services) {
-						cur_ns.descriptor.network_services = [];
-					}
-					cur_ns.descriptor.network_services.push({
-						"vnf_vendor": ns_data.vendor,
-						"vnf_name": ns_data.name,
-						"vnf_id": ns_data.id.toString(),
-						"vnf_version": ns_data.version
-					});
-					updateService(cur_ns);
-					createEndpoints(instance, data.attr('id'), ns_data["descriptor"]);
-                            
+                    ns_data = lastDraggedDescriptor;
+                    if (!cur_ns.descriptor.network_services) {
+                        cur_ns.descriptor.network_services = [];
+                    }
+                    cur_ns.descriptor.network_services.push({
+                        "ns_vendor": ns_data.vendor,
+                        "ns_name": ns_data.name,
+                        "ns_id": ns_data.name + "_" + countDropped,
+                        "ns_version": ns_data.version
+                    });
+                    updateService(cur_ns);
+                    createEndpoints(instance, data.attr('id'), ns_data["descriptor"]);
                 } else if (data.hasClass('connection-point') == true) {
                     console.log("inside connection-point condition");
                     reconfigureNode(data, 'connection-point');
                     text = "CP" + connectionPoints++;
-                    $(data).html("<p>"+text+"</p>");
-					if (!cur_ns.descriptor.connection_points) {
-						cur_ns.descriptor.connection_points = [];
-					}
-					cur_ns.descriptor.connection_points.push({
-						"id":text,
-						"type":"interface"
-					});
-					updateService(cur_ns);
+                    $(data).html("<p>" + text + "</p>");
+                    if (!cur_ns.descriptor.connection_points) {
+                        cur_ns.descriptor.connection_points = [];
+                    }
+                    cur_ns.descriptor.connection_points.push({
+                        "id": text,
+                        "type": "interface"
+                    });
+                    updateService(cur_ns);
                     instance.addEndpoint(data.attr('id'), {
                         anchor: ["Right"],
                         connectorOverlays: [["Arrow", {
