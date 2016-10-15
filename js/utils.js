@@ -13,7 +13,26 @@ function getQueryString() {
 
 function goToHomeView()
 {
-	window.location.href="homeView.html";
+	window.location.href="/";
+}
+
+function goToWorkspaceView(wsId){
+	var queryString = getQueryString();
+	if (wsId == null){
+		wsId = queryString["wsId"];
+	}
+	window.location.href="workspaceView.html?wsId="+wsId;
+}
+
+function goToProjectView(wsId, ptId){
+	var queryString = getQueryString();
+	if (wsId == null){
+		wsId = queryString["wsId"];
+	}
+	if (ptId == null){
+		ptId = queryString["ptId"];
+	}
+	window.location.href="projectView.html?wsId="+wsId+"&ptId="+ptId;
 }
 
 

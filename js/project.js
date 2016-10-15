@@ -114,7 +114,7 @@ function loadServices() {
 						cloneService(serviceId);
 					}, false);
 					tdDelete.addEventListener('click', function () {
-						deleteService(nsId);
+						deleteService(serviceId);
 					}, false);
 					})(serviceId)
 			}
@@ -305,7 +305,7 @@ function createNewService(nsName, nsId) {
 }
 
 function editService(serviceId) {
-	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] +  "&serviceId=" + serviceId+"&operation="+"edit";
+	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] +  "&nsId=" + serviceId+"&operation="+"edit";
 
 }
 
@@ -371,5 +371,3 @@ function goToServiceView(nsName, nsId) {
 	  window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + nsId;
 
 }
-
-$.get(serverURL + "/workspaces/" + wsId + "/projects/" + ptId + "/services/" + nsId )
