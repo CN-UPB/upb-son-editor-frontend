@@ -151,8 +151,8 @@ div .vnf-after-drop{
 	width: 60px;
 	cursor: pointer;
 	z-index: 24;
-	/*text-align: center;
-	vertical-align: middle;*/
+	text-align: center;
+	vertical-align: middle;
 } 
 
 div .vnf-after-drop:hover {
@@ -165,11 +165,11 @@ div .vnf-after-drop:hover {
 }
 
 div .vnf-after-drop > p{
-	position: relative;
-    top: 50%;
-    left: 50%;
-    margin-right: 0%;
-    transform: translate(-50%, -50%)
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50;
+	transform: translate(-50%, -50%);
 }
 
 .ns {

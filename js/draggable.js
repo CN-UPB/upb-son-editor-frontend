@@ -43,15 +43,10 @@ var vnfViewModel = function() {
         ns_map[ns.vendor + ":" + ns.name + ":" + ns.version] = ns;
     }
     .bind(this);
-    this.network_functions = ko.observableArray([]);
-    this.addVnfToEditor = function(vnf) {
-        this.network_functions.push(vnf);
-    }
-    .bind(this);
-
-    this.network_services = ko.observableArray([]);
-    this.addNsToEditor = function(ns) {
-        this.network_services.push(ns);
+	
+    this.editor_nodes = ko.observableArray([]);
+    this.addToEditor = function(descriptor) {
+        this.editor_nodes.push(descriptor);
     }
     .bind(this);
 }
@@ -178,6 +173,22 @@ function updateService(cur_ns) {
         }
     });
 }
+
+function addNode(data, x ,y){
+	vnfModel.addToEditor(data);
+	var elem = $('#'+data.type+ "_" + data.id);
+	elem.addClass(data.type+"-after-drop");
+	elem.css({
+		position: 'absolute',
+		left: x,
+		top: y
+	});             
+	createEndpoints(instance, elem[0].id, data.descriptor);
+	instance.draggable(elem[0].id, {
+		containment: "parent"
+	});
+}
+
 $(document).ready(function() {
     queryString = getQueryString();
     wsId = queryString["wsId"];
@@ -263,41 +274,26 @@ $(document).ready(function() {
                 document.getElementById("nav_ns").text = "NS: " + data.name;
                 console.log("service " + nsId + " loaded..!!");
                 cur_ns = data;
-                console.log(cur_ns);
-                console.log(cur_ns.descriptor);
-                //console.log(cur_ns.descriptor.contains("network_functions"));
-                //console.log(cur_ns.descriptor.network_functions);
-                //console.log((cur_ns.descriptor.network_functions).length);
-                //cur_ns.descriptor.author = "surendra Shankar kulkarni";
-                //updateService(vnf_data.id, vnf_data.vendor, vnf_data.name, vnf_data.version);
-                //updateService(vnf_data);
-                console.log("This network service contains " + (cur_ns.descriptor.network_functions).length + " vnfs...");
-                console.log(cur_ns.descriptor.network_functions);
-                var windowHeight = $(window).innerHeight();
-                var windowWidth = $(window).innerWidth();
-                var max = windowWidth - 200;
-                var min = 25;
+				var $editor = $("#editor");
+				var editorLeft = parseInt($editor.css('marginLeft'));
+                var editorWidth = $editor.width();
+                var max = editorLeft+ editorWidth - 75;
+                var min = editorLeft + 25;
+                var ymin =  $editor.offset().top + 25;
                 var $x = min
-                var $y = min
+                var $y = ymin
                 if (cur_ns.descriptor.network_functions != null ) {
                     for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
                         vnf = cur_ns.descriptor.network_functions[i];
-                        vnfModel.addVnfToEditor(vnf);
-                        var elem = $('#vnf_' + vnf.vnf_id);
-                        elem.css({
-                            position: 'absolute',
-                            left: $x,
-                            top: $y
-                        });
-                        $x = $x + 100;
+						vnf_data = vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version];
+						vnf_data['id'] = vnf.vnf_id;
+						vnf_data['type'] ='vnf';
+						addNode(vnf_data, $x ,$y);
+						$x = $x + 100;
                         if ($x > max) {
                             $x = min;
                             $y = $y + 100;
                         }
-                        createEndpoints(instance, elem[0].id, vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version].descriptor);
-                        instance.draggable(elem[0].id, {
-                            containment: "parent"
-                        });
                         countDropped++;
                     }
                     $y = $y + 100;
@@ -306,22 +302,15 @@ $(document).ready(function() {
                 if (cur_ns.descriptor.network_services != null ) {
                     for (var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
                         ns = cur_ns.descriptor.network_services[i];
-                        vnfModel.addNsToEditor(ns);
-                        var elem = $('#ns_' + ns.ns_id);
-                        elem.css({
-                            position: 'absolute',
-                            left: $x,
-                            top: $y
-                        });
-                        $x = $x + 100;
+						ns_data = ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version];
+						ns_data['id']= ns.ns_id;
+						ns_data['type']= 'ns';
+                        addNode(ns_data, $x, $y);
+						$x = $x + 100;
                         if ($x > max) {
                             $x = min;
                             $y = $y + 100;
                         }
-                        createEndpoints(instance, elem[0].id, ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version].descriptor);
-                        instance.draggable(elem[0].id, {
-                            containment: "parent"
-                        });
                         countDropped++;
                     }
                 }
@@ -388,6 +377,7 @@ $(document).ready(function() {
             windowHeight = $(window).innerHeight();
             $('.left-navigation-bar').css('min-height', windowHeight);
             $('#editor').css('min-height', windowHeight);
+			$('#editor').css('marginLeft', $('.left-navigation-bar').width());
         }
         setHeight();
         $(window).resize(function() {
@@ -406,8 +396,8 @@ $(document).ready(function() {
                     data.removeClass(old_class);
                     data.addClass(old_class + '-after-drop');
                     data.removeClass('ui-draggable');
-                    var $newPosX = ui.offset.left - $(this).offset().left;
-                    var $newPosY = ui.offset.top - $(this).offset().top;
+                     var $newPosX = ui.offset.left;
+                    var $newPosY = ui.offset.top;
                     data.css({
                         position: 'absolute',
                         left: $newPosX,
