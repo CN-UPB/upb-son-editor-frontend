@@ -275,11 +275,10 @@ $(document).ready(function() {
                 console.log("service " + nsId + " loaded..!!");
                 cur_ns = data;
 				var $editor = $("#editor");
-				var editorLeft = parseInt($editor.css('marginLeft'));
                 var editorWidth = $editor.width();
-                var max = editorLeft+ editorWidth - 75;
-                var min = editorLeft + 25;
-                var ymin =  $editor.offset().top + 25;
+                var max = editorWidth - 75;
+                var min = 25;
+                var ymin = 25;
                 var $x = min
                 var $y = ymin
                 if (cur_ns.descriptor.network_functions != null ) {
@@ -396,8 +395,8 @@ $(document).ready(function() {
                     data.removeClass(old_class);
                     data.addClass(old_class + '-after-drop');
                     data.removeClass('ui-draggable');
-                     var $newPosX = ui.offset.left;
-                    var $newPosY = ui.offset.top;
+                    var $newPosX = ui.offset.left - $(this).offset().left;
+                    var $newPosY = ui.offset.top - $(this).offset().top;
                     data.css({
                         position: 'absolute',
                         left: $newPosX,
