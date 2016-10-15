@@ -124,6 +124,22 @@ var common = {
         activeClass: "dragActive"
     }
 };
+
+function calcLabelPos(anchor){
+	var labelX=anchor[0], labelY=anchor[1];
+	if (labelX==0){
+		labelX=-0.5;
+	} else if (labelX==1){
+		labelX = 1.5;
+	}
+	if (labelY==0){
+		labelY=-0.5;
+	} else if (labelY==1){
+		labelY = 1.5;
+	}
+    return [labelX, labelY];
+}
+
 function createEndpoints(instance, id, descriptor) {
     var connectionPoints = descriptor['connection_points'];
     if (connectionPoints) {
@@ -131,6 +147,7 @@ function createEndpoints(instance, id, descriptor) {
         var i;
         for (i = 0; i < connectionPoints.length; i++) {
             var connectionPoint = connectionPoints[i];
+            
             e = instance.addEndpoint(id, {
                 anchor: anchors[i],
                 connectorOverlays: [["Arrow", {
@@ -142,7 +159,8 @@ function createEndpoints(instance, id, descriptor) {
                 overlays: [["Label", {
                     cssClass: "endpointLabel",
                     label: connectionPoint.id,
-                    id: "lbl"
+                    id: "lbl",
+                    location: calcLabelPos(anchors[i])
                 }]]
             }, common);
             e.bind("mouseenter", function(ep) {
