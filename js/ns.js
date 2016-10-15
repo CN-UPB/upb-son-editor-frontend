@@ -1,6 +1,5 @@
 //create networkservice descriptor dialog (uses jquery ui Dialog)
 function showDialog() {
-	//alert("here");
 	$("#createDialog").dialog({
 		modal : true,
 		draggable : true,
@@ -8,8 +7,8 @@ function showDialog() {
 			Cancel : function (){
 				$(this).dialog("close");
 			},
-			"Submit" : function () {
-				createNewNetworkservice();
+				"Submit" : function () {
+				 updateDescriptor();
 				$(this).dialog("close");
 			}
 		}
@@ -25,7 +24,60 @@ $(function() {
         $("#accordion").accordion("enable").accordion("activate", parseInt($(this).data("index"), 10)).accordion("disable");
     });
 });
+
 //showing msg on search bar
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 });
+
+//update network service descriptor
+function updateDescriptor(){
+	descriptorVersion = $('#descriptor_version').val();
+	name    = $('#dsName').val();
+	vendor  = $('#dsVendor').val();
+	version = $('#dsVersion').val();
+	author = $('#dsauthor').val();
+	description = $('#dsdescription').val();
+
+	$.ajax({
+		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/" + queryString["nsId"],
+		method : 'PUT',
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		xhrFields : {
+			withCredentials : true
+		},
+
+		//data : jsonData,
+		data : JSON.stringify({
+			"descriptorVersion": descriptorVersion,
+			"version": version,
+			"vendor": vendor,
+			"name": name,
+			"author": author,
+			"description": description 
+		}),
+		success : function (data) {
+			$("#successDescriptorDialogUpdated").dialog({
+				modal : true,
+				draggable : false,
+				buttons : {
+					ok : function () {
+						$(this).dialog("close");
+					}
+				}
+			});
+		},
+		error : function (err) {
+			$('#errorDialog').text(err.responseText);
+			$('#errorDialog').dialog({
+				modal : true,
+				buttons : {
+					Ok : function () {
+						$(this).dialog("close");
+					}
+				}
+			});
+		}
+	});
+}

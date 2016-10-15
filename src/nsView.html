@@ -203,19 +203,19 @@
     			<input class="labelClass" id ='descriptor_version' placeholder="Enter Descriptor version here" data-toggle="tooltip" 
     				data-placement="top" title="identifies the version of the service descriptor schema that is used to describe the network service."/>
 
-    				<input class="labelClass" id ='nsVendorInput' placeholder="Enter Vendor details here" data-toggle="tooltip" 
+    				<input class="labelClass" id ='dsVendor' placeholder="Enter Vendor details here" data-toggle="tooltip" 
     				data-placement="top" title="will identify the NS uniquely across all NS vendors. It should at least be comprised of the reverse domain name that is under your controll. Moreover, it might have as many sub-groups as needed. For example: eu.sonata-nfv.nec."/>
 
-    				<input class="labelClass" id ='nsNameInput' placeholder="Enter Name here" data-toggle="tooltip" 
+    				<input class="labelClass" id ='dsName' placeholder="Enter Name here" data-toggle="tooltip" 
     				data-placement="top" title="the name of the NS without its version. It can be created with any name written in lower letters and no strange symbols."/>
 
-    				<input class="labelClass" id ='nsVersionInput' placeholder="Enter Version here" data-toggle="tooltip" 
+    				<input class="labelClass" id ='dsVersion' placeholder="Enter Version here" data-toggle="tooltip" 
     				data-placement="top" title="names the version of the NS descritor. Any typical version with numbers and dots, such as 1.0, 1.1, and 1.0.1 is allows here. The NS version must be increased with any new (changed) instance of the network function descriptor. Please note: The whole network service is composed of the descriptor and other artifacts, like VNFs. Thus, the network service may change, even if the description remains constant, just because another artifact changes. This might or might not be reflected in the version of the package descriptor."/>
 
-    				<input class="labelClass" id ='nsAuthorInput' placeholder="Enter Author details here (Optional)" data-toggle="tooltip" 
+    				<input class="labelClass" id ='dsAuthor' placeholder="Enter Author details here (Optional)" data-toggle="tooltip" 
     				data-placement="top" title="describes the author of the network service descriptor."/>
 
-    				<input class="labelClass" id ='nsDescriptionInput' placeholder="Enter Description here (Optional)" data-toggle="tooltip" 
+    				<input class="labelClass" id ='dsDescription' placeholder="Enter Description here (Optional)" data-toggle="tooltip" 
     				data-placement="top" title="provides an arbitrary description of the network service."/>
     			</div>
     				<h3>Network Functions Section</h3>
@@ -235,9 +235,17 @@
     			<div></div>
     				<h3>Monitoring Parameters Section</h3>
     			<div></div>
-  			</div>
+  			</div>	
 		</div>
+		
 </div>
+
+<div id="successDescriptorDialogUpdated" title="Success" hidden>
+			<h4>Network Service descriptor is updated!</h4>
+</div>
+		<div id="errorDialog" title="Error" hidden>
+		</div>
+
 
 
 </body>
