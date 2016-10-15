@@ -47,8 +47,7 @@ function updateDescriptor(){
 		xhrFields : {
 			withCredentials : true
 		},
-
-		//data : jsonData,
+		
 		data : JSON.stringify({
 			"descriptorVersion": descriptorVersion,
 			"version": version,
