@@ -377,16 +377,14 @@ function loadPlatforms() {
 }
 
 //display loaded network service in the editor
-function displayNS(cur_ns) {
+function displayNS() {
 	var $editor = $("#editor");
 	var editorWidth = $editor.width();
 	var max = editorWidth - 75;
 	var min = 25;
 	var ymin = 25;
 	var $x = min
-		var $y = ymin
-		console.log(cur_ns);
-		console.log(cur_ns.descriptor.network_functions);
+		var $y = ymin;
 		if (cur_ns.descriptor.network_functions != null) {
 			for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
 				vnf = cur_ns.descriptor.network_functions[i];
@@ -539,7 +537,7 @@ $(document).ready(function () {
 			success : function (data) {
 				document.getElementById("nav_ns").text = "NS: " + data.name;
 				cur_ns = data;
-				displayNS(cur_ns);
+				displayNS();
 			},
 		});
 	});
