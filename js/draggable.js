@@ -43,17 +43,17 @@ var vnfViewModel = function() {
         ns_map[ns.vendor + ":" + ns.name + ":" + ns.version] = ns;
     }
     .bind(this);
-    this.network_functions = ko.observableArray([]);
-    this.addVnfToEditor = function(vnf) {
-        this.network_functions.push(vnf);
+	
+    this.editor_nodes = ko.observableArray([]);
+    this.addToEditor = function(descriptor) {
+        this.editor_nodes.push(descriptor);
     }
     .bind(this);
 
-    this.network_services = ko.observableArray([]);
-    this.addNsToEditor = function(ns) {
-        this.network_services.push(ns);
-    }
-    .bind(this);
+    this.platforms = ko.observableArray([]);
+    this.setPlatforms = function(platforms){
+    	ko.utils.arrayPushAll(this.platforms, platforms);
+    }.bind(this);
 }
 var vnfModel = new vnfViewModel();
 /*
@@ -129,6 +129,22 @@ var common = {
         activeClass: "dragActive"
     }
 };
+
+function calcLabelPos(anchor){
+	var labelX=anchor[0], labelY=anchor[1];
+	if (labelX==0){
+		labelX=-0.5;
+	} else if (labelX==1){
+		labelX = 1.5;
+	}
+	if (labelY==0){
+		labelY=-0.5;
+	} else if (labelY==1){
+		labelY = 1.5;
+	}
+    return [labelX, labelY];
+}
+
 function createEndpoints(instance, id, descriptor) {
     var connectionPoints = descriptor['connection_points'];
     if (connectionPoints) {
@@ -136,6 +152,7 @@ function createEndpoints(instance, id, descriptor) {
         var i;
         for (i = 0; i < connectionPoints.length; i++) {
             var connectionPoint = connectionPoints[i];
+            
             e = instance.addEndpoint(id, {
                 anchor: anchors[i],
                 connectorOverlays: [["Arrow", {
@@ -147,7 +164,8 @@ function createEndpoints(instance, id, descriptor) {
                 overlays: [["Label", {
                     cssClass: "endpointLabel",
                     label: connectionPoint.id,
-                    id: "lbl"
+                    id: "lbl",
+                    location: calcLabelPos(anchors[i])
                 }]]
             }, common);
             e.bind("mouseenter", function(ep) {
@@ -178,53 +196,71 @@ function updateService(cur_ns) {
         }
     });
 }
-function loadVNFs() {
-	return $.ajax({
-		url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
-		dataType: "json",
-		xhrFields: {
-			withCredentials: true
-		},
-		success: function(data) {
-			vnfs = data;
-			for (var i = 0; i < vnfs.length; i++) {
-				vnfModel.addVnf(vnfs[i]);
+
+function addNode(data, x ,y){
+	vnfModel.addToEditor(data);
+	var elem = $('#'+data.type+ "_" + data.id);
+	elem.addClass(data.type+"-after-drop");
+	elem.css({
+		position: 'absolute',
+		left: x,
+		top: y
+	});             
+	createEndpoints(instance, elem[0].id, data.descriptor);
+	instance.draggable(elem[0].id, {
+		containment: "parent"
+	});
+}
+
+function doDeploy(id){
+	showWaitAnimation("Deploying...");
+	$.ajax({
+        url: serverURL + "workspaces/" + queryString["wsId"] + "/platforms/" + id +"/services/",
+        method: 'POST',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        },
+        data: JSON.stringify({"id": cur_ns.id}),
+        success: function(data) {
+        	closeWaitAnimation();
+        	$("#success").dialog({
+        		buttons:{
+        			"OK": function(){
+        				$(this).dialog("close");
+        			}
+        		}
+        	});
+        	$("#success").text("Service "+ cur_ns.name +" deployed successfully!");
+        },
+        error: function(err) {
+        	closeWaitAnimation();
+            console.log(err);
+        }
+    });
+}
+
+function showDeployDialog(){
+	$("#deployDialog").dialog({
+		resizable: false,
+		height: "auto",
+		modal: true,
+		buttons: {
+			"Deploy": function(e){
+				var id = $("#selectPlatform").val();
+				var button= $(e.target);
+				button[0].disabled =true;
+				doDeploy(id);
+				$(this).dialog("close");
+			},
+			"Cancel": function(){
+				$(this).dialog("close");
 			}
-			/*    $(".vnf").draggable({
-				helper: "clone",
-				revert: "invalid"/* -----------------------
-		// this function will disable the dragged vnf after drag stops.
-		stop: function( event, ui ) {
-			console.log("Stop event is triggered for draggable...");
-			$(this).draggable({ disabled: true })
-			}); */
 		}
 	});
 }
-function loadServices() {
-	return $.ajax({
-		url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
-		dataType: "json",
-		xhrFields: {
-			withCredentials: true
-		},
-		success: function(data) {
-			nss = data;
-			for (var i = 0; i < nss.length; i++) {
-				vnfModel.addNs(nss[i]);
-			}
-			$(".ns").draggable({
-				helper: "clone",
-				revert: "invalid"/* ----------------------
-		// this function will disable the dragged vnf after drag stops.
-		stop: function( event, ui ) {
-			console.log("Stop event is triggered for draggable...");
-			$(this).draggable({ disabled: true });
-		} ----------------------- */
-			});
-		}
-	});
-}
+
 $(document).ready(function() {
     queryString = getQueryString();
     wsId = queryString["wsId"];
@@ -251,6 +287,64 @@ $(document).ready(function() {
             document.getElementById("nav_project").text = "Project: " + data.name;
         }
     });
+	$.ajax({
+        url: serverURL + "workspaces/" + wsId+"/platforms/",
+        dataType: "json",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function(platforms) {
+			vnfModel.setPlatforms(platforms);
+        }
+    });
+
+    function loadVNFs() {
+        return $.ajax({
+            url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
+            dataType: "json",
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(data) {
+                vnfs = data;
+                for (var i = 0; i < vnfs.length; i++) {
+                    vnfModel.addVnf(vnfs[i]);
+                }
+                /*    $(".vnf").draggable({
+					helper: "clone",
+					revert: "invalid"/* -----------------------
+			// this function will disable the dragged vnf after drag stops.
+			stop: function( event, ui ) {
+				console.log("Stop event is triggered for draggable...");
+				$(this).draggable({ disabled: true })
+				}); */
+            }
+        });
+    }
+    function loadServices() {
+        return $.ajax({
+            url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
+            dataType: "json",
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(data) {
+                nss = data;
+                for (var i = 0; i < nss.length; i++) {
+                    vnfModel.addNs(nss[i]);
+                }
+                $(".ns").draggable({
+                    helper: "clone",
+                    revert: "invalid"/* ----------------------
+			// this function will disable the dragged vnf after drag stops.
+			stop: function( event, ui ) {
+				console.log("Stop event is triggered for draggable...");
+				$(this).draggable({ disabled: true });
+			} ----------------------- */
+                });
+            }
+        });
+    }
     //delay loading the current ns until the sidebar has loaded completely
     $.when(loadVNFs(), loadServices()).done(function(r1, r2) {
         $.ajax({
@@ -263,41 +357,25 @@ $(document).ready(function() {
                 document.getElementById("nav_ns").text = "NS: " + data.name;
                 console.log("service " + nsId + " loaded..!!");
                 cur_ns = data;
-                console.log(cur_ns);
-                console.log(cur_ns.descriptor);
-                //console.log(cur_ns.descriptor.contains("network_functions"));
-                //console.log(cur_ns.descriptor.network_functions);
-                //console.log((cur_ns.descriptor.network_functions).length);
-                //cur_ns.descriptor.author = "surendra Shankar kulkarni";
-                //updateService(vnf_data.id, vnf_data.vendor, vnf_data.name, vnf_data.version);
-                //updateService(vnf_data);
-                console.log("This network service contains " + (cur_ns.descriptor.network_functions).length + " vnfs...");
-                console.log(cur_ns.descriptor.network_functions);
-                var windowHeight = $(window).innerHeight();
-                var windowWidth = $(window).innerWidth();
-                var max = windowWidth - 200;
+				var $editor = $("#editor");
+                var editorWidth = $editor.width();
+                var max = editorWidth - 75;
                 var min = 25;
+                var ymin = 25;
                 var $x = min
-                var $y = min
+                var $y = ymin
                 if (cur_ns.descriptor.network_functions != null ) {
                     for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
                         vnf = cur_ns.descriptor.network_functions[i];
-                        vnfModel.addVnfToEditor(vnf);
-                        var elem = $('#vnf_' + vnf.vnf_id);
-                        elem.css({
-                            position: 'absolute',
-                            left: $x,
-                            top: $y
-                        });
-                        $x = $x + 100;
+						vnf_data = vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version];
+						vnf_data['id'] = vnf.vnf_id;
+						vnf_data['type'] ='vnf';
+						addNode(vnf_data, $x ,$y);
+						$x = $x + 100;
                         if ($x > max) {
                             $x = min;
                             $y = $y + 100;
                         }
-                        createEndpoints(instance, elem[0].id, vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version].descriptor);
-                        instance.draggable(elem[0].id, {
-                            containment: "parent"
-                        });
                         countDropped++;
                     }
                     $y = $y + 100;
@@ -306,24 +384,20 @@ $(document).ready(function() {
                 if (cur_ns.descriptor.network_services != null ) {
                     for (var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
                         ns = cur_ns.descriptor.network_services[i];
-                        vnfModel.addNsToEditor(ns);
-                        var elem = $('#ns_' + ns.ns_id);
-                        elem.css({
-                            position: 'absolute',
-                            left: $x,
-                            top: $y
-                        });
-                        $x = $x + 100;
+						ns_data = ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version];
+						ns_data['id']= ns.ns_id;
+						ns_data['type']= 'ns';
+                        addNode(ns_data, $x, $y);
+						$x = $x + 100;
                         if ($x > max) {
                             $x = min;
                             $y = $y + 100;
                         }
-                        createEndpoints(instance, elem[0].id, ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version].descriptor);
-                        instance.draggable(elem[0].id, {
-                            containment: "parent"
-                        });
                         countDropped++;
                     }
+                }
+                if (cur_ns.descriptor.connection_points != null){
+                	type ="connection-point";
                 }
             }
         });
@@ -388,6 +462,7 @@ $(document).ready(function() {
             windowHeight = $(window).innerHeight();
             $('.left-navigation-bar').css('min-height', windowHeight);
             $('#editor').css('min-height', windowHeight);
+			$('#editor').css('marginLeft', $('.left-navigation-bar').width());
         }
         setHeight();
         $(window).resize(function() {

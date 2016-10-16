@@ -46,7 +46,7 @@
 				<div class="action-section">
 					<div class="row">
 						<div class="col-xs-4">
-						    <a href="#" onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</a>
+						    <a onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</a>
 						</div>
 						
 						<div class="col-xs-4">
@@ -54,7 +54,7 @@
 						</div>
 						
 						<div class="col-xs-4">
-							<a href=""><i class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</a>
+							<a onclick="showDeployDialog()"><i class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</a>
 						</div>
 					</div>
 				</div>
@@ -156,20 +156,14 @@
 											</ul>
 										</div>	
 									</div>
-																	
-									<div class="col-sm-9 no-padding editor-area" id="editor">
-										<div id="connection-list" ></div>
-										<div data-bind="foreach: network_functions" style="height:100%; width:100%; position:absolute">
-											<div data-bind="attr: {'id': 'vnf_' + vnf_id}" class="vnf-after-drop" >
-												<p data-bind="text: vnf_name">vnf1</p>
+									
+									<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
+											<div data-bind="attr: {'id': type + '_' + id}">
+												<p data-bind="text: name">vnf1</p>
 											</div>
-										</div>
-										<div data-bind="foreach: network_services" style="height:100%; width:100%; position:absolute">
-											<div data-bind="attr: {'id': 'ns_' + ns_id}" class="vnf-after-drop" >
-												<p data-bind="text: ns_name">vnf1</p>
-											</div>
-										</div>								
-									</div>							
+										<div id="connection-list" ></div>										
+									</div>									
+															
 								</div>
 						
 	</div>
@@ -221,6 +215,12 @@
 		
 </div>
 
+<div id="deployDialog" title="Deploy Service" hidden>
+	<select data-bind="foreach: platforms" id="selectPlatform">
+		<option data-bind="value: id, text: name"></option>
+	</select>
+</div>
+
 <div id="successDescriptorDialogUpdated" title="Success" hidden>
 			<h4>Network Service descriptor is updated!</h4>
 </div>
@@ -229,5 +229,7 @@
 	
 </div>
 
+<div id="wait" title="Loading" hidden></div>
+<div id="success" title="Success" hidden></div>
 </body>
 </html>
