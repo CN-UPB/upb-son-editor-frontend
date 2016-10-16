@@ -337,7 +337,7 @@ function createNewNetworkservice() {
 	version = $('#nsVersionInput').val();
 	
 	$.ajax({
-		url : serverURL + "/workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
+		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
 		method : 'POST',
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',

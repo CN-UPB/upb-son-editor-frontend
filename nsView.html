@@ -45,7 +45,7 @@
 				<div class="action-section">
 					<div class="row">
 						<div class="col-xs-4">
-						    <a href="#" onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</a>
+						    <a onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</a>
 						</div>
 						
 						<div class="col-xs-4">
@@ -53,7 +53,7 @@
 						</div>
 						
 						<div class="col-xs-4">
-							<a href=""><i class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</a>
+							<a onclick="showDeployDialog()"><i class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</a>
 						</div>
 					</div>
 				</div>
@@ -214,6 +214,12 @@
 		
 </div>
 
+<div id="deployDialog" title="Deploy Service" hidden>
+	<select data-bind="foreach: platforms" id="selectPlatform">
+		<option data-bind="value: id, text: name"></option>
+	</select>
+</div>
+
 <div id="successDescriptorDialogUpdated" title="Success" hidden>
 			<h4>Network Service descriptor is updated!</h4>
 </div>
@@ -222,5 +228,7 @@
 	
 </div>
 
+<div id="wait" title="Loading" hidden></div>
+<div id="success" title="Success" hidden></div>
 </body>
 </html>

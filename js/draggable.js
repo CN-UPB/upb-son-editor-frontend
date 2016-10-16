@@ -49,6 +49,11 @@ var vnfViewModel = function() {
         this.editor_nodes.push(descriptor);
     }
     .bind(this);
+
+    this.platforms = ko.observableArray([]);
+    this.setPlatforms = function(platforms){
+    	ko.utils.arrayPushAll(this.platforms, platforms);
+    }.bind(this);
 }
 var vnfModel = new vnfViewModel();
 /*
@@ -207,6 +212,54 @@ function addNode(data, x ,y){
 	});
 }
 
+function doDeploy(id){
+	showWaitAnimation("Deploying...");
+	$.ajax({
+        url: serverURL + "workspaces/" + queryString["wsId"] + "/platforms/" + id +"/services/",
+        method: 'POST',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        },
+        data: JSON.stringify({"id": cur_ns.id}),
+        success: function(data) {
+        	closeWaitAnimation();
+        	$("#success").dialog({
+        		buttons:{
+        			"OK": function(){
+        				$(this).dialog("close");
+        			}
+        		}
+        	});
+        	$("#success").text("Service "+ cur_ns.name +" deployed successfully!");
+        },
+        error: function(err) {
+            console.log(err);
+        }
+    });
+}
+
+function showDeployDialog(){
+	$("#deployDialog").dialog({
+		resizable: false,
+		height: "auto",
+		modal: true,
+		buttons: {
+			"Deploy": function(e){
+				var id = $("#selectPlatform").val();
+				var button= $(e.target);
+				button[0].disabled =true;
+				doDeploy(id);
+				$(this).dialog("close");
+			},
+			"Cancel": function(){
+				$(this).dialog("close");
+			}
+		}
+	});
+}
+
 $(document).ready(function() {
     queryString = getQueryString();
     wsId = queryString["wsId"];
@@ -233,6 +286,17 @@ $(document).ready(function() {
             document.getElementById("nav_project").text = "Project: " + data.name;
         }
     });
+	$.ajax({
+        url: serverURL + "workspaces/" + wsId+"/platforms/",
+        dataType: "json",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function(platforms) {
+			vnfModel.setPlatforms(platforms);
+        }
+    });
+
     function loadVNFs() {
         return $.ajax({
             url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",

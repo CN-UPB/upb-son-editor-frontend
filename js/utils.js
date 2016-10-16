@@ -57,6 +57,22 @@ $(document).ajaxError(function (event, response, request) {
 			//repeat the original request
 			$.ajax(request);
 		};
+	} else {
+		$("#errorDialog").dialog();
+		var json = JSON.parse(response.responseText);
+		$("#errorDialog").text(json.message);
+
 	}
 });
 
+function showWaitAnimation(text){
+	$( "#wait" ).dialog({
+		modal: true,
+  		dialogClass: "no-close"
+	});
+	$("#wait").text(text);
+}
+
+function closeWaitAnimation(){
+	$( "#wait" ).dialog("close");
+}
