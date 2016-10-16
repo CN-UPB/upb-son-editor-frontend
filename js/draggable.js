@@ -331,6 +331,9 @@ $(document).ready(function() {
                         countDropped++;
                     }
                 }
+                if (cur_ns.descriptor.connection_points != null){
+                	type ="connection-point";
+                }
             }
         });
     });
