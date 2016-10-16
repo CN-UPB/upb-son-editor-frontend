@@ -235,6 +235,7 @@ function doDeploy(id){
         	$("#success").text("Service "+ cur_ns.name +" deployed successfully!");
         },
         error: function(err) {
+        	closeWaitAnimation();
             console.log(err);
         }
     });
