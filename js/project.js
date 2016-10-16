@@ -20,17 +20,17 @@ $(document).ready(function () {
 			withCredentials : true
 		},
 		success : function (data) {
-			document.getElementById("nav_workspace").text = "Workspace: " +data.name;
+			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
 		}
 	});
-		$.ajax({
-		url : serverURL + "workspaces/" + wsId+"/projects/" + ptId,
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId,
 		dataType : "json",
 		xhrFields : {
 			withCredentials : true
 		},
 		success : function (data) {
-			document.getElementById("nav_project").text = "Project: " +data.name;
+			document.getElementById("nav_project").text = "Project: " + data.name;
 		}
 	});
 	loadServices();
@@ -106,9 +106,7 @@ function loadServices() {
 				document.getElementById("display_NS_VNFS").appendChild(trService);
 				(function (serviceId) {
 					tdEdit.addEventListener('click', function () {
-
 						editService(serviceId);
-
 					}, false);
 					tdClone.addEventListener('click', function () {
 						cloneService(serviceId);
@@ -116,7 +114,7 @@ function loadServices() {
 					tdDelete.addEventListener('click', function () {
 						deleteService(serviceId);
 					}, false);
-					})(serviceId)
+				})(serviceId)
 			}
 		}
 	});
@@ -279,65 +277,26 @@ function deleteVnf(vnfId) {
 
 	});
 }
-
-function cloneService(serviceId) {
-	window.location.href = "nsView.html?wsId=" + queryString["wsId"] +  "&ptId=" + queryString["ptId"] + "&serviceId=" + serviceId+"&operation="+"clone";
+function cloneVnf(vnfId) {
+	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "clone";
 
 }
 
-function cloneVnf(vnfId) {
-	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] +  "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "clone";
-
+function cloneService(serviceId) {
+	showCreateNSDialog(true,serviceId);
 }
 
 function createNewVnf() {
-	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] +  "&ptId=" + queryString["ptId"] + "&operation=" + "create";
+	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&operation=" + "create";
 }
 
-
-
-/*function createNewService(name, id) {
-	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] + "&nsName=" + queryString["nsName"] + "&nsId=" + queryString["nsId"];
-}*/
-
-function createNewService(nsName, nsId) {
-	window.location.href = "nsView.html?wsName=" + queryString["wsName"] + "&wsId=" + queryString["wsId"] + "&ptName=" + queryString["ptName"] + "&ptId=" + queryString["ptId"] +  "&nsName=" + nsName + "&nsId=" + nsId;
-}
-
-function editService(serviceId) {
-	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] +  "&nsId=" + serviceId+"&operation="+"edit";
-
-}
-
-function editVnf(vnfId) {
-	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit";
-}
-
-//create new networkservice dialog (uses jquery ui Dialog)
-function showCreateNSDialog() {
-	$("#createNetworkserviceDialog").dialog({
-		modal : true,
-		draggable : true,
-		buttons : {
-			Cancel : function (){
-				$(this).dialog("close");
-			},
-			"Create" : function () {
-				createNewNetworkservice();
-				$(this).dialog("close");
-			}
-		}
-	});
-}
-
-//send the name of the new networkservice to server
-function createNewNetworkservice() {
-	name    = $('#nsNameInput').val();
-	vendor  = $('#nsVendorInput').val();
+//send the name of the new network service to server
+function createNewService(clone,cloneId) {
+	name = $('#nsNameInput').val();
+	vendor = $('#nsVendorInput').val();
 	version = $('#nsVersionInput').val();
-	
 	$.ajax({
-		url : serverURL + "/workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
+		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
 		method : 'POST',
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
@@ -345,12 +304,19 @@ function createNewNetworkservice() {
 			withCredentials : true
 		},
 		data : JSON.stringify({
-			"version": version,
-			"vendor": vendor,
-			"name": name
+			"version" : version,
+			"vendor" : vendor,
+			"name" : name
 		}),
 		success : function (data) {
-			goToServiceView(data.name, data.id);
+			if(!clone)
+			{
+				window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + data.id + "&operation=" + "create";
+			}
+			else
+			{
+				window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + data.id + "&operation=" + "clone"+"&cloneId="+cloneId;
+			}
 		},
 		error : function (err) {
 			$('#errorDialog').text(err.responseText);
@@ -366,8 +332,28 @@ function createNewNetworkservice() {
 	});
 }
 
-function goToServiceView(nsName, nsId) {
-	//Removing the name parameter from URL
-	  window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + nsId;
+function editService(serviceId) {
+	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + serviceId + "&operation=" + "edit";
 
+}
+
+function editVnf(vnfId) {
+	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit";
+}
+
+//create new networkservice dialog (uses jquery ui Dialog)
+function showCreateNSDialog(clone,cloneId) {
+	$("#createNetworkserviceDialog").dialog({
+		modal : true,
+		draggable : true,
+		buttons : {
+			Cancel : function () {
+				$(this).dialog("close");
+			},
+			"Create" : function () {
+				createNewService(clone,cloneId);
+				$(this).dialog("close");
+			}
+		}
+	});
 }

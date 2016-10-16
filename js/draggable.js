@@ -178,6 +178,53 @@ function updateService(cur_ns) {
         }
     });
 }
+function loadVNFs() {
+	return $.ajax({
+		url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
+		},
+		success: function(data) {
+			vnfs = data;
+			for (var i = 0; i < vnfs.length; i++) {
+				vnfModel.addVnf(vnfs[i]);
+			}
+			/*    $(".vnf").draggable({
+				helper: "clone",
+				revert: "invalid"/* -----------------------
+		// this function will disable the dragged vnf after drag stops.
+		stop: function( event, ui ) {
+			console.log("Stop event is triggered for draggable...");
+			$(this).draggable({ disabled: true })
+			}); */
+		}
+	});
+}
+function loadServices() {
+	return $.ajax({
+		url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
+		},
+		success: function(data) {
+			nss = data;
+			for (var i = 0; i < nss.length; i++) {
+				vnfModel.addNs(nss[i]);
+			}
+			$(".ns").draggable({
+				helper: "clone",
+				revert: "invalid"/* ----------------------
+		// this function will disable the dragged vnf after drag stops.
+		stop: function( event, ui ) {
+			console.log("Stop event is triggered for draggable...");
+			$(this).draggable({ disabled: true });
+		} ----------------------- */
+			});
+		}
+	});
+}
 $(document).ready(function() {
     queryString = getQueryString();
     wsId = queryString["wsId"];
@@ -204,53 +251,6 @@ $(document).ready(function() {
             document.getElementById("nav_project").text = "Project: " + data.name;
         }
     });
-    function loadVNFs() {
-        return $.ajax({
-            url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
-            dataType: "json",
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function(data) {
-                vnfs = data;
-                for (var i = 0; i < vnfs.length; i++) {
-                    vnfModel.addVnf(vnfs[i]);
-                }
-                /*    $(".vnf").draggable({
-					helper: "clone",
-					revert: "invalid"/* -----------------------
-			// this function will disable the dragged vnf after drag stops.
-			stop: function( event, ui ) {
-				console.log("Stop event is triggered for draggable...");
-				$(this).draggable({ disabled: true })
-				}); */
-            }
-        });
-    }
-    function loadServices() {
-        return $.ajax({
-            url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
-            dataType: "json",
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function(data) {
-                nss = data;
-                for (var i = 0; i < nss.length; i++) {
-                    vnfModel.addNs(nss[i]);
-                }
-                $(".ns").draggable({
-                    helper: "clone",
-                    revert: "invalid"/* ----------------------
-			// this function will disable the dragged vnf after drag stops.
-			stop: function( event, ui ) {
-				console.log("Stop event is triggered for draggable...");
-				$(this).draggable({ disabled: true });
-			} ----------------------- */
-                });
-            }
-        });
-    }
     //delay loading the current ns until the sidebar has loaded completely
     $.when(loadVNFs(), loadServices()).done(function(r1, r2) {
         $.ajax({

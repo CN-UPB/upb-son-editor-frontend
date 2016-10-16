@@ -42,7 +42,7 @@
 		<input id="search_item" type="text" class="form-control" placeholder="Search..." required>
 	</div>
 	 <div class="col-md-4">
-			<button class="btn btn-primary" onclick="showCreateNSDialog()">New NS</button>
+			<button class="btn btn-primary" onclick="showCreateNSDialog(false,0)">New NS</button>
 			<button class="btn btn-primary" onclick="createNewVnf();">New VNF</button>				
 	</div>
 </div>
@@ -79,11 +79,10 @@
 
 <div id="createNetworkserviceDialog" title="Create new Networkservice" hidden>
 			<h4>Please input the details of the new network service:</h4>
-			<input class="labelClass" id ='nsVendorInput' placeholder="Enter Vendor details here"/>
+			<input class="labelClass" id ='nsVendorInput' placeholder="Enter Vendor"/>
 			<input class="labelClass" id ='nsNameInput' placeholder="Enter name of network service"/>
-			<input class="labelClass" id ='nsVersionInput' placeholder="Enter Version details here"/>
+			<input class="labelClass" id ='nsVersionInput' placeholder="Enter Version"/>
 </div> 
-
 
 <div id="DeleteServiceDialog" title="Successfully deleted" hidden>
 	<h4>Service is deleted!</h4>
