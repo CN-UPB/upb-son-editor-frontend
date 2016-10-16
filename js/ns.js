@@ -8,7 +8,7 @@ function showDialog() {
 				$(this).dialog("close");
 			},
 				"Submit" : function () {
-				 updateDescriptor();
+				 updateConfig();
 				$(this).dialog("close");
 			}
 		}
@@ -31,7 +31,7 @@ $(function () {
 });
 
 //update network service descriptor
-function updateDescriptor(){
+function updateConfig(){
 	descriptorVersion = $('#descriptor_version').val();
 	name    = $('#dsName').val();
 	vendor  = $('#dsVendor').val();
