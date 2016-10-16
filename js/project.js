@@ -283,7 +283,7 @@ function cloneVnf(vnfId) {
 }
 
 function cloneService(serviceId) {
-	showCreateNSDialog(true,serviceId);
+	showCreateNSDialog(true, serviceId);
 }
 
 function createNewVnf() {
@@ -291,49 +291,82 @@ function createNewVnf() {
 }
 
 //send the name of the new network service to server
-function createNewService(clone,cloneId) {
-	name = $('#nsNameInput').val();
-	vendor = $('#nsVendorInput').val();
-	version = $('#nsVersionInput').val();
-	$.ajax({
-		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
-		method : 'POST',
-		contentType : "application/json; charset=utf-8",
-		dataType : 'json',
-		xhrFields : {
-			withCredentials : true
-		},
-		data : JSON.stringify({
-			"version" : version,
-			"vendor" : vendor,
-			"name" : name
-		}),
-		success : function (data) {
-			if(!clone)
-			{
-				window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + data.id + "&operation=" + "create";
-			}
-			else
-			{
-				window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + data.id + "&operation=" + "clone"+"&cloneId="+cloneId;
-			}
-		},
-		error : function (err) {
-			$('#errorDialog').text(err.responseText);
-			$('#errorDialog').dialog({
-				modal : true,
-				buttons : {
-					Ok : function () {
-						$(this).dialog("close");
+function createNewService(clone, cloneId) {
+	if (clone) {
+		//load cloned service from server
+		$.ajax({
+			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/" + cloneId,
+			dataType : "json",
+			xhrFields : {
+				withCredentials : true
+			},
+			success : function (newData) {
+				newData.descriptor.name = $('#nsNameInput').val();
+				newData.descriptor.vendor = $('#nsVendorInput').val();
+				newData.descriptor.version = $('#nsVersionInput').val();
+				$.ajax({
+					url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
+					method : 'POST',
+					contentType : "application/json; charset=utf-8",
+					dataType : 'json',
+					xhrFields : {
+						withCredentials : true
+					},
+					data : JSON.stringify(newData.descriptor),
+					success : function (data) {
+						window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + data.id;
+					},
+					error : function (err) {
+						$('#errorDialog').text(err.responseText);
+						$('#errorDialog').dialog({
+							modal : true,
+							buttons : {
+								Ok : function () {
+									$(this).dialog("close");
+								}
+							}
+						});
 					}
-				}
-			});
-		}
-	});
+				});
+			},
+		});
+	} else {
+		var name = $('#nsNameInput').val();
+		var vendor = $('#nsVendorInput').val();
+		var version = $('#nsVersionInput').val();
+		$.ajax({
+			url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
+			method : 'POST',
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			xhrFields : {
+				withCredentials : true
+			},
+			data : JSON.stringify({
+				"version" : version,
+				"vendor" : vendor,
+				"name" : name
+			}),
+			success : function (data) {
+				window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + data.id;
+			},
+			error : function (err) {
+				$('#errorDialog').text(err.responseText);
+				$('#errorDialog').dialog({
+					modal : true,
+					buttons : {
+						Ok : function () {
+							$(this).dialog("close");
+						}
+					}
+				});
+			}
+		});
+	}
 }
 
 function editService(serviceId) {
-	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + serviceId + "&operation=" + "edit";
+	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + serviceId;
 
 }
 
@@ -342,7 +375,7 @@ function editVnf(vnfId) {
 }
 
 //create new networkservice dialog (uses jquery ui Dialog)
-function showCreateNSDialog(clone,cloneId) {
+function showCreateNSDialog(clone, cloneId) {
 	$("#createNetworkserviceDialog").dialog({
 		modal : true,
 		draggable : true,
@@ -351,7 +384,7 @@ function showCreateNSDialog(clone,cloneId) {
 				$(this).dialog("close");
 			},
 			"Create" : function () {
-				createNewService(clone,cloneId);
+				createNewService(clone, cloneId);
 				$(this).dialog("close");
 			}
 		}

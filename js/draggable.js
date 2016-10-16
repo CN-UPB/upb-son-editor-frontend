@@ -377,7 +377,7 @@ function loadPlatforms() {
 }
 
 //display loaded network service in the editor
-function displayNS() {
+function displayNS(cur_ns) {
 	var $editor = $("#editor");
 	var editorWidth = $editor.width();
 	var max = editorWidth - 75;
@@ -385,6 +385,8 @@ function displayNS() {
 	var ymin = 25;
 	var $x = min
 		var $y = ymin
+		console.log(cur_ns);
+		console.log(cur_ns.descriptor.network_functions);
 		if (cur_ns.descriptor.network_functions != null) {
 			for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
 				vnf = cur_ns.descriptor.network_functions[i];
@@ -450,15 +452,15 @@ function reconfigureNode(ui, data, old_class, editor) {
 }
 
 function updateDescriptor(type, list, elemId) {
-	if (!list){
+	if (!list) {
 		list = [];
 	}
 	var newEntry = {};
-	newEntry[type + "_vendor"]= lastDraggedDescriptor.vendor;
-	newEntry[type + "_name" ]=  lastDraggedDescriptor.name,
-	newEntry[type + "_id" ]=  lastDraggedDescriptor.name + "_" + countDropped,
-	newEntry[type + "_version" ]=  lastDraggedDescriptor.version
-	list.push(newEntry);
+	newEntry[type + "_vendor"] = lastDraggedDescriptor.vendor;
+	newEntry[type + "_name"] = lastDraggedDescriptor.name,
+	newEntry[type + "_id"] = lastDraggedDescriptor.name + "_" + countDropped,
+	newEntry[type + "_version"] = lastDraggedDescriptor.version
+		list.push(newEntry);
 	if (type == "ns") {
 		cur_ns.descriptor.network_services = list;
 	} else {
@@ -511,10 +513,6 @@ $(document).ready(function () {
 	wsId = queryString["wsId"];
 	ptId = queryString["ptId"];
 	nsId = queryString["nsId"];
-	var cloneId = nsId;
-	if (queryString["operation"] == "clone") {
-		cloneId = queryString["cloneId"];
-	}
 	setNaviBar();
 	loadPlatforms();
 	setHeight();
@@ -530,21 +528,19 @@ $(document).ready(function () {
 		helper : "clone",
 		revert : "invalid"
 	});
-
 	//delay loading the current network service until the sidebar has loaded completely
 	$.when(loadVNFs(), loadServices()).done(function (r1, r2) {
 		$.ajax({
-			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/" + cloneId,
+			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/" + nsId,
 			dataType : "json",
 			xhrFields : {
 				withCredentials : true
 			},
 			success : function (data) {
-				console.log("service " + cloneId + " loaded..!!");
 				document.getElementById("nav_ns").text = "NS: " + data.name;
 				cur_ns = data;
-				displayNS();
-			}
+				displayNS(cur_ns);
+			},
 		});
 	});
 	ko.applyBindings(viewModel);
@@ -567,12 +563,12 @@ $(document).ready(function () {
 				if (data.hasClass('connection-point')) {
 					console.log("inside connection-point condition");
 					reconfigureNode(data, 'connection-point');
-					createNewConnectionPoint( data.attr('id'), true);
+					createNewConnectionPoint(data.attr('id'), true);
 				}
 				if (data.hasClass('e-lan')) {
 					console.log("inside e-lan condition");
 					reconfigureNode(data, "e-lan");
-					createNewElan( data.attr('id'), true);
+					createNewElan(data.attr('id'), true);
 				}
 				instance.draggable(data.attr('id'), {
 					containment : "parent"
@@ -585,7 +581,7 @@ $(document).ready(function () {
 						$(this).remove();
 					}
 				});
-			} 
+			}
 		});
 		//functions to update the connection list
 		var listDiv = document.getElementById("connection-list"),
