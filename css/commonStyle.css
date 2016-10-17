@@ -1,3 +1,17 @@
+/*style used in project view*/
+.labelClass {
+    width:250px;
+    clear:left;
+    text-align:left;
+    padding-right:10px;
+	margin-bottom: 20px;
+}
+
+input, labelClass {
+    float:left;
+}
+
+/*style for buttons*/
 .editorButtons
 {
 	display: inline-block;
@@ -31,6 +45,7 @@
 .add:before {	content: "\271A";}
 .delete:before{	content: "\2718";}
 
+/*style for parsley form validation*/
 input.parsley-success,
 select.parsley-success,
 textarea.parsley-success {

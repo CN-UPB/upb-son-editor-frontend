@@ -9,8 +9,7 @@
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
 
 
-		<link rel="stylesheet" media="screen" href="css/app.css" />
-		<link rel="stylesheet" media="screen" href="css/nsView.css" />
+		<link rel="stylesheet" media="screen" href="css/nsEditorStyle.css" />
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  
 		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
@@ -39,18 +38,14 @@
 
 		<div class="container-fluid">	
 			<div class="row">
-				<div class="col-xs-3 no-padding">
+				<div class="col-xs-2 no-padding">
 					<div class="action-section">
 						<div class="row">
-							<div class="col-xs-4">
+							<div class="col-xs-6">
 								<a onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</br></a>
 							</div>
 
-							<div class="col-xs-4">
-								<a href=""><i class="fa fa-folder-open fa-2x"></i><br>Open</br></a>
-							</div>
-
-							<div class="col-xs-4">
+							<div class="col-xs-6">
 								<a onclick="showDeployDialog()"><i class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</br></a>
 							</div>
 						</div>
@@ -124,24 +119,22 @@
 				<div class="col-xs-6 col-md-3 no-padding">
 					<div class="left-navigation-bar">
 						<ul class="nav nav-pills nav-stacked">
-							<li role="presentation"><a href="#">Virtual Network Function<span id="toggle-panel-left" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
+							<li class="active" role="presentation"><a id="toggle-panel-left-vnf" >Virtual Network Function<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-vnfs">
 									<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">
 										<div data-bind="attr: {'id': 'vnf_' + id}, drag: {value:$data}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
 									</div>
 								</div>
-
 							</li>
 
-							<li role="presentation"><a href="#">Network Services<span id="toggle-panel-left-ns" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
+							<li role="presentation"><a id="toggle-panel-left-ns">Network Services<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-ns">
 									<div data-bind="foreach: nss" id="ns-panel" class="ns-list">
 										<div data-bind="attr: {'id': 'ns_' + id}, drag: {value:$data}" class="ns" ><p data-bind="text: name">ns1</p></div>
 									</div>
 								</div>
-
 							</li>
-							<li role="presentation"><a href="#">Infrastructure<span id="toggle-panel-left-infrastructure" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
+							<li role="presentation"><a id="toggle-panel-left-infrastructure">Infrastructure<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-infrastructure">
 									<div id="cp" class="connection-point" > <p>CP</p></div>
 									<div id="e-lan" class="e-lan" > <p>E-LAN</p></div>
