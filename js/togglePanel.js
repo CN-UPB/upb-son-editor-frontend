@@ -1,4 +1,13 @@
+//click aciton for the side navigator to display available vnfs, network services and infrastructure
 $(document).ready(function(){
+	//make the side navigator horizontal resizable
+	$( "#left-col" ).resizable({
+      maxHeight: $( window ).height(),
+      maxWidth: $( window ).width()*0.5,
+      minHeight: $( window ).height(),
+      minWidth:  $( window ).width()*0.1,
+    });
+	
 	$('#show-ns').slideUp('slow', function() {
 			$('#show-infrastructure').slideUp('slow');
 			$('#show-vnfs').slideToggle('slow');

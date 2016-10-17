@@ -28,6 +28,7 @@
 	margin-top: 10px;
 	height: 50px;
 }
+
 #filebox{
 	/*float: left;*/
 	height: 80px;
@@ -70,13 +71,13 @@
 }
 
 .left-navigation-bar{
-	
-	border: 1px solid black;
+	border-style: ridge none none none;
+	border-width: 1px;
 }
 
 .editor-area{
 
-	border: 1px solid black;
+	border: 1px ridge;
 }
 
  .scrollbar{
@@ -95,8 +96,9 @@
 }
 
 .action-section{
-	border: 1px dotted;
-	margin: 2px 5px;
+	background: #f8f8f8;
+	border-style: none ridge none none;
+	border-width:1px;
 }
 
 .action-section a {
@@ -116,10 +118,10 @@ body{
 	position: absolute;
     width: 100%;
     height: 100%;
-    overflow-x: hidden
+    overflow-x: hidden;
 }
 .panel {
-	background: #ffffbd;
+	background: #f8f8f8;
     background-size:90% 90%;
     height:300px;
 	display:none;
@@ -133,21 +135,19 @@ div .vnf-list {
 }
 
 .vnf {
-	
-	border: 1px solid black;
+	border: 5px solid #c9dbea;
 	margin: 5px 5px 5px 5px;
-	background-color: #F0FFFF;
+	background-color: #337ab7;
 	height: 60px;
 	width: 60px;
     display: inline-block;
 	float: left;
-    vertical-align: top;
-	
+    vertical-align: top;	
 }
 
 div .vnf-after-drop{
-	border: 1px solid black;
-	background-color: white;
+	border: 5px solid #c9dbea;
+	background-color: #337ab7;
 	height: 60px;
 	width: 60px;
 	cursor: pointer;
@@ -177,7 +177,7 @@ div .vnf-after-drop > p{
 	
 	border: 1px solid black;
 	margin: 5px 5px 5px 5px;
-	background-color: #ADFF2F;
+	background-color: white;
 	height: 60px;
 	width: 60px;
     display: inline-block;
@@ -200,7 +200,6 @@ div .ns-after-drop{
 div .ns-after-drop:hover {
 	border:1px solid #123456;
     box-shadow: 2px 2px 19px #444;
-    /* -o-box-shadow: 2px 2px 19px #444; */
     -webkit-box-shadow: 2px 2px 19px #444;
     -moz-box-shadow: 2px 2px 19px #fff;
     opacity:0.9;
@@ -216,13 +215,11 @@ div .ns-after-drop p{
 
 
 .connection-point{
-	
 	border: 1px solid black;
 	margin: 5px;
-	/*background-color: #F0FFFF;*/
 	height: 50px;
 	width: 50px;
-	background: #E9967A;
+	background-color: white;
 	-moz-border-radius: 50px;
 	-webkit-border-radius: 50px;
 	border-radius: 50px;
@@ -267,35 +264,12 @@ div .connection-point-after-drop p{
     margin-right: -50%;
     transform: translate(-50%, -50%)
 }
-/*----------------trying for dimond shape - not complete
-.e-lan{
-	
-	width: 0;
-	height: 0;
-	border: 50px solid transparent;
-	border-bottom: 70px solid red;
-	position: relative;
-	top: -50px;
-
-}
-
-.e-lan:after {
-	content: '';
-	position: absolute;
-	left: -50px; top: 70px;
-	width: 0;
-	height: 0;
-	border: 50px solid transparent;
-	border-top: 70px solid red;
-	display: inline-block;
-}
--------------------------------------------------*/
 
 .e-lan{
 	
 	border: 1px solid black;
 	margin: 5px 5px 5px 5px;
-	background-color: #E9967A;
+	background-color: white;
 	height: 30px;
 	width: 50px;
     display: inline-block;
@@ -336,7 +310,7 @@ div .e-lan-after-drop p{
 	
 	border: 1px solid black;
 	margin: 5px 5px 5px 5px;
-	background-color: #E9967A;
+	background-color: white;
 	height: 30px;
 	width: 50px;
     display: inline-block;
@@ -347,7 +321,6 @@ div .e-lan-after-drop p{
 
 div .e-line-after-drop{
 	border: 1px solid black;
-	background-color: white;
 	height: 30px;
 	width: 50px;
 	cursor: pointer;
@@ -396,14 +369,6 @@ div .e-line-after-drop p{
     color: #444;
 }
 
-/*
-tbody {  
-    display: table-row-group;
-    vertical-align: middle;
-    border-color: inherit;
-	box-sizing: border-box;
-}
-*/
 table{
     
     border-spacing: 10px;

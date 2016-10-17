@@ -14,7 +14,7 @@ var lastDraggedDescriptor = {};
 var countDropped = 0;
 var connectionPoints = 0;
 var connections = [];
-var color = "#00f";
+var color = "#337ab7";
 var interval = null;
 
 var endPointOptions = {
