@@ -576,6 +576,8 @@ var vnfViewModel = function () {
 		$("form").parsley().validate();
 	};
 };
+
+//validate the VNF descriptor and save it if it is valid 
 function saveTables() {
 	if(isYamlEditor)
 	{	var yamlData = tinyMCE.activeEditor.getContent({
@@ -611,6 +613,8 @@ function saveTables() {
 		});
 	}
 }
+
+//update a VNF to the server 
 function updateVnf(jsonData) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/" + queryString["vnfId"],
@@ -645,6 +649,8 @@ function updateVnf(jsonData) {
 		}
 	});
 }
+
+//create a new VNF and it will be called by clicking "New VNF" button 
 function createNewVnf(jsonData) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/",
@@ -680,6 +686,8 @@ function createNewVnf(jsonData) {
 		}
 	});
 }
+
+//load a VNF from the server 
 function loadVnf(vnfId) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/functions/" + vnfId,
@@ -696,40 +704,7 @@ function loadVnf(vnfId) {
 	});
 }
 
-function readJsonObject(str, obj) {
-	var yamlData = "";
-	var i = 0;
-	for (var key in obj) {
-		if (i == 0) {
-			if (str != "")
-				yamlData += "-";
-			yamlData += str + key + ": ";
-		} else {
-			yamlData += str + str + key + ": ";
-		}
-		i++;
-		var val = obj[key];
-		var valType = typeof obj[key];
-		if (valType == "string") {
-			if (val.length == 0) {
-				yamlData += '""' + "<br>";
-			} else {
-				yamlData += obj[key] + "<br>";
-			}
-		} else {
-			if (val.length == 0) {
-				yamlData += "[]" + "<br>";
-			} else {
-				yamlData += "<br>";
-				for (var k in val) {
-					yamlData += readJsonObject("&nbsp;", val[k]);
-				}
-			}
-		}
-	}
-	return yamlData;
-}
-
+//convert json data to yaml, it is used for the yaml editor view
 function convertToYaml() {
 	var jsonData = ko.toJSON(vnfViewModel);
 	jsonData = jsonData.replace(/SR_IOV/g, "SR-IOV");
@@ -753,6 +728,7 @@ function updateViewModel(yamlData) {
 	$("#accordion_units").accordion("refresh");
 }
 
+//switch between two views: normal view and yaml eidtor view 
 function switchViews() {
 	var switchButton = document.getElementById("switchButton");
 	var previous = document.getElementById("previous");
@@ -788,6 +764,7 @@ function switchViews() {
 		container.insertBefore(vnfForm, saveButton);
 	}
 }
+
 $(document).ready(function () {
 	queryString = getQueryString();
 	var wsId = queryString["wsId"];

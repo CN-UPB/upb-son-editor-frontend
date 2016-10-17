@@ -60,7 +60,7 @@ $(document).ready(function () {
 						goToProjectView(wsId, ptId);
 					}, false);
 					tdDelete.addEventListener('click', function () {
-						deleteWs(ptId);
+						deletePt(ptId);
 					}, false);
 				})(ptName, ptId)
 			}
@@ -131,11 +131,13 @@ function createNewProject(wsId, ptName) {
 	});
 }
 
+//open configuration from the current workspace
 function goToConfigurationView() {
 	window.location.href = "workspace-configurationView.html?wsId=" + queryString["wsId"];
 }
 
-function deleteWs(ptId) {
+//delete a project from the server and it will be called by clicking "delete" button belongs to a project
+function deletePt(ptId) {
 	$("#ConfirmDeletionDialog").dialog({
 		modal : true,
 		draggable : false,

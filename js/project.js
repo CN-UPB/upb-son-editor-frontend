@@ -54,6 +54,7 @@ $(document).ready(function () {
 	});
 });
 
+//load infos of all network services from the server
 function loadServices() {
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
@@ -120,6 +121,7 @@ function loadServices() {
 	});
 }
 
+//load infos of all VNFs from the server
 function loadVnfs() {
 	vnf = [];
 	$.ajax({
@@ -187,6 +189,7 @@ function loadVnfs() {
 	});
 }
 
+//load all network services and vnfs from the server, which will be displayed to the user
 function loadList(selectedIndex) {
 	document.getElementById("display_NS_VNFS").innerHTML = "";
 	availableItems = [];
@@ -204,6 +207,8 @@ function loadList(selectedIndex) {
 		break;
 	}
 }
+
+//delete a network service from the server and it will be called by clicking "delete" button belongs to a service
 function deleteService(serviceId) {
 	$("#ConfirmDeletionDialog_Service").dialog({
 		modal : true,
@@ -241,6 +246,7 @@ function deleteService(serviceId) {
 	});
 }
 
+//delete a VNF from the server and it will be called by clicking "delete" button belongs to a VNF
 function deleteVnf(vnfId) {
 	$("#ConfirmDeletionDialog_VNF").dialog({
 		modal : true,
@@ -277,11 +283,14 @@ function deleteVnf(vnfId) {
 
 	});
 }
+
+//clone a existing VNF to create a new one and it will be called by clicking "clone" button belongs to a VNF
 function cloneVnf(vnfId) {
 	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "clone";
 
 }
 
+//clone a existing network service to create a new one and it will be called by clicking "clone" button belongs to a service
 function cloneService(serviceId) {
 	showCreateNSDialog(true, serviceId);
 }
@@ -365,11 +374,13 @@ function createNewService(clone, cloneId) {
 	}
 }
 
+//open the network service editor and it will be called by clicking "edit" button belongs to a service 
 function editService(serviceId) {
 	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + serviceId;
 
 }
 
+//open the VNF editor and it will be called by clicking "edit" button belongs to a VNF
 function editVnf(vnfId) {
 	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit";
 }

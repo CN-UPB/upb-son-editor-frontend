@@ -60,6 +60,7 @@ var WorkspaceModel = function () {
 	}
 }
 
+//save the configuration from workspace and it will be called by clicking "save" button
 function saveConfiguration() {
 	$("form").parsley().validate();
 	if ($("form").parsley().isValid()) {
@@ -112,6 +113,7 @@ function saveConfiguration() {
 	}
 }
 
+//load the current configuration of the workspace 
 function loadConfiguration(wsId) {
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId,

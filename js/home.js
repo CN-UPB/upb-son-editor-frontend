@@ -84,7 +84,7 @@ function showCreateDialog() {
 	});
 }
 
-//send the name of the new workspace to server
+//create a new workspace and send the name of the new workspace to server
 function createNewWorkspace(wsName) {
 	$.ajax({
 		url : serverURL + "workspaces/",
@@ -114,6 +114,7 @@ function createNewWorkspace(wsName) {
 	});
 }
 
+//delete a workspace from the server 
 function deleteWs(wsId) {
 	$("#ConfirmDeletionDialog").dialog({
 		modal : true,
