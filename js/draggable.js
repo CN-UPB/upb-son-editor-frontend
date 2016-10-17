@@ -13,7 +13,10 @@ var instance = {};
 var lastDraggedDescriptor = {};
 var countDropped = 0;
 var connectionPoints = 0;
+var connections = [];
 var color = "#00f";
+var interval = null;
+
 var endPointOptions = {
 	endpoint : "Rectangle",
 	paintStyle : {
@@ -385,41 +388,41 @@ function displayNS() {
 	var ymin = 25;
 	var $x = min
 		var $y = ymin;
-		if (cur_ns.descriptor.network_functions != null) {
-			for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
-				vnf = cur_ns.descriptor.network_functions[i];
-				vnf_data = vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version];
-				vnf_data['id'] = vnf.vnf_id;
-				vnf_data['type'] = 'vnf';
-				addNode(vnf_data, $x, $y);
-				$x = $x + 100;
-				if ($x > max) {
-					$x = min;
-					$y = $y + 100;
-				}
-				countDropped++;
+	if (cur_ns.descriptor.network_functions != null) {
+		for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
+			vnf = cur_ns.descriptor.network_functions[i];
+			vnf_data = vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version];
+			vnf_data['id'] = vnf.vnf_id;
+			vnf_data['type'] = 'vnf';
+			addNode(vnf_data, $x, $y);
+			$x = $x + 100;
+			if ($x > max) {
+				$x = min;
+				$y = $y + 100;
 			}
-			$y = $y + 100;
-			$x = min;
+			countDropped++;
 		}
-		if (cur_ns.descriptor.network_services != null) {
-			for (var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
-				ns = cur_ns.descriptor.network_services[i];
-				ns_data = ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version];
-				ns_data['id'] = ns.ns_id;
-				ns_data['type'] = 'ns';
-				addNode(ns_data, $x, $y);
-				$x = $x + 100;
-				if ($x > max) {
-					$x = min;
-					$y = $y + 100;
-				}
-				countDropped++;
+		$y = $y + 100;
+		$x = min;
+	}
+	if (cur_ns.descriptor.network_services != null) {
+		for (var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
+			ns = cur_ns.descriptor.network_services[i];
+			ns_data = ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version];
+			ns_data['id'] = ns.ns_id;
+			ns_data['type'] = 'ns';
+			addNode(ns_data, $x, $y);
+			$x = $x + 100;
+			if ($x > max) {
+				$x = min;
+				$y = $y + 100;
 			}
+			countDropped++;
 		}
-		if (cur_ns.descriptor.connection_points != null) {
-			type = "connection-point";
-		}
+	}
+	if (cur_ns.descriptor.connection_points != null) {
+		type = "connection-point";
+	}
 }
 
 //function to set the editor height dynamically fitting to the browser window
@@ -506,6 +509,123 @@ function createNewElan(elemID, updateOnServer) {
 	}, endPointOptions);
 }
 
+function updateConnections(conn, remove) {
+	if (!remove)
+		connections.push(conn);
+	else {
+		var idx = -1;
+		for (var i = 0; i < connections.length; i++) {
+			if (connections[i] == conn) {
+				idx = i;
+				break;
+			}
+		}
+		if (idx != -1)
+			connections.splice(idx, 1);
+	}
+	console.log("number of connections:" + connections.length);
+	if (connections.length > 0) {
+		var s = "<span><strong>Connections</strong></span><br/><br/><table><tr><th>Scope</th><th>Source</th><th>Target</th></tr>";
+		for (var j = 0; j < connections.length; j++) {
+			s = s + "<tr><td>" + connections[j].scope + "</td>" + "<td>" + connections[j].sourceId + "</td><td>" + connections[j].targetId + "</td></tr>";
+		}
+		showConnectionInfo(s);
+	} else
+		hideConnectionInfo();
+}
+
+function showConnectionInfo(s) {
+	var listDiv = document.getElementById("connection-list");
+	listDiv.innerHTML = s;
+	listDiv.style.display = "block";
+}
+
+function hideConnectionInfo() {
+	var listDiv = document.getElementById("connection-list");
+	listDiv.style.display = "none";
+}
+
+function animateConnections(conn) {
+	var arrow = conn.getOverlay("arrow");
+	interval = window.setInterval(function () {
+			arrow.loc += 0.05;
+			if (arrow.loc > 1) {
+				arrow.loc = 0;
+			}
+			try {
+				conn.repaint();
+				// writing in try block since when connection is removed we need to terminate the function for that particular connection
+			} catch (e) {
+				window.clearInterval(interval);
+			}
+		}, 100);
+}
+
+function configureJsPlumb() {
+	instance = jsPlumb.getInstance(jsPlumbOptions);
+	$("#editor").droppable({
+		accept : " .vnf , .ns , .connection-point , .e-lan ",
+		drop : function (event, ui) {
+			var data = ui.draggable.clone();
+			if (data.hasClass('vnf')) {
+				console.log("inside vnf condition");
+				reconfigureNode(ui, data, "vnf", this);
+				updateDescriptor("vnf", cur_ns.descriptor.network_functions, data.attr('id'));
+			}
+			if (data.hasClass('ns')) {
+				console.log("inside ns condition");
+				reconfigureNode(ui, data, "ns", this);
+				updateDescriptor("vnf", cur_ns.descriptor.network_services, data.attr('id'));
+			}
+			if (data.hasClass('connection-point')) {
+				console.log("inside connection-point condition");
+				reconfigureNode(data, 'connection-point');
+				createNewConnectionPoint(data.attr('id'), true);
+			}
+			if (data.hasClass('e-lan')) {
+				console.log("inside e-lan condition");
+				reconfigureNode(data, "e-lan");
+				createNewElan(data.attr('id'), true);
+			}
+			instance.draggable(data.attr('id'), {
+				containment : "parent"
+			});
+			$(data).click(function () {
+				var deleteThisNode = confirm("Do you want to delete this node...");
+				if (deleteThisNode === true) {
+					instance.detachAllConnections($(this));
+					instance.removeAllEndpoints($(this));
+					$(this).remove();
+				}
+			});
+		}
+	});
+	//suspend drawing and initialise.
+	//bind to connection/connectionDetached events, and update the list of connections on screen.
+	instance.bind("connection", function (info, originalEvent) {
+		new animateConnections(info.connection);
+		updateConnections(info.connection);
+	});
+	instance.bind("connectionDetached", function (info, originalEvent) {
+		new animateConnections(info.connection);
+		updateConnections(info.connection, true);
+	});
+	instance.bind("connectionMoved", function (info, originalEvent) {
+		//  only remove here, because a 'connection' event is also fired.
+		// in a future release of jsplumb this extra connection event will not
+		// be fired.
+		new animateConnections(info.connection);
+		updateConnections(info.connection, true);
+	});
+	instance.bind("click", function (info, originalEvent) {
+		var popupOkCancel = confirm("Do you want to delete this connection..??");
+		if (popupOkCancel === true) {
+			instance.detach(info);
+		}
+	});
+	jsPlumb.fire("jsPlumbDemoLoaded", instance);
+}
+
 $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
@@ -542,123 +662,5 @@ $(document).ready(function () {
 		});
 	});
 	ko.applyBindings(viewModel);
-	jsPlumb.ready(function () {
-		instance = jsPlumb.getInstance(jsPlumbOptions);
-		$("#editor").droppable({
-			accept : " .vnf , .ns , .connection-point , .e-lan ",
-			drop : function (event, ui) {
-				var data = ui.draggable.clone();
-				if (data.hasClass('vnf')) {
-					console.log("inside vnf condition");
-					reconfigureNode(ui, data, "vnf", this);
-					updateDescriptor("vnf", cur_ns.descriptor.network_functions, data.attr('id'));
-				}
-				if (data.hasClass('ns')) {
-					console.log("inside ns condition");
-					reconfigureNode(ui, data, "ns", this);
-					updateDescriptor("vnf", cur_ns.descriptor.network_services, data.attr('id'));
-				}
-				if (data.hasClass('connection-point')) {
-					console.log("inside connection-point condition");
-					reconfigureNode(data, 'connection-point');
-					createNewConnectionPoint(data.attr('id'), true);
-				}
-				if (data.hasClass('e-lan')) {
-					console.log("inside e-lan condition");
-					reconfigureNode(data, "e-lan");
-					createNewElan(data.attr('id'), true);
-				}
-				instance.draggable(data.attr('id'), {
-					containment : "parent"
-				});
-				$(data).click(function () {
-					var deleteThisNode = confirm("Do you want to delete this node...");
-					if (deleteThisNode === true) {
-						instance.detachAllConnections($(this));
-						instance.removeAllEndpoints($(this));
-						$(this).remove();
-					}
-				});
-			}
-		});
-		//functions to update the connection list
-		var listDiv = document.getElementById("connection-list"),
-		showConnectionInfo = function (s) {
-			listDiv.innerHTML = s;
-			listDiv.style.display = "block";
-		},
-		hideConnectionInfo = function () {
-			listDiv.style.display = "none";
-		},
-		connections = [],
-		updateConnections = function (conn, remove) {
-			if (!remove)
-				connections.push(conn);
-			else {
-				var idx = -1;
-				for (var i = 0; i < connections.length; i++) {
-					if (connections[i] == conn) {
-						idx = i;
-						break;
-					}
-				}
-				if (idx != -1)
-					connections.splice(idx, 1);
-			}
-			console.log("number of connections:" + connections.length);
-			if (connections.length > 0) {
-				var s = "<span><strong>Connections</strong></span><br/><br/><table><tr><th>Scope</th><th>Source</th><th>Target</th></tr>";
-				for (var j = 0; j < connections.length; j++) {
-					s = s + "<tr><td>" + connections[j].scope + "</td>" + "<td>" + connections[j].sourceId + "</td><td>" + connections[j].targetId + "</td></tr>";
-				}
-				hideConnectionInfo();
-			} else
-				hideConnectionInfo();
-		};
-		//method for animation over connection
-		var interval = null;
-		animateConn = function (conn) {
-			var arrow = conn.getOverlay("arrow");
-			interval = window.setInterval(function () {
-					arrow.loc += 0.05;
-					if (arrow.loc > 1) {
-						arrow.loc = 0;
-					}
-					try {
-						conn.repaint();
-						// writing in try block since when connection is removed we need to terminate the function for that particular connection
-					} catch (e) {
-						stop();
-					}
-				}, 100);
-		},
-		stop = function () {
-			window.clearInterval(interval);
-		};
-		//method for animation over connection ends
-		//suspend drawing and initialise.
-		//bind to connection/connectionDetached events, and update the list of connections on screen.
-		instance.bind("connection", function (info, originalEvent) {
-			new animateConn(info.connection);
-			updateConnections(info.connection);
-		});
-		instance.bind("connectionDetached", function (info, originalEvent) {
-			new animateConn(info.connection);
-			updateConnections(info.connection, true);
-		});
-		instance.bind("connectionMoved", function (info, originalEvent) {
-			//  only remove here, because a 'connection' event is also fired.
-			// in a future release of jsplumb this extra connection event will not
-			// be fired.
-			new animateConn(info.connection);
-			updateConnections(info.connection, true);
-		});
-		instance.bind("click", function (info, originalEvent) {
-			var popupOkCancel = confirm("Do you want to delete this connection..??");
-			if (popupOkCancel === true) {
-				instance.detach(info);
-			}
-		});
-		jsPlumb.fire("jsPlumbDemoLoaded", instance);
-	});
+	jsPlumb.ready(configureJsPlumb());
 });
