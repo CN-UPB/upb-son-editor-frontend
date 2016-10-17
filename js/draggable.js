@@ -234,9 +234,7 @@ function addNode(data, x, y) {
 		top : y
 	});
 	createEndpoints(instance, elem[0].id, data.descriptor);
-	instance.draggable(elem[0].id, {
-		containment : "parent"
-	});
+	instance.draggable(elem[0].id);
 }
 
 function doDeploy(id) {

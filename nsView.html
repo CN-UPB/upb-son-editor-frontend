@@ -1,235 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-   <title>SONATA SDK Editor - NS Editor</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css" />
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"></link>
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-
-  
-  <link rel="stylesheet" media="screen" href="css/app.css" />
-  <link rel="stylesheet" media="screen" href="css/nsView.css" />
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  
-  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/1.4.1/jquery.jsPlumb-1.4.1-all-min.js"></script>
-  <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-  <script src="js/togglePanel.js"></script>
-  <script src="js/draggable.js"></script>
-  <script src="js/constants.js"></script>
-  <script src="js/ns.js"></script>
-  <script src="js/utils.js"></script>
+	<head>
+		<title>SONATA SDK Editor - NS Editor</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css"></link>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"></link>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
 
 
-</head>
+		<link rel="stylesheet" media="screen" href="css/app.css" />
+		<link rel="stylesheet" media="screen" href="css/nsView.css" />
 
-<body>
-	<nav class="navbar navbar-default">
-		<div class="navbar-header">
-		  <a class="navbar-brand" onclick="goToHomeView();">SONATA SDK Editor</a>
-		</div>
-		<ul class="nav navbar-nav">
-			<li><a class="top-navigation-menu" onclick="goToHomeView();">Home</a></li>
-			<li><a class="top-navigation-menu" id="nav_workspace" onclick="goToWorkspaceView();">Workspace Name</a></li>
-			<li><a class="top-navigation-menu" id="nav_project" onclick="goToProjectView();">Project Name</a></li>
-			<li class="active"><a class="top-navigation-menu" id="nav_ns" onclick="history.go(0);">Network Service Name</a></li>
-		</ul>
-	</nav>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  
+		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-	<div class="container-fluid">	
-		<div class="row">
-			<div class="col-xs-3 no-padding">
-				<div class="action-section">
-					<div class="row">
-						<div class="col-xs-4">
-						    <a onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</a>
+		<script src="js/lib/jsPlumb-2.1.7-min.js"></script>
+		<script src="js/togglePanel.js"></script>
+		<script src="js/draggable.js"></script>
+		<script src="js/constants.js"></script>
+		<script src="js/ns.js"></script>
+		<script src="js/utils.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" onclick="goToHomeView();">SONATA SDK Editor</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li><a class="top-navigation-menu" onclick="goToHomeView();">Home</a></li>
+				<li><a class="top-navigation-menu" id="nav_workspace" onclick="goToWorkspaceView();">Workspace Name</a></li>
+				<li><a class="top-navigation-menu" id="nav_project" onclick="goToProjectView();">Project Name</a></li>
+				<li class="active"><a class="top-navigation-menu" id="nav_ns" onclick="history.go(0);">Network Service Name</a></li>
+			</ul>
+		</nav>
+
+		<div class="container-fluid">	
+			<div class="row">
+				<div class="col-xs-3 no-padding">
+					<div class="action-section">
+						<div class="row">
+							<div class="col-xs-4">
+								<a onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</br></a>
+							</div>
+
+							<div class="col-xs-4">
+								<a href=""><i class="fa fa-folder-open fa-2x"></i><br>Open</br></a>
+							</div>
+
+							<div class="col-xs-4">
+								<a onclick="showDeployDialog()"><i class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</br></a>
+							</div>
 						</div>
-						
-						<div class="col-xs-4">
-							<a href=""><i class="fa fa-folder-open fa-2x"></i><br>Open</a>
+					</div>
+				</div>
+
+				<div class="col-xs-2 no-padding">
+					<div class="action-section">
+						<div class="row">
+							<div class="col-xs-6">
+								<a href=""><i class="fa fa-undo fa-2x"></i><br>Undo</br></a>
+							</div>
+
+							<div class="col-xs-6">
+								<a href=""><i class="fa fa-repeat fa-2x"></i><br>Redo</br></a>
+							</div>
 						</div>
-						
-						<div class="col-xs-4">
-							<a onclick="showDeployDialog()"><i class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</a>
+					</div>
+				</div>
+
+				<div class="col-xs-3 no-padding">
+					<div class="action-section">
+						<div class="row">
+							<div class="col-xs-4">
+								<a href=""><i class="fa fa-link fa-2x"></i><br>Connect</br></a>
+							</div>
+
+							<div class="col-xs-4">
+								<a href=""><i class="fa fa-mouse-pointer fa-2x"></i><br>Select</br></a>
+							</div>
+
+							<div class="col-xs-4">
+								<a href=""><i class="fa fa-hand-paper-o fa-2x"></i><br>Hand</br></a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xs-4 no-padding">
+					<div class="action-section">
+						<div class="row">
+							<div class="col-xs-4">
+								<select class="form-control">
+									<option value="1">10 %</option>
+									<option value="2">20 %</option>
+									<option value="1">30 %</option>
+									<option value="1">40 %</option>
+									<option value="1">50 %</option>
+									<option value="1">60 %</option>
+									<option value="1">70 %</option>
+									<option value="1">80 %</option>
+									<option value="1">90 %</option>
+									<option value="" disabled="disabled" selected="selected">100 %</option>
+									<option value="1">150 %</option>
+									<option value="1">200 %</option>
+								</select>
+							</div>
+
+							<div class="col-xs-4">
+								<a href=""><i class="fa fa-search-plus fa-2x"></i><br>Zoom-in</br></a>
+							</div>
+
+							<div class="col-xs-4">
+								<a href=""><i class="fa fa-search-minus fa-2x"></i><br>Zoom-out</br></a>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			
-			<div class="col-xs-2 no-padding">
-				<div class="action-section">
-					<div class="row">
-						<div class="col-xs-6">
-							<a href=""><i class="fa fa-undo fa-2x"></i><br>Undo</a>
-						</div>
-						
-						<div class="col-xs-6">
-							<a href=""><i class="fa fa-repeat fa-2x"></i><br>Redo</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-xs-3 no-padding">
-				<div class="action-section">
-					<div class="row">
-						<div class="col-xs-4">
-							<a href=""><i class="fa fa-link fa-2x"></i><br>Connect</a>
-						</div>
-						
-						<div class="col-xs-4">
-							<a href=""><i class="fa fa-mouse-pointer fa-2x"></i><br>Select</a>
-						</div>
-						
-						<div class="col-xs-4">
-							<a href=""><i class="fa fa-hand-paper-o fa-2x"></i><br>Hand</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-xs-4 no-padding">
-				<div class="action-section">
-					<div class="row">
-						<div class="col-xs-4">
-							<select class="form-control">
-								<option value="1">10 %</option>
-								<option value="2">20 %</option>
-								<option value="1">30 %</option>
-								<option value="1">40 %</option>
-								<option value="1">50 %</option>
-								<option value="1">60 %</option>
-								<option value="1">70 %</option>
-								<option value="1">80 %</option>
-								<option value="1">90 %</option>
-								<option value="" disabled="disabled" selected="selected">100 %</option>
-								<option value="1">150 %</option>
-								<option value="1">200 %</option>
-							</select>
-						</div>
-						
-						<div class="col-xs-4">
-							<a href=""><i class="fa fa-search-plus fa-2x"></i><br>Zoom-in</a>
-						</div>
-						
-						<div class="col-xs-4">
-							<a href=""><i class="fa fa-search-minus fa-2x"></i><br>Zoom-out</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	
-							
-								<div class="row">
-									<div class="col-xs-6 col-md-3 no-padding">
-										<div class="left-navigation-bar">
-											<ul class="nav nav-pills nav-stacked">
-												<li role="presentation"><a href="#">Virtual Network Function<span id="toggle-panel-left" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
-													<div class="panel" id="show-vnfs">
-														<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">
-															<div data-bind="attr: {'id': 'vnf_' + id}, drag: {value:$data}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
-														</div>
-													</div>
-													
-												</li>
-												
-												<li role="presentation"><a href="#">Network Services<span id="toggle-panel-left-ns" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
-													<div class="panel" id="show-ns">
-														<div data-bind="foreach: nss" id="ns-panel" class="ns-list">
-															<div data-bind="attr: {'id': 'ns_' + id}, drag: {value:$data}" class="ns" ><p data-bind="text: name">ns1</p></div>
-														</div>
-													</div>
-												
-												</li>
-												<li role="presentation"><a href="#">Infrastructure<span id="toggle-panel-left-infrastructure" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
-													<div class="panel" id="show-infrastructure">
-														<div id="cp" class="connection-point" > <p>CP</p></div>
-														<div id="e-lan" class="e-lan" > <p>E-LAN</p></div>
-													</div>
-												</li>	
-											</ul>
-										</div>	
+			<div class="row">
+				<div class="col-xs-6 col-md-3 no-padding">
+					<div class="left-navigation-bar">
+						<ul class="nav nav-pills nav-stacked">
+							<li role="presentation"><a href="#">Virtual Network Function<span id="toggle-panel-left" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
+								<div class="panel" id="show-vnfs">
+									<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">
+										<div data-bind="attr: {'id': 'vnf_' + id}, drag: {value:$data}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
 									</div>
-									
-									<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
-											<div data-bind="attr: {'id': type + '_' + id}">
-												<p data-bind="text: name">vnf1</p>
-											</div>
-										<div id="connection-list" ></div>										
-									</div>									
-															
 								</div>
-						
-	</div>
 
+							</li>
 
-<div id="createDialog" title="Create Networkservice Descriptor" hidden>
-	<h4>Sections of the Service Descriptor:</h4>
-		<div class="demo">
-            <div id="accordion">
-    				<h3>General Descriptor Section</h3>
-    			<div>
-    			<input class="labelClass" id ='descriptor_version' placeholder="Enter Descriptor version here" data-toggle="tooltip" 
-    				data-placement="top" title="identifies the version of the service descriptor schema that is used to describe the network service."/>
+							<li role="presentation"><a href="#">Network Services<span id="toggle-panel-left-ns" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
+								<div class="panel" id="show-ns">
+									<div data-bind="foreach: nss" id="ns-panel" class="ns-list">
+										<div data-bind="attr: {'id': 'ns_' + id}, drag: {value:$data}" class="ns" ><p data-bind="text: name">ns1</p></div>
+									</div>
+								</div>
 
-    				<input class="labelClass" id ='dsVendor' placeholder="Enter Vendor details here" data-toggle="tooltip" 
-    				data-placement="top" title="will identify the NS uniquely across all NS vendors. It should at least be comprised of the reverse domain name that is under your controll. Moreover, it might have as many sub-groups as needed. For example: eu.sonata-nfv.nec."/>
+							</li>
+							<li role="presentation"><a href="#">Infrastructure<span id="toggle-panel-left-infrastructure" class="glyphicon glyphicon-triangle-bottom pull-right" onClick="" aria-hidden="true"></span></a>
+								<div class="panel" id="show-infrastructure">
+									<div id="cp" class="connection-point" > <p>CP</p></div>
+									<div id="e-lan" class="e-lan" > <p>E-LAN</p></div>
+								</div>
+							</li>	
+						</ul>
+					</div>	
+				</div>
 
-    				<input class="labelClass" id ='dsName' placeholder="Enter Name here" data-toggle="tooltip" 
-    				data-placement="top" title="the name of the NS without its version. It can be created with any name written in lower letters and no strange symbols."/>
+				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
+					<div data-bind="attr: {'id': type + '_' + id}">
+						<p data-bind="text: name">vnf1</p>
+					</div>
+					<div id="connection-list" ></div>										
+				</div>									
 
-    				<input class="labelClass" id ='dsVersion' placeholder="Enter Version here" data-toggle="tooltip" 
-    				data-placement="top" title="names the version of the NS descritor. Any typical version with numbers and dots, such as 1.0, 1.1, and 1.0.1 is allows here. The NS version must be increased with any new (changed) instance of the network function descriptor. Please note: The whole network service is composed of the descriptor and other artifacts, like VNFs. Thus, the network service may change, even if the description remains constant, just because another artifact changes. This might or might not be reflected in the version of the package descriptor."/>
+			</div>
 
-    				<input class="labelClass" id ='dsAuthor' placeholder="Enter Author details here (Optional)" data-toggle="tooltip" 
-    				data-placement="top" title="describes the author of the network service descriptor."/>
-
-    				<input class="labelClass" id ='dsDescription' placeholder="Enter Description here (Optional)" data-toggle="tooltip" 
-    				data-placement="top" title="provides an arbitrary description of the network service."/>
-    			</div>
-    				<h3>Network Functions Section</h3>
-    			<div></div>
-    				<h3>Connection Points Section</h3>
-    			<div></div>
-    				<h3>Virtual Links Section</h3>
-    			<div></div>
-    				<h3>Forwarding Graph Section</h3>
-    			<div></div>
-    				<h3>VNF Lifecycle Events Section</h3>
-    			<div>
-    				<button type="button" class="btn btn-primary">Stop</button>
-    				<button type="button" class="btn btn-primary">Start</button>
-    			</div>
-    				<h3>Auto-scale policy Section</h3>
-    			<div></div>
-    				<h3>Monitoring Parameters Section</h3>
-    			<div></div>
-  			</div>	
 		</div>
-		
-</div>
 
-<div id="deployDialog" title="Deploy Service" hidden>
-	<select data-bind="foreach: platforms" id="selectPlatform">
-		<option data-bind="value: id, text: name"></option>
-	</select>
-</div>
+		<div id="createDialog" title="Create Networkservice Descriptor" hidden>
+			<h4>Sections of the Service Descriptor:</h4>
+			<div class="demo">
+				<div id="accordion">
+					<h3>General Descriptor Section</h3>
+					<div>
+						<input class="labelClass" id ='descriptor_version' placeholder="Enter Descriptor version here" data-toggle="tooltip" 
+data-placement="top" title="identifies the version of the service descriptor schema that is used to describe the network service."></input>
 
-<div id="successDescriptorDialogUpdated" title="Success" hidden>
+						<input class="labelClass" id ='dsVendor' placeholder="Enter Vendor details here" data-toggle="tooltip" 
+data-placement="top" title="will identify the NS uniquely across all NS vendors. It should at least be comprised of the reverse domain name that is under your controll. Moreover, it might have as many sub-groups as needed. For example: eu.sonata-nfv.nec."></input>
+
+						<input class="labelClass" id ='dsName' placeholder="Enter Name here" data-toggle="tooltip" 
+data-placement="top" title="the name of the NS without its version. It can be created with any name written in lower letters and no strange symbols."></input>
+
+						<input class="labelClass" id ='dsVersion' placeholder="Enter Version here" data-toggle="tooltip" 
+data-placement="top" title="names the version of the NS descritor. Any typical version with numbers and dots, such as 1.0, 1.1, and 1.0.1 is allows here. The NS version must be increased with any new (changed) instance of the network function descriptor. Please note: The whole network service is composed of the descriptor and other artifacts, like VNFs. Thus, the network service may change, even if the description remains constant, just because another artifact changes. This might or might not be reflected in the version of the package descriptor."></input>
+
+						<input class="labelClass" id ='dsAuthor' placeholder="Enter Author details here (Optional)" data-toggle="tooltip" 
+data-placement="top" title="describes the author of the network service descriptor."></input>
+
+						<input class="labelClass" id ='dsDescription' placeholder="Enter Description here (Optional)" data-toggle="tooltip" 
+data-placement="top" title="provides an arbitrary description of the network service."></input>
+					</div>
+					<h3>Network Functions Section</h3>
+					<div></div>
+					<h3>Connection Points Section</h3>
+					<div></div>
+					<h3>Virtual Links Section</h3>
+					<div></div>
+					<h3>Forwarding Graph Section</h3>
+					<div></div>
+					<h3>VNF Lifecycle Events Section</h3>
+					<div>
+						<button type="button" class="btn btn-primary">Stop</button>
+						<button type="button" class="btn btn-primary">Start</button>
+					</div>
+					<h3>Auto-scale policy Section</h3>
+					<div></div>
+					<h3>Monitoring Parameters Section</h3>
+					<div></div>
+				</div>	
+			</div>
+
+		</div>
+
+		<div id="deployDialog" title="Deploy Service" hidden>
+			<select data-bind="foreach: platforms" id="selectPlatform">
+				<option data-bind="value: id, text: name"></option>
+			</select>
+		</div>
+
+		<div id="successDescriptorDialogUpdated" title="Success" hidden>
 			<h4>Network Service descriptor is updated!</h4>
-</div>
+		</div>
 
-<div id="errorDialog" title="Error" hidden>
-	
-</div>
+		<div id="errorDialog" title="Error" hidden>
+		</div>
 
-<div id="wait" title="Loading" hidden></div>
-<div id="success" title="Success" hidden></div>
-</body>
+		<div id="wait" title="Loading" hidden></div>
+
+		<div id="success" title="Success" hidden></div>
+	</body>
 </html>
