@@ -560,12 +560,12 @@ $(document).ready(function () {
 				}
 				if (data.hasClass('connection-point')) {
 					console.log("inside connection-point condition");
-					reconfigureNode(data, 'connection-point');
+					reconfigureNode(ui, data, 'connection-point', this);
 					createNewConnectionPoint(data.attr('id'), true);
 				}
 				if (data.hasClass('e-lan')) {
 					console.log("inside e-lan condition");
-					reconfigureNode(data, "e-lan");
+					reconfigureNode(ui, data, "e-lan", this);
 					createNewElan(data.attr('id'), true);
 				}
 				instance.draggable(data.attr('id'), {
