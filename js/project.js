@@ -385,6 +385,11 @@ function editVnf(vnfId) {
 	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit";
 }
 
+//open configuration from the current project
+function goToConfigurationView() {
+	window.location.href = "project-configurationView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
+}
+
 //create new networkservice dialog (uses jquery ui Dialog)
 function showCreateNSDialog(clone, cloneId) {
 	$("#createNetworkserviceDialog").dialog({

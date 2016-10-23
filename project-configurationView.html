@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>SONATA SDK Editor - Workspace Configuration</title>
+		<meta charset="utf-8"></meta>
+		<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"></link>
+		
+		<link rel="stylesheet" href="css/commonStyle.css"></link>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/lib/bootstrap-filestyle.min.js"> </script>
+		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+		
+		<script src="js/lib/parsley.js"></script>
+		<script src="js/constants.js"></script>
+		<script src="js/project-configuration.js"></script>
+		<script src="js/utils.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" onclick="goToHomeView();">SONATA SDK Editor</a>
+				</div>
+				<ul class="nav navbar-nav">
+					<li>
+						<a onclick="goToHomeView();">Home</a>
+					</li>
+					<li>
+						<a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a>
+					</li>
+					<li>					
+						<a id="nav_project" onclick="goToProjectView();">Project</a>
+					</li>
+					<li class="active">
+						<a onclick="history.go(0);">Configuration</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<div class="container">
+			<form data-parsley-validate class="form-horizontal" role="form">
+				<div class="form-group" align="left">
+					<div class="col-md-2">
+						<label class="control-label">Project name:</label>
+					</div>
+					<div class="col-md-4">
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+					</div>
+					<div class="col-md-2">
+						<label class="control-label">Maintainer:</label>
+					</div>
+					<div class="col-md-4">
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+					</div>
+				</div>
+				<div class="form-group" align="left">
+					<div class="col-md-2">
+						<label class="control-label">Description:</label>
+					</div>
+					<div class="col-md-10">
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="widget">
+						 <h2>Publish to:</h2>
+					</div>		
+				</div>
+			</form>
+			<div align="center"> 									
+				<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
+			</div>
+			<ul class="pager">
+				<li><a onclick="goToWorkspaceView();">Previous</a></li>
+			</ul>
+		</div>
+		<div id="successSaveConfiDialog" title="Success" hidden>
+			<h4>Project configuration is updated!</h4>
+		</div>
+		<div id="errorDialog" title="Error" hidden>
+		</div>
+		<div id="FailedValidationDialog" title="Failed" hidden>
+			<h4>Please refill the invalid fileds!</h4>
+		</div>
+	</body>
+</html>
+
