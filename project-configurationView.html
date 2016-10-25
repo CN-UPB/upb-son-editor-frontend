@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"></link>
 		
 		<link rel="stylesheet" href="css/commonStyle.css"></link>
+		<link rel="stylesheet" href="css/chosen.min.css"></link>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -16,6 +17,8 @@
 		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
 		
 		<script src="js/lib/parsley.js"></script>
+		<script src="js/lib/chosen.jquery.min.js"></script>
+		
 		<script src="js/constants.js"></script>
 		<script src="js/project-configuration.js"></script>
 		<script src="js/utils.js"></script>
@@ -55,7 +58,21 @@
 						<label class="control-label">Maintainer:</label>
 					</div>
 					<div class="col-md-4">
-						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: maintainer" type="text" class="form-control" placeholder=""></input>
+					</div>
+				</div>
+				<div class="form-group" align="left">
+					<div class="col-md-2">
+						<label class="control-label">Vendor:</label>
+					</div>
+					<div class="col-md-4">
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: vendor" type="text" class="form-control" placeholder=""></input>
+					</div>
+					<div class="col-md-2">
+						<label class="control-label">Version:</label>
+					</div>
+					<div class="col-md-4">
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: version" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group" align="left">
@@ -63,13 +80,17 @@
 						<label class="control-label">Description:</label>
 					</div>
 					<div class="col-md-10">
-						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: description" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="widget">
-						 <h2>Publish to:</h2>
-					</div>		
+					<div class="col-md-2">
+						<label class="control-label">Publish to:</label>
+					</div>
+					<div class="col-md-10">
+						 <select id="select_box"data-placeholder="select catalogues" style="width:350px;" multiple class="chosen-select" tabindex="8">
+						  </select>
+					</div>
 				</div>
 			</form>
 			<div align="center"> 									

@@ -26,7 +26,7 @@ var Catalogue = function () {
 }
 
 var WorkspaceModel = function () {
-	this.name = ko.observable(queryString["wsName"]);
+	this.name = ko.observable();
 	this.platforms = ko.observableArray();
 	this.catalogues = ko.observableArray();
 	this.addPlatform = function () {
