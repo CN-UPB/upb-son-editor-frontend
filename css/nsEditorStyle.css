@@ -135,18 +135,25 @@ div .vnf-list {
 }
 
 .vnf {
-	border: 5px solid #c9dbea;
+	border: 3px solid #c9dbea;
+	color: white;
+	font-weight: bold;
+	font-size:16px;
 	margin: 5px 5px 5px 5px;
 	background-color: #337ab7;
 	height: 60px;
 	width: 60px;
     display: inline-block;
 	float: left;
-    vertical-align: top;	
+	text-align: center;
+    vertical-align: middle;	
 }
 
 div .vnf-after-drop{
-	border: 5px solid #c9dbea;
+	border: 3px solid #c9dbea;
+	color: white;
+	font-weight: bold;
+	font-size:16px;
 	background-color: #337ab7;
 	height: 60px;
 	width: 60px;
@@ -157,9 +164,6 @@ div .vnf-after-drop{
 } 
 
 div .vnf-after-drop:hover {
-	border:1px solid #123456;
-    box-shadow: 2px 2px 19px #444;
-    /* -o-box-shadow: 2px 2px 19px #444; */
     -webkit-box-shadow: 2px 2px 19px #444;
     -moz-box-shadow: 2px 2px 19px #fff;
     opacity:0.9;
@@ -174,7 +178,6 @@ div .vnf-after-drop > p{
 }
 
 .ns {
-	
 	border: 1px solid black;
 	margin: 5px 5px 5px 5px;
 	background-color: white;
