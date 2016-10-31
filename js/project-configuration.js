@@ -8,24 +8,39 @@ var ProjectModel = function () {
 	this.vendor=ko.observable();
 	this.version=ko.observable();
 	this.description=ko.observable();
-	//this.publish_to=ko.observableArray();
+	this.publish_to=ko.observableArray();
 	this.init=function(data){
 		this.name(data.name);
 		this.maintainer(data.maintainer);
 		this.vendor(data.vendor);
 		this.version(data.version);
 		this.description(data.description);
-		//this.publish_to(data.publish_to);
+		this.publish_to(data.publish_to);
+		var selected=[];
+		for(i=0;i<data.publish_to.length;i++)
+		{
+			var catalogueName=data.publish_to[i];
+			if($.inArray(catalogueName,availableCatalogues)!=-1)
+			{
+				selected.push(catalogueName);
+			}
+		}
+		$(".chosen-select").val(selected).trigger("chosen:updated");
+	}
+	this.setPublishTo=function(data)
+	{
+		this.publish_to(data);
 	}
 }
 
-//save the configuration from workspace and it will be called by clicking "save" button
+//save the configuration from project and it will be called by clicking "save" button
 function saveConfiguration() {
 	selected=$(".chosen-select").val();
-	//$("form").parsley().validate();
-	//if ($("form").parsley().isValid()) 
-	var configurationJson=ko.toJSON(projectModel);
+	projectModel.setPublishTo(selected);
+	$("form").parsley().validate();
+	if ($("form").parsley().isValid()) 
 	{
+		var configurationJson=ko.toJSON(projectModel);
 		$.ajax({
 			url : serverURL + "workspaces/" + queryString["wsId"]+"projects/"+queryString["ptId"],
 			method : 'PUT',
@@ -60,7 +75,7 @@ function saveConfiguration() {
 			}
 		});
 	}
-	/*else {
+	else {
 		$("#FailedValidationDialog").dialog({
 			modal : true,
 			draggable : false,
@@ -70,7 +85,7 @@ function saveConfiguration() {
 				}
 			}
 		});
-	}*/
+	}
 }
 
 
@@ -106,7 +121,7 @@ $(document).ready(function () {
 				var catalogueName=catalogues[i].name;
 				availableCatalogues.push(catalogueName);
 				var op=document.createElement("option");
-				op.value=i;
+				op.value=catalogueName;
 				op.innerHTML=catalogueName;
 				selectBox.appendChild(op);
 			}

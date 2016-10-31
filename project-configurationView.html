@@ -58,7 +58,7 @@
 						<label class="control-label">Maintainer:</label>
 					</div>
 					<div class="col-md-4">
-						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: maintainer" type="text" class="form-control" placeholder=""></input>
+						<input data-bind="value: maintainer" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group" align="left">
@@ -66,13 +66,13 @@
 						<label class="control-label">Vendor:</label>
 					</div>
 					<div class="col-md-4">
-						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: vendor" type="text" class="form-control" placeholder=""></input>
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[a-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: vendor" type="text" class="form-control" placeholder=""></input>
 					</div>
 					<div class="col-md-2">
 						<label class="control-label">Version:</label>
 					</div>
 					<div class="col-md-4">
-						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: version" type="text" class="form-control" placeholder=""></input>
+						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: version" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group" align="left">
@@ -80,7 +80,7 @@
 						<label class="control-label">Description:</label>
 					</div>
 					<div class="col-md-10">
-						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: description" type="text" class="form-control" placeholder=""></input>
+						<input data-bind="value: description" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
 				<div class="form-group">
