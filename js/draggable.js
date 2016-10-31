@@ -430,8 +430,12 @@ function displayNS() {
 function setHeight() {
 	windowHeight = $(window).innerHeight();
 	$('.left-navigation-bar').css('min-height', windowHeight);
-	$('#editor').css('min-height', windowHeight);
-	$('#editor').css('marginLeft', $('.left-navigation-bar').width());
+	$('#editor-parent').css('min-height', windowHeight);
+	$('#editor-parent').css('marginLeft', $('.left-navigation-bar').width());
+	$('#editor').css('min-height', windowHeight/1.5);
+	$('#editor').css('marginLeft', $('.left-navigation-bar').width()/16);
+	$('#editor').css('marginRight', $('.left-navigation-bar').width()/16);
+	$('#editor').css('marginTop', $('.left-navigation-bar').width()/16);	
 }
 
 //replace old_class from the source element with new class 'xxx-after-drop'
