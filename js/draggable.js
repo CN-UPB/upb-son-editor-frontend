@@ -1,5 +1,5 @@
 //var vnfs=[{"name":"name1"},{"name":"name2"},{"name":"name3"}]
-//var serverURL = "http://fg-cn-sandman2.cs.upb.de:5000/";
+//var serverURL = "http://fg-cn-sandman2.cs.upb.de:5000/";§§
 var vnfs = [];
 var nss = [];
 var vnf_map = {};
@@ -14,7 +14,7 @@ var lastDraggedDescriptor = {};
 var countDropped = 0;
 var connectionPoints = 0;
 var connections = [];
-var color = "#337ab7";
+var color = "#d39963";
 var interval = null;
 
 var endPointOptions = {
@@ -32,7 +32,7 @@ var endPointOptions = {
 	},
 	connector : ["Flowchart"],
 	connectorHoverPaintStyle : {
-		strokeStyle : "orange"
+		strokeStyle : "#d36a63"
 	},
 	isTarget : true,
 	anchor : ["Perimeter", {
@@ -60,19 +60,19 @@ var jsPlumbOptions = {
 		strokeStyle : '#666'
 	},
 	EndpointHoverStyle : {
-		fillStyle : "orange",
+		fillStyle : "#d36a63",
 	},
 	HoverPaintStyle : {
-		strokeStyle : "orange"
+		strokeStyle : "#d36a63"
 	},
 	connectorHoverPaintStyle : {
-		strokeStyle : "orange",
+		strokeStyle : "#d36a63",
 		outlineColor : "yellow",
 		outlineWidth : 5
 	},
 	EndpointStyle : {
-		width : 20,
-		height : 16,
+		width : 10,
+		height : 10,
 		strokeStyle : '#666'
 	},
 	Endpoint : "Rectangle",
@@ -301,14 +301,6 @@ function loadVNFs() {
 			for (var i = 0; i < vnfs.length; i++) {
 				viewModel.addVnf(vnfs[i]);
 			}
-			/*    $(".vnf").draggable({
-			helper: "clone",
-			revert: "invalid"/* -----------------------
-			// this function will disable the dragged vnf after drag stops.
-			stop: function( event, ui ) {
-			console.log("Stop event is triggered for draggable...");
-			$(this).draggable({ disabled: true })
-			}); */
 		}
 	});
 }
@@ -331,12 +323,7 @@ function loadServices() {
 			}
 			$(".ns").draggable({
 				helper : "clone",
-				revert : "invalid" /* ----------------------
-				// this function will disable the dragged vnf after drag stops.
-				stop: function( event, ui ) {
-				console.log("Stop event is triggered for draggable...");
-				$(this).draggable({ disabled: true });
-				} ----------------------- */
+				revert : "invalid" 
 			});
 		}
 	});
