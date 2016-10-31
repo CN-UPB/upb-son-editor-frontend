@@ -324,7 +324,10 @@ function loadServices() {
 		success : function (data) {
 			nss = data;
 			for (var i = 0; i < nss.length; i++) {
-				viewModel.addNs(nss[i]);
+				if(nss[i].id!=nsId)
+				{
+					viewModel.addNs(nss[i]);
+					}
 			}
 			$(".ns").draggable({
 				helper : "clone",
