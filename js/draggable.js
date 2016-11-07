@@ -16,7 +16,7 @@ var color = "#d39963";
 var interval = null;
 
 var endPointOptions = {
-	endpoint : "Dot",
+	endpoint : "Rectangle",
 	paintStyle : {
 		fillStyle : color
 	},
@@ -65,6 +65,7 @@ var jsPlumbOptions = {
 		strokeStyle : "#d36a63"
 	},
 	connectorHoverPaintStyle : {
+		strokeStyle : "#d36a63",
 		strokeStyle : "#d36a63",
 		outlineColor : "yellow",
 		outlineWidth : "5px"
@@ -205,14 +206,12 @@ function calcLabelPos(anchor) {
 	return [labelX, labelY];
 }
 
-function createEndpoints(instance, id, descriptor) {
+function createEndpoints(id, descriptor) {
 	var connectionPoints = descriptor['connection_points'];
 	if (connectionPoints) {
 		anchors = calcAnchors(connectionPoints.length);
-		var i;
-		for (i = 0; i < connectionPoints.length; i++) {
+		for (var i = 0; i < connectionPoints.length; i++) {
 			var connectionPoint = connectionPoints[i];
-
 			e = instance.addEndpoint(id, {
 					anchor : anchors[i],
 					connectorOverlays : [["Arrow", {
@@ -269,7 +268,7 @@ function addNode(data, x, y) {
 		left : x,
 		top : y
 	});
-	createEndpoints(instance, elem[0].id, data.descriptor);
+	createEndpoints(elem[0].id, data.descriptor);
 	instance.draggable(elem[0].id);
 }
 
@@ -374,7 +373,7 @@ function updateDescriptor(type, list, elemId) {
 		cur_ns.descriptor.network_functions = list;
 	}
 	updateService(cur_ns);
-	createEndpoints(instance, elemId, lastDraggedDescriptor["descriptor"]);
+	createEndpoints(elemId, lastDraggedDescriptor["descriptor"]);
 }
 
 function createNewConnectionPoint(elemID, updateOnServer) {

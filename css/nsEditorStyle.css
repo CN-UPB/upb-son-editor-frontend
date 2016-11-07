@@ -362,12 +362,12 @@ th, td {
 	margin-bottom: 20px;
 }
 
-input, labelClass {
+input,labelClass {
     float:left;
 }
 
 .endpointLabel {
-    display:none;         /* foo is display:none to begin */
+    display:none;   
 	pointer-events: none;
     background-color: white; 
     z-index:25;
