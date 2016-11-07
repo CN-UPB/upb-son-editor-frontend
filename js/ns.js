@@ -80,3 +80,45 @@ function updateConfig(){
 		}
 	});
 }
+
+'use strict';
+
+
+
+
+$(function(){
+	var history = new SimpleUndo({
+		maxLength: 200,
+		provider: function(done) {
+			done($('#editor').val());
+		},
+		onUpdate: function() {
+			//onUpdate is called in constructor, making history undefined
+			if (!history) return; 
+			
+			updateButtons(history);
+		}
+	});
+
+	function updateButtons(history) {
+		$('#undo').attr('disabled',!history.canUndo());
+		$('#redo').attr('disabled',!history.canRedo());
+	}
+
+	function setEditorContents(contents) {
+		$('#editor').val(contents);
+	}
+	
+	$('#undo').click(function() {
+		history.Undo(setEditorContents);
+	});
+	$('#redo').click(function() {
+		history.redo(setEditorContents);
+	});
+	$('#editor').keypress(function() {
+		history.save();
+	});
+	
+	updateButtons(history);
+});
+
