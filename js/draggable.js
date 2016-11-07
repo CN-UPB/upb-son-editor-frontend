@@ -18,7 +18,7 @@ var color = "#d39963";
 var interval = null;
 
 var endPointOptions = {
-	endpoint : "Rectangle",
+	endpoint : "Dot",
 	paintStyle : {
 		fillStyle : color
 	},
@@ -75,7 +75,7 @@ var jsPlumbOptions = {
 		height : "5px",
 		strokeStyle : '#666'
 	},
-	Endpoint : "Rectangle",
+	Endpoint : "Dot",
 	Container : "editor"
 }
 var ViewModel = function () {
@@ -414,11 +414,16 @@ function displayNS() {
 }
 
 //function to set the editor height dynamically fitting to the browser window
-function setHeight() {
+function setSize() {
 	windowHeight = $(window).innerHeight();
+	windowWidth = $(window).innerWidth();
+	minWidth = windowWidth * 0.1;
 	$('.left-navigation-bar').css('min-height', windowHeight);
+	$('.left-navigation-bar').css('min-width', minWidth);
 	$('#editor').css('min-height', windowHeight);
-	$('#editor').css('marginLeft', $('.left-navigation-bar').width());
+	$('#editor').css('marginLeft', minWidth);
+	$('.vnf').css('width',$('.left-navigation-bar').width()-10);
+	$('.ns').css('width',$('.left-navigation-bar').width()-10);
 }
 
 //replace old_class from the source element with new class 'xxx-after-drop'
@@ -435,7 +440,8 @@ function reconfigureNode(ui, data, old_class, editor) {
 	data.css({
 		position : 'absolute',
 		left : $newPosX,
-		top : $newPosY
+		top : $newPosY,
+		width:''
 	});
 	document.getElementById("editor").appendChild(data[0]);
 }
@@ -563,7 +569,7 @@ function configureJsPlumb() {
 			if (data.hasClass('ns')) {
 				console.log("inside ns condition");
 				reconfigureNode(ui, data, "ns", this);
-				updateDescriptor("vnf", cur_ns.descriptor.network_services, data.attr('id'));
+				updateDescriptor("ns", cur_ns.descriptor.network_services, data.attr('id'));
 			}
 			if (data.hasClass('connection-point')) {
 				console.log("inside connection-point condition");
@@ -621,9 +627,9 @@ $(document).ready(function () {
 	nsId = queryString["nsId"];
 	setNaviBar();
 	loadPlatforms();
-	setHeight();
+	setSize();
 	$(window).resize(function () {
-		setHeight();
+		setSize();
 	});
 
 	$(".connection-point").draggable({
@@ -650,5 +656,5 @@ $(document).ready(function () {
 		});
 	});
 	ko.applyBindings(viewModel);
-	jsPlumb.ready(configureJsPlumb());
+	jsPlumb.ready(function(){configureJsPlumb();});
 });
