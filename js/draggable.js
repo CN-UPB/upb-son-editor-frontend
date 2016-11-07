@@ -1,5 +1,3 @@
-//var vnfs=[{"name":"name1"},{"name":"name2"},{"name":"name3"}]
-//var serverURL = "http://fg-cn-sandman2.cs.upb.de:5000/";§§
 var vnfs = [];
 var nss = [];
 var vnf_map = {};
@@ -18,7 +16,7 @@ var color = "#d39963";
 var interval = null;
 
 var endPointOptions = {
-	endpoint : "Rectangle",
+	endpoint : "Dot",
 	paintStyle : {
 		fillStyle : color
 	},
@@ -51,6 +49,7 @@ var endPointOptions = {
 		activeClass : "dragActive"
 	}
 };
+
 var jsPlumbOptions = {
 	DragOptions : {
 		cursor : 'pointer',
@@ -124,6 +123,43 @@ var viewModel = new ViewModel();
 		}
 	};
 })();
+
+//ajax calls for navigation bar to fetch workspace name, project name, and network service name
+function setNaviBar() {
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
+		}
+	});
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_project").text = "Project: " + data.name;
+		}
+	});
+}
+
+//function to set the editor height dynamically fitting to the browser window
+function setSize() {
+	windowHeight = $(window).innerHeight();
+	windowWidth = $(window).innerWidth();
+	minWidth = windowWidth * 0.1;
+	$('.left-navigation-bar').css('min-height', windowHeight);
+	$('.left-navigation-bar').css('min-width', minWidth);
+	$('#editor').css('min-height', windowHeight);
+	$('#editor').css('marginLeft', minWidth);
+	$('.vnf').css('width',$('.left-navigation-bar').width()-10);
+	$('.ns').css('width',$('.left-navigation-bar').width()-10);
+}
 
 function calcAnchors(anchorCount) {
 	var r = 0.5,
@@ -288,71 +324,6 @@ function showDeployDialog() {
 	});
 }
 
-//load VNFs for the sidebar
-function loadVNFs() {
-	return $.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			vnfs = data;
-			for (var i = 0; i < vnfs.length; i++) {
-				viewModel.addVnf(vnfs[i]);
-			}
-		}
-	});
-}
-
-//load network services for the sidebar
-function loadServices() {
-	return $.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			nss = data;
-			for (var i = 0; i < nss.length; i++) {
-				if(nss[i].id!=nsId)
-				{
-					viewModel.addNs(nss[i]);
-					}
-			}
-			$(".ns").draggable({
-				helper : "clone",
-				revert : "invalid" 
-			});
-		}
-	});
-}
-
-//ajax calls for navigation bar to fetch workspace name, project name, and network service name
-function setNaviBar() {
-	$.ajax({
-		url : serverURL + "workspaces/" + wsId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
-		}
-	});
-	$.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			document.getElementById("nav_project").text = "Project: " + data.name;
-		}
-	});
-}
-
 //load platforms for deploy dialog
 function loadPlatforms() {
 	$.ajax({
@@ -365,60 +336,6 @@ function loadPlatforms() {
 			viewModel.setPlatforms(platforms);
 		}
 	});
-}
-
-//display loaded network service in the editor
-function displayNS() {
-	var $editor = $("#editor");
-	var editorWidth = $editor.width();
-	var max = editorWidth - 75;
-	var min = 25;
-	var ymin = 25;
-	var $x = min
-		var $y = ymin;
-	if (cur_ns.descriptor.network_functions != null) {
-		for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
-			vnf = cur_ns.descriptor.network_functions[i];
-			vnf_data = vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version];
-			vnf_data['id'] = vnf.vnf_id;
-			vnf_data['type'] = 'vnf';
-			addNode(vnf_data, $x, $y);
-			$x = $x + 100;
-			if ($x > max) {
-				$x = min;
-				$y = $y + 100;
-			}
-			countDropped++;
-		}
-		$y = $y + 100;
-		$x = min;
-	}
-	if (cur_ns.descriptor.network_services != null) {
-		for (var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
-			ns = cur_ns.descriptor.network_services[i];
-			ns_data = ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version];
-			ns_data['id'] = ns.ns_id;
-			ns_data['type'] = 'ns';
-			addNode(ns_data, $x, $y);
-			$x = $x + 100;
-			if ($x > max) {
-				$x = min;
-				$y = $y + 100;
-			}
-			countDropped++;
-		}
-	}
-	if (cur_ns.descriptor.connection_points != null) {
-		type = "connection-point";
-	}
-}
-
-//function to set the editor height dynamically fitting to the browser window
-function setHeight() {
-	windowHeight = $(window).innerHeight();
-	$('.left-navigation-bar').css('min-height', windowHeight);
-	$('#editor').css('min-height', windowHeight);
-	$('#editor').css('marginLeft', $('.left-navigation-bar').width());
 }
 
 //replace old_class from the source element with new class 'xxx-after-drop'
@@ -435,7 +352,8 @@ function reconfigureNode(ui, data, old_class, editor) {
 	data.css({
 		position : 'absolute',
 		left : $newPosX,
-		top : $newPosY
+		top : $newPosY,
+		width: ''
 	});
 	document.getElementById("editor").appendChild(data[0]);
 }
@@ -563,7 +481,7 @@ function configureJsPlumb() {
 			if (data.hasClass('ns')) {
 				console.log("inside ns condition");
 				reconfigureNode(ui, data, "ns", this);
-				updateDescriptor("vnf", cur_ns.descriptor.network_services, data.attr('id'));
+				updateDescriptor("ns", cur_ns.descriptor.network_services, data.attr('id'));
 			}
 			if (data.hasClass('connection-point')) {
 				console.log("inside connection-point condition");
@@ -571,8 +489,8 @@ function configureJsPlumb() {
 				createNewConnectionPoint(data.attr('id'), true);
 			}
 			if (data.hasClass('e-lan')) {
-				console.log( "inside e-lan condition");
-				reconfigureNode(ui,data, "e-lan", this);
+				console.log("inside e-lan condition");
+				reconfigureNode(ui, data, "e-lan", this);
 				createNewElan(data.attr('id'), true);
 			}
 			instance.draggable(data.attr('id'), {
@@ -614,6 +532,93 @@ function configureJsPlumb() {
 	jsPlumb.fire("jsPlumbDemoLoaded", instance);
 }
 
+//load VNFs for the sidebar
+function loadVNFs() {
+	return $.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			vnfs = data;
+			for (var i = 0; i < vnfs.length; i++) {
+				viewModel.addVnf(vnfs[i]);
+			}
+		}
+	});
+}
+
+//load network services for the sidebar
+function loadServices() {
+	return $.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			nss = data;
+			for (var i = 0; i < nss.length; i++) {
+				if (nss[i].id != nsId) {
+					viewModel.addNs(nss[i]);
+				}
+			}
+			$(".ns").draggable({
+				helper : "clone",
+				revert : "invalid"
+			});
+		}
+	});
+}
+
+//display loaded network service in the editor
+function displayNS() {
+	var $editor = $("#editor");
+	var editorWidth = $editor.width();
+	var max = editorWidth - 75;
+	var min = 25;
+	var ymin = 25;
+	var $x = min
+		var $y = ymin;
+	if (cur_ns.descriptor.network_functions != null) {
+		for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
+			vnf = cur_ns.descriptor.network_functions[i];
+			vnf_data = vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":" + vnf.vnf_version];
+			vnf_data['id'] = vnf.vnf_id;
+			vnf_data['type'] = 'vnf';
+			addNode(vnf_data, $x, $y);
+			$x = $x + 100;
+			if ($x > max) {
+				$x = min;
+				$y = $y + 100;
+			}
+			countDropped++;
+		}
+		$y = $y + 100;
+		$x = min;
+	}
+	if (cur_ns.descriptor.network_services != null) {
+		for (var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
+			ns = cur_ns.descriptor.network_services[i];
+			ns_data = ns_map[ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version];
+			ns_data['id'] = ns.ns_id;
+			ns_data['type'] = 'ns';
+			addNode(ns_data, $x, $y);
+			$x = $x + 100;
+			if ($x > max) {
+				$x = min;
+				$y = $y + 100;
+			}
+			countDropped++;
+		}
+	}
+	if (cur_ns.descriptor.connection_points != null) {
+		type = "connection-point";
+	}
+}
+
+
 $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
@@ -621,11 +626,10 @@ $(document).ready(function () {
 	nsId = queryString["nsId"];
 	setNaviBar();
 	loadPlatforms();
-	setHeight();
+	setSize();
 	$(window).resize(function () {
-		setHeight();
+		setSize();
 	});
-
 	$(".connection-point").draggable({
 		helper : "clone",
 		revert : "invalid"
@@ -650,5 +654,7 @@ $(document).ready(function () {
 		});
 	});
 	ko.applyBindings(viewModel);
-	jsPlumb.ready(configureJsPlumb());
+	jsPlumb.ready(function () {
+		configureJsPlumb();
+	});
 });
