@@ -432,7 +432,8 @@ function setHeight() {
 	$('.left-navigation-bar').css('min-height', windowHeight);
 	$('#editor-parent').css('min-height', windowHeight);
 	$('#editor-parent').css('marginLeft', $('.left-navigation-bar').width());
-	$('#editor').css('min-height', windowHeight/1.5);
+	$('#editor').css('min-height', windowHeight);
+	//$('#editor').css('marginBottom', $('.left-navigation-bar').width()/16);
 	$('#editor').css('marginLeft', $('.left-navigation-bar').width()/16);
 	$('#editor').css('marginRight', $('.left-navigation-bar').width()/16);
 	$('#editor').css('marginTop', $('.left-navigation-bar').width()/16);	

@@ -418,8 +418,15 @@ input, labelClass {
 }
 .editor-area {
 	margin-left: 355px;
+
 }
 .editor-area-parent {
 	margin-left: 355px;
 	border: 1px ridge;
+}
+#editor{
+	background-color: #cdcdcd;
+	cursor: n-resize;
+	cursor: -webkit-zoom-in;
+	cursor: -moz-zoom-in;
 }
