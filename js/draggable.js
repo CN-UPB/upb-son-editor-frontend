@@ -170,7 +170,7 @@ function calcLabelPos(anchor) {
 	return [labelX, labelY];
 }
 
-function createEndpoints(instance, id, descriptor) {
+function drawFunctionsAndServices( id, descriptor) {
 	var connectionPoints = descriptor['connection_points'];
 	if (connectionPoints) {
 		anchors = calcAnchors(connectionPoints.length);
@@ -239,7 +239,7 @@ function addNode(data, x, y) {
 		if (data.type = "e-lan") {
 			drawElan(elem[0].id);
 		} else {
-			createEndpoints(instance, elem[0].id, data.descriptor);
+			drawFunctionsAndServices(elem[0].id, data.descriptor);
 		}
 	instance.draggable(elem[0].id);
 }
@@ -497,7 +497,7 @@ function updateDescriptor(type, list, elemId) {
 		cur_ns.descriptor.network_functions = list;
 	}
 	updateService(cur_ns);
-	createEndpoints(instance, elemId, lastDraggedDescriptor["descriptor"]);
+	drawFunctionsAndServices( elemId, lastDraggedDescriptor["descriptor"]);
 }
 function drawConnectionPoint(elemID) {
 	instance.addEndpoint(elemID, {
