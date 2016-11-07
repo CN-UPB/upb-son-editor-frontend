@@ -420,7 +420,6 @@ function displayNS() {
 	if (cur_ns.descriptor.connection_points != null) {
 		for (var i = 0; i < (cur_ns.descriptor.connection_points).length; i++) {
 			var cp = cur_ns.descriptor.connection_points[i];
-			//var cp_data['id'] = cp.cp_id;
 			cp['type'] = 'connection-point';
 			addNode(cp, $x, $y);
 			$x = $x + 100;
@@ -437,7 +436,6 @@ function displayNS() {
 	if (cur_ns.descriptor.elans != null) {
 		for (var i = 0; i < (cur_ns.descriptor.elans).length; i++) {
 			var elan = cur_ns.descriptor.elans[i];
-			//var cp_data['id'] = cp.cp_id;
 			elan['type'] = 'e-lan';
 			addNode(elan, $x, $y);
 			$x = $x + 100;
