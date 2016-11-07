@@ -13,7 +13,7 @@ function getQueryString() {
 
 function goToHomeView()
 {
-	window.location.href="/";
+	window.location.href="index.html";
 }
 
 function goToWorkspaceView(wsId){
