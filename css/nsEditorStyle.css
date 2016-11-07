@@ -80,7 +80,7 @@
 	border: 1px ridge;
 }
 
- .scrollbar{
+.scrollbar{
 	position: relative;
 	height: 495px;
 	overflow: scroll; /*for horizontal and vertical scroll bars */
@@ -135,26 +135,23 @@ div .vnf-list {
 }
 
 .vnf {
-	border: 3px solid #c9dbea;
-	color: white;
 	font-weight: bold;
 	font-size:16px;
 	margin: 5px 5px 5px 5px;
-	background-color: #337ab7;
-	height: 60px;
+	border: 3px solid #337ab7;
+	color: #337ab7;
+	height: 40px;
 	width: 60px;
-    display: inline-block;
 	float: left;
 	text-align: center;
-    vertical-align: middle;	
+	vertical-align: middle;
 }
 
 div .vnf-after-drop{
-	border: 3px solid #c9dbea;
-	color: white;
 	font-weight: bold;
 	font-size:16px;
-	background-color: #337ab7;
+	background: url(vnfIcon.png) no-repeat;
+	background-size: contain;
 	height: 60px;
 	width: 60px;
 	cursor: pointer;
@@ -171,38 +168,39 @@ div .vnf-after-drop:hover {
 
 div .vnf-after-drop > p{
 	position: absolute;
-	top: 50%;
+	top: 130%;
 	left: 50%;
 	margin-right: -50;
 	transform: translate(-50%, -50%);
 }
 
 .ns {
-	border: 1px solid black;
 	margin: 5px 5px 5px 5px;
-	background-color: white;
-	height: 60px;
+	border: 2px black;
+	font-weight: bold;
+	font-size:16px;
+	border: 3px solid #337ab7;
+	color: #337ab7;
+	height: 40px;
 	width: 60px;
-    display: inline-block;
+	display: block;
 	float: left;
-    vertical-align: top;
-	
+	text-align: center;
 }
 
 div .ns-after-drop{
-	border: 1px solid black;
-	background-color: white;
-	height: 60px;
-	width: 60px;
-	cursor: pointer;
-	z-index: 24;
+	background: url(nsIcon.png) no-repeat;
+	background-size: contain;
+	font-weight: bold;
+	font-size:16px;
+	height: 80px;
+	width: 80px;
+	display: block;
+	float: left;
 	text-align: center;
-	vertical-align: middle;
 } 
 
 div .ns-after-drop:hover {
-	border:1px solid #123456;
-    box-shadow: 2px 2px 19px #444;
     -webkit-box-shadow: 2px 2px 19px #444;
     -moz-box-shadow: 2px 2px 19px #fff;
     opacity:0.9;
@@ -210,7 +208,7 @@ div .ns-after-drop:hover {
 
 div .ns-after-drop p{
 	position: absolute;
-    top: 50%;
+    top: 110%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
@@ -218,11 +216,13 @@ div .ns-after-drop p{
 
 
 .connection-point{
-	border: 1px solid black;
+	border: 3px solid #337ab7;
 	margin: 5px;
-	height: 50px;
-	width: 50px;
-	background-color: white;
+	height: 40px;
+	width: 40px;
+	font-weight: bold;
+	font-size:16px;
+	color: #337ab7;
 	-moz-border-radius: 50px;
 	-webkit-border-radius: 50px;
 	border-radius: 50px;
@@ -238,10 +238,12 @@ div .ns-after-drop p{
 }
 
 div .connection-point-after-drop{
-	border: 1px solid black;
-	background-color: white;
-	height: 50px;
-	width: 50px;
+	background: url(cpIcon.png) no-repeat;
+	background-size: contain;
+	height: 40px;
+	width: 40px;
+	font-weight: bold;
+	font-size:16px;
 	-moz-border-radius: 50px;
 	-webkit-border-radius: 50px;
 	border-radius: 50px;
@@ -252,9 +254,6 @@ div .connection-point-after-drop{
 } 
 
 div .connection-point-after-drop:hover {
-	border:1px solid #123456;
-    box-shadow: 2px 2px 19px #444;
-    /* -o-box-shadow: 2px 2px 19px #444; */
     -webkit-box-shadow: 2px 2px 19px #444;
     -moz-box-shadow: 2px 2px 19px #fff;
     opacity:0.9;
@@ -262,30 +261,34 @@ div .connection-point-after-drop:hover {
 
 div .connection-point-after-drop p{
 	position: absolute;
-    top: 50%;
+    top: 120%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
 }
 
 .e-lan{
-	
-	border: 1px solid black;
 	margin: 5px 5px 5px 5px;
-	background-color: white;
-	height: 30px;
-	width: 50px;
+	border: 3px solid #337ab7;
+	height: 40px;
+	width: 60px;
+	color: #337ab7;
+	font-weight: bold;
+	font-size:16px;
     display: inline-block;
 	float: left;
-    vertical-align: top;
-	
+	text-align:center;
+    vertical-align: middle;
 }
 
 div .e-lan-after-drop{
-	border: 1px solid black;
-	background-color: white;
-	height: 30px;
-	width: 50px;
+	background: url(elanIcon.png) no-repeat;
+	background-size: contain;
+	border: 3px solid #337ab7;
+	height: 60px;
+	width: 60px;
+	font-weight: bold;
+	font-size:16px;
 	cursor: pointer;
 	z-index: 24;
 	text-align: center;
@@ -293,8 +296,6 @@ div .e-lan-after-drop{
 } 
 
 div .e-lan-after-drop:hover {
-	border:1px solid #123456;
-    box-shadow: 2px 2px 19px #444;
     -webkit-box-shadow: 2px 2px 19px #444;
     -moz-box-shadow: 2px 2px 19px #fff;
     opacity:0.9;
@@ -302,53 +303,11 @@ div .e-lan-after-drop:hover {
 
 div .e-lan-after-drop p{
 	position: absolute;
-    top: 50%;
+    top: 110%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
 }
-
-
-.e-line{
-	
-	border: 1px solid black;
-	margin: 5px 5px 5px 5px;
-	background-color: white;
-	height: 30px;
-	width: 50px;
-    display: inline-block;
-	float: left;
-    vertical-align: top;
-	
-}
-
-div .e-line-after-drop{
-	border: 1px solid black;
-	height: 30px;
-	width: 50px;
-	cursor: pointer;
-	z-index: 24;
-	text-align: center;
-	vertical-align: middle;
-} 
-
-div .e-line-after-drop:hover {
-	border:1px solid #123456;
-    box-shadow: 2px 2px 19px #444;
-    /* -o-box-shadow: 2px 2px 19px #444; */
-    -webkit-box-shadow: 2px 2px 19px #444;
-    -moz-box-shadow: 2px 2px 19px #fff;
-    opacity:0.9;
-}
-
-div .e-line-after-drop p{
-	position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
-}
-
 
 .ui-draggable{
 	background-position: center center;
