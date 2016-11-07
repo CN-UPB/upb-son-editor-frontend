@@ -13,6 +13,7 @@ var instance = {};
 var lastDraggedDescriptor = {};
 var countDropped = 0;
 var connectionPoints = 0;
+var elans = 0;
 var connections = [];
 var color = "#d39963";
 var interval = null;
@@ -176,7 +177,6 @@ function createEndpoints(instance, id, descriptor) {
 		var i;
 		for (i = 0; i < connectionPoints.length; i++) {
 			var connectionPoint = connectionPoints[i];
-
 			e = instance.addEndpoint(id, {
 					anchor : anchors[i],
 					connectorOverlays : [["Arrow", {
@@ -233,7 +233,14 @@ function addNode(data, x, y) {
 		left : x,
 		top : y
 	});
-	createEndpoints(instance, elem[0].id, data.descriptor);
+	if (data.type == "connection-point") {
+		drawConnectionPoint(elem[0].id);
+	} else
+		if (data.type = "e-lan") {
+			drawElan(elem[0].id);
+		} else {
+			createEndpoints(instance, elem[0].id, data.descriptor);
+		}
 	instance.draggable(elem[0].id);
 }
 
@@ -316,14 +323,13 @@ function loadServices() {
 		success : function (data) {
 			nss = data;
 			for (var i = 0; i < nss.length; i++) {
-				if(nss[i].id!=nsId)
-				{
+				if (nss[i].id != nsId) {
 					viewModel.addNs(nss[i]);
-					}
+				}
 			}
 			$(".ns").draggable({
 				helper : "clone",
-				revert : "invalid" 
+				revert : "invalid"
 			});
 		}
 	});
@@ -407,9 +413,40 @@ function displayNS() {
 			}
 			countDropped++;
 		}
+		$y = $y + 100;
+		$x = min;
 	}
+
 	if (cur_ns.descriptor.connection_points != null) {
-		type = "connection-point";
+		for (var i = 0; i < (cur_ns.descriptor.connection_points).length; i++) {
+			var cp = cur_ns.descriptor.connection_points[i];
+			//var cp_data['id'] = cp.cp_id;
+			cp['type'] = 'connection-point';
+			addNode(cp, $x, $y);
+			$x = $x + 100;
+			if ($x > max) {
+				$x = min;
+				$y = $y + 100;
+			}
+			countDropped++;
+		}
+		$y = $y + 100;
+		$x = min;
+	}
+
+	if (cur_ns.descriptor.elans != null) {
+		for (var i = 0; i < (cur_ns.descriptor.elans).length; i++) {
+			var elan = cur_ns.descriptor.elans[i];
+			//var cp_data['id'] = cp.cp_id;
+			elan['type'] = 'e-lan';
+			addNode(elan, $x, $y);
+			$x = $x + 100;
+			if ($x > max) {
+				$x = min;
+				$y = $y + 100;
+			}
+			countDropped++;
+		}
 	}
 }
 
@@ -422,8 +459,8 @@ function setSize() {
 	$('.left-navigation-bar').css('min-width', minWidth);
 	$('#editor').css('min-height', windowHeight);
 	$('#editor').css('marginLeft', minWidth);
-	$('.vnf').css('width',$('.left-navigation-bar').width()-10);
-	$('.ns').css('width',$('.left-navigation-bar').width()-10);
+	$('.vnf').css('width', $('.left-navigation-bar').width() - 10);
+	$('.ns').css('width', $('.left-navigation-bar').width() - 10);
 }
 
 //replace old_class from the source element with new class 'xxx-after-drop'
@@ -441,7 +478,7 @@ function reconfigureNode(ui, data, old_class, editor) {
 		position : 'absolute',
 		left : $newPosX,
 		top : $newPosY,
-		width:''
+		width : ''
 	});
 	document.getElementById("editor").appendChild(data[0]);
 }
@@ -464,33 +501,7 @@ function updateDescriptor(type, list, elemId) {
 	updateService(cur_ns);
 	createEndpoints(instance, elemId, lastDraggedDescriptor["descriptor"]);
 }
-
-function createNewConnectionPoint(elemID, updateOnServer) {
-	text = "CP" + connectionPoints++;
-	$(elemID).html("<p>" + text + "</p>");
-	if (!cur_ns.descriptor.connection_points) {
-		cur_ns.descriptor.connection_points = [];
-	}
-	instance.addEndpoint(elemID, {
-		anchor : ["Right"],
-		connectorOverlays : [["Arrow", {
-					width : 10,
-					length : 20,
-					location : 0.45,
-					id : "arrow"
-				}
-			]]
-	}, endPointOptions);
-	if (updateOnServer) {
-		cur_ns.descriptor.connection_points.push({
-			"id" : text,
-			"type" : "interface"
-		});
-		updateService(cur_ns);
-	}
-}
-
-function createNewElan(elemID, updateOnServer) {
+function drawConnectionPoint(elemID) {
 	instance.addEndpoint(elemID, {
 		anchor : ["Left"],
 		connectorOverlays : [["Arrow", {
@@ -501,6 +512,48 @@ function createNewElan(elemID, updateOnServer) {
 				}
 			]]
 	}, endPointOptions);
+}
+function createNewConnectionPoint(elemID, updateOnServer) {
+	text = "CP" + connectionPoints++;
+	$(elemID).html("<p>" + text + "</p>");
+	if (!cur_ns.descriptor.connection_points) {
+		cur_ns.descriptor.connection_points = [];
+	}
+	drawConnectionPoint(elemID);
+	if (updateOnServer) {
+		cur_ns.descriptor.connection_points.push({
+			"id" : text,
+			"type" : "interface"
+		});
+		updateService(cur_ns);
+	}
+}
+function drawElan(elemID) {
+	instance.addEndpoint(elemID, {
+		anchor : ["Left"],
+		connectorOverlays : [["Arrow", {
+					width : 10,
+					length : 20,
+					location : 0.45,
+					id : "arrow"
+				}
+			]]
+	}, endPointOptions);
+}
+function createNewElan(elemID, updateOnServer) {
+	text = "E-LAN" + elans++;
+	$(elemID).html("<p>" + text + "</p>");
+	if (!cur_ns.descriptor.elans) {
+		cur_ns.descriptor.elans = [];
+	}
+	drawElan(elemID);
+	if (updateOnServer) {
+		cur_ns.descriptor.elans.push({
+			"id" : text,
+			"type" : "interface"
+		});
+		updateService(cur_ns);
+	}
 }
 
 function updateConnections(conn, remove) {
@@ -577,8 +630,8 @@ function configureJsPlumb() {
 				createNewConnectionPoint(data.attr('id'), true);
 			}
 			if (data.hasClass('e-lan')) {
-				console.log( "inside e-lan condition");
-				reconfigureNode(ui,data, "e-lan", this);
+				console.log("inside e-lan condition");
+				reconfigureNode(ui, data, "e-lan", this);
 				createNewElan(data.attr('id'), true);
 			}
 			instance.draggable(data.attr('id'), {
@@ -656,5 +709,7 @@ $(document).ready(function () {
 		});
 	});
 	ko.applyBindings(viewModel);
-	jsPlumb.ready(function(){configureJsPlumb();});
+	jsPlumb.ready(function () {
+		configureJsPlumb();
+	});
 });
