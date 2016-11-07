@@ -135,20 +135,19 @@ div .vnf-list {
 }
 
 .vnf {
-	font-family: Arial;
 	font-weight: bold;
-	font-size:20px;
+	font-size:16px;
 	margin: 5px 5px 5px 5px;
 	border: 3px solid #337ab7;
 	color: #337ab7;
-	height: 30px;
+	height: 40px;
+	width: 60px;
 	float: left;
 	text-align: center;
 	vertical-align: middle;
 }
 
 div .vnf-after-drop{
-	font-family: Arial;
 	font-weight: bold;
 	font-size:16px;
 	background: url(vnfIcon.png) no-repeat;
@@ -169,37 +168,36 @@ div .vnf-after-drop:hover {
 
 div .vnf-after-drop > p{
 	position: absolute;
-	top: 76px;
+	top: 130%;
 	left: 50%;
 	margin-right: -50;
 	transform: translate(-50%, -50%);
 }
 
 .ns {
-	font-family: Arial;
-	font-weight: bold;
-	font-size:20px;
 	margin: 5px 5px 5px 5px;
+	border: 2px black;
+	font-weight: bold;
+	font-size:16px;
 	border: 3px solid #337ab7;
 	color: #337ab7;
-	height: 30px;
+	height: 40px;
+	width: 60px;
+	display: block;
 	float: left;
 	text-align: center;
-	vertical-align: middle;
 }
 
 div .ns-after-drop{
-	font-family: Arial;
+	background: url(nsIcon.png) no-repeat;
+	background-size: contain;
 	font-weight: bold;
 	font-size:16px;
-	background:  url(nsIcon.png) no-repeat;
-	background-size: contain;
 	height: 80px;
 	width: 80px;
-	cursor: pointer;
-	z-index: 24;
+	display: block;
+	float: left;
 	text-align: center;
-	vertical-align: middle;
 } 
 
 div .ns-after-drop:hover {
@@ -210,7 +208,7 @@ div .ns-after-drop:hover {
 
 div .ns-after-drop p{
 	position: absolute;
-    top: 96px;
+    top: 110%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
@@ -223,7 +221,7 @@ div .ns-after-drop p{
 	height: 40px;
 	width: 40px;
 	font-weight: bold;
-	font-size:20px;
+	font-size:16px;
 	color: #337ab7;
 	-moz-border-radius: 50px;
 	-webkit-border-radius: 50px;
@@ -263,7 +261,7 @@ div .connection-point-after-drop:hover {
 
 div .connection-point-after-drop p{
 	position: absolute;
-    top: 56px;;
+    top: 120%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
@@ -273,10 +271,10 @@ div .connection-point-after-drop p{
 	margin: 5px 5px 5px 5px;
 	border: 3px solid #337ab7;
 	height: 40px;
-	width: 80px;
+	width: 60px;
 	color: #337ab7;
 	font-weight: bold;
-	font-size:20px;
+	font-size:16px;
     display: inline-block;
 	float: left;
 	text-align:center;
@@ -305,7 +303,7 @@ div .e-lan-after-drop:hover {
 
 div .e-lan-after-drop p{
 	position: absolute;
-    top: 76px;
+    top: 110%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
@@ -362,12 +360,12 @@ th, td {
 	margin-bottom: 20px;
 }
 
-input,labelClass {
+input, labelClass {
     float:left;
 }
 
 .endpointLabel {
-    display:none;   
+    display:none;         /* foo is display:none to begin */
 	pointer-events: none;
     background-color: white; 
     z-index:25;
