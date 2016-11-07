@@ -22,7 +22,6 @@
 		<script src="js/constants.js"></script>
 		<script src="js/ns.js"></script>
 		<script src="js/utils.js"></script>
-		<script src="js/simple-undo.js"></script>
 	</head>
 	<body>
 		<nav class="navbar navbar-default">
@@ -57,11 +56,11 @@
 					<div class="action-section">
 						<div class="row">
 							<div class="col-md-6">
-								<a id="undo"><i class="fa fa-undo fa-2x"></i><br>Undo</br></a>
+								<a href=""><i class="fa fa-undo fa-2x"></i><br>Undo</br></a>
 							</div>
 
 							<div class="col-md-6">
-								<a id="redo"><i class="fa fa-repeat fa-2x"></i><br>Redo</br></a>
+								<a href=""><i class="fa fa-repeat fa-2x"></i><br>Redo</br></a>
 							</div>
 						</div>
 					</div>
@@ -145,7 +144,7 @@
 					</div>	
 				</div>
 
-				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="setEditorContents">
+				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
 					<div data-bind="attr: {'id': type + '_' + id}">
 						<p data-bind="text: name">vnf1</p>
 					</div>
