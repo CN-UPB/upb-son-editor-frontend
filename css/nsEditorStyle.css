@@ -304,7 +304,11 @@ div .e-lan-after-drop:hover {
 div .e-lan-after-drop p{
 	position: absolute;
 <<<<<<< HEAD
+<<<<<<< HEAD
     top: 110%;
+=======
+    top: 120%;
+>>>>>>> parent of 40b01b5... fix displayNS bug and edit style
 =======
     top: 120%;
 >>>>>>> parent of 40b01b5... fix displayNS bug and edit style
