@@ -242,6 +242,14 @@ function addNode(data, x, y) {
 			drawVNFandNS(elem[0].id, data.descriptor);
 		}
 	instance.draggable(elem[0].id);
+	$("#"+elem[0].id).click(function () {
+		var deleteThisNode = confirm("Do you want to delete this node...");
+		if (deleteThisNode === true) {
+			instance.detachAllConnections($(this));
+			instance.removeAllEndpoints($(this));
+			$(this).remove();
+		}
+	});
 }
 
 function doDeploy(id) {
