@@ -42,7 +42,7 @@ function saveConfiguration() {
 	{
 		var configurationJson=ko.toJSON(projectModel);
 		$.ajax({
-			url : serverURL + "workspaces/" + queryString["wsId"]+"projects/"+queryString["ptId"],
+			url : serverURL + "workspaces/" + queryString["wsId"]+"/projects/"+queryString["ptId"],
 			method : 'PUT',
 			contentType : "application/json; charset=utf-8",
 			dataType : 'json',
