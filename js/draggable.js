@@ -17,7 +17,6 @@ var elans = 0;
 var connections = [];
 var color = "#d39963";
 var interval = null;
-
 var endPointOptions = {
 	endpoint : "Dot",
 	paintStyle : {
@@ -78,7 +77,8 @@ var jsPlumbOptions = {
 	},
 	Endpoint : "Dot",
 	Container : "editor"
-}
+};
+
 var ViewModel = function () {
 	this.vnfs = ko.observableArray([]);
 	this.addVnf = function (vnf) {
@@ -104,7 +104,7 @@ var ViewModel = function () {
 		ko.utils.arrayPushAll(this.platforms, platforms);
 	}
 	.bind(this);
-}
+};
 
 var viewModel = new ViewModel();
 
@@ -177,8 +177,10 @@ function drawVNFandNS( id, descriptor) {
 		var i;
 		for (i = 0; i < connectionPoints.length; i++) {
 			var connectionPoint = connectionPoints[i];
-			e = instance.addEndpoint(id, {
-					anchor : anchors[i],
+			e = instance.addEndpoint(id,
+					{
+			    		uuid: id+":"+connectionPoint.id ,
+			    		anchor : anchors[i],
 					connectorOverlays : [["Arrow", {
 								width : 10,
 								length : 20,
@@ -192,7 +194,7 @@ function drawVNFandNS( id, descriptor) {
 								id : "lbl",
 								location : calcLabelPos(anchors[i])
 							}
-						]]
+						]]	
 				}, endPointOptions);
 			e.bind("mouseenter", function (ep) {
 				ep.showOverlay("lbl");
@@ -200,6 +202,7 @@ function drawVNFandNS( id, descriptor) {
 			e.bind("mouseexit", function (ep) {
 				ep.hideOverlay("lbl");
 			});
+			
 		}
 	}
 }
@@ -226,7 +229,7 @@ function updateService(cur_ns) {
 //add a node of a network service to editor
 function addNode(data, x, y) {
 	viewModel.addToEditor(data);
-	var elem = $('#' + data.type + "_" + data.id);
+	var elem = $('#' + data.id);
 	elem.addClass(data.type + "-after-drop");
 	elem.css({
 		position : 'absolute',
@@ -243,7 +246,7 @@ function addNode(data, x, y) {
 		}
 	instance.draggable(elem[0].id);
 	$("#"+elem[0].id).click(function () {
-		var deleteThisNode = confirm("Do you want to delete this node...");
+		var deleteThisNode = confirm("Do you want to delete this node?");
 		if (deleteThisNode === true) {
 			instance.detachAllConnections($(this));
 			instance.removeAllEndpoints($(this));
@@ -454,6 +457,18 @@ function displayNS() {
 			countDropped++;
 		}
 	}
+	if(cur_ns.descriptor.virtual_links!=null)
+	  {
+		for(var i=0;i<(cur_ns.descriptor.virtual_links).length;i++)
+		{
+		    var virtual_link=cur_ns.descriptor.virtual_links[i];
+		    drawVirtualLink(virtual_link);
+		}	
+	}
+}
+function drawVirtualLink(virtual_link)
+{
+    instance.connect({uuids:virtual_link["connection_points_reference"]});
 }
 
 //function to set the editor height dynamically fitting to the browser window
@@ -471,9 +486,8 @@ function setSize() {
 
 //replace old_class from the source element with new class 'xxx-after-drop'
 function reconfigureNode(ui, data, old_class, editor) {
-	var newId = data.attr('id') + "-dropped-" + countDropped;
+	var newId = old_class+"_"+ data.attr('id') + "_" + countDropped;
 	countDropped = countDropped + 1;
-	//console.log(newId);
 	data.attr('id', newId);
 	data.removeClass(old_class);
 	data.addClass(old_class + '-after-drop');
@@ -495,10 +509,10 @@ function updateDescriptor(type, list, elemId) {
 	}
 	var newEntry = {};
 	newEntry[type + "_vendor"] = lastDraggedDescriptor.vendor;
-	newEntry[type + "_name"] = lastDraggedDescriptor.name,
-	newEntry[type + "_id"] = lastDraggedDescriptor.name + "_" + countDropped,
-	newEntry[type + "_version"] = lastDraggedDescriptor.version
-		list.push(newEntry);
+	newEntry[type + "_name"] = lastDraggedDescriptor.name;
+	newEntry[type + "_id"] = elemId;
+	newEntry[type + "_version"] = lastDraggedDescriptor.version;
+	list.push(newEntry);
 	if (type == "ns") {
 		cur_ns.descriptor.network_services = list;
 	} else {
@@ -562,9 +576,10 @@ function createNewElan(elemID, updateOnServer) {
 	}
 }
 
-function updateConnections(conn, remove) {
-	if (!remove)
+function updateVirtualLinks(conn, remove) {
+	if (!remove){
 		connections.push(conn);
+	}
 	else {
 		var idx = -1;
 		for (var i = 0; i < connections.length; i++) {
@@ -576,6 +591,33 @@ function updateConnections(conn, remove) {
 		if (idx != -1)
 			connections.splice(idx, 1);
 	}
+	var cp_source=conn.endpoints[0];
+	var cp_target=conn.endpoints[1];
+	var virtual_link = {};
+	virtual_link["id"] =cp_source.elementId+"-2-"+cp_target.elementId;
+	virtual_link["connectivity_type"] = "E-Line";
+	virtual_link["connection_points_reference"] = conn.getUuids();
+	if (!cur_ns.descriptor["virtual_links"])
+	{
+		cur_ns.descriptor["virtual_links"] = [];
+	}
+	cur_ns.descriptor["virtual_links"].push(virtual_link);
+	$.ajax({
+		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/" + nsId,
+		method : 'PUT',
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		xhrFields : {
+			withCredentials : true
+		},
+		data : JSON.stringify(cur_ns.descriptor),
+		success : function (data) {
+			console.log("service " + nsId + " updated..!!");
+		},
+		error : function (err) {
+			console.log(err);
+		}
+	});
 	console.log("number of connections:" + connections.length);
 	if (connections.length > 0) {
 		var s = "<span><strong>Connections</strong></span><br/><br/><table><tr><th>Scope</th><th>Source</th><th>Target</th></tr>";
@@ -644,7 +686,7 @@ function configureJsPlumb() {
 				containment : "parent"
 			});
 			$(data).click(function () {
-				var deleteThisNode = confirm("Do you want to delete this node...");
+				var deleteThisNode = confirm("Do you want to delete this node?");
 				if (deleteThisNode === true) {
 					instance.detachAllConnections($(this));
 					instance.removeAllEndpoints($(this));
@@ -657,21 +699,23 @@ function configureJsPlumb() {
 	//bind to connection/connectionDetached events, and update the list of connections on screen.
 	instance.bind("connection", function (info, originalEvent) {
 		new animateConnections(info.connection);
-		updateConnections(info.connection);
+		if (originalEvent){
+			updateVirtualLinks(info.connection,false);	
+		}
 	});
 	instance.bind("connectionDetached", function (info, originalEvent) {
 		new animateConnections(info.connection);
-		updateConnections(info.connection, true);
+		updateVirtualLinks(info.connection, true);
 	});
 	instance.bind("connectionMoved", function (info, originalEvent) {
 		//  only remove here, because a 'connection' event is also fired.
 		// in a future release of jsplumb this extra connection event will not
 		// be fired.
 		new animateConnections(info.connection);
-		updateConnections(info.connection, true);
+		updateVirtualLinks(info.connection, true);
 	});
 	instance.bind("click", function (info, originalEvent) {
-		var popupOkCancel = confirm("Do you want to delete this connection..??");
+		var popupOkCancel = confirm("Do you want to delete this connection??");
 		if (popupOkCancel === true) {
 			instance.detach(info);
 		}
