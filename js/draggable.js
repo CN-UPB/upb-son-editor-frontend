@@ -431,6 +431,8 @@ function displayNS() {
 	if (cur_ns.descriptor.connection_points != null) {
 		for (var i = 0; i < (cur_ns.descriptor.connection_points).length; i++) {
 			var cp = cur_ns.descriptor.connection_points[i];
+			var txts=cp.id.split("_");
+			cp['name']=txts[1]+txts[2];
 			cp['type'] = 'connection-point';
 			addNode(cp, $x, $y);
 			$x = $x + 100;
@@ -447,6 +449,8 @@ function displayNS() {
 	if (cur_ns.descriptor.elans != null) {
 		for (var i = 0; i < (cur_ns.descriptor.elans).length; i++) {
 			var elan = cur_ns.descriptor.elans[i];
+			var txts=elan.id.split("_");
+			elan['name']=txts[1]+txts[2];
 			elan['type'] = 'e-lan';
 			addNode(elan, $x, $y);
 			$x = $x + 100;
@@ -523,6 +527,7 @@ function updateDescriptor(type, list, elemId) {
 }
 function drawConnectionPoint(elemID) {
 	instance.addEndpoint(elemID, {
+	    	uuid: elemID,
 		anchor : ["Left"],
 		connectorOverlays : [["Arrow", {
 					width : 10,
@@ -534,15 +539,17 @@ function drawConnectionPoint(elemID) {
 	}, endPointOptions);
 }
 function createNewConnectionPoint(elemID, updateOnServer) {
-	text = "CP" + connectionPoints++;
-	$(elemID).html("<p>" + text + "</p>");
+	text = elemID;
+	var txts=text.split("_");
+	text=txts[1]+txts[2];
+	$("#"+elemID).html("<p>" + text + "</p>");
 	if (!cur_ns.descriptor.connection_points) {
 		cur_ns.descriptor.connection_points = [];
 	}
 	drawConnectionPoint(elemID);
 	if (updateOnServer) {
 		cur_ns.descriptor.connection_points.push({
-			"id" : text,
+			"id" : elemID,
 			"type" : "interface"
 		});
 		updateService(cur_ns);
@@ -550,6 +557,7 @@ function createNewConnectionPoint(elemID, updateOnServer) {
 }
 function drawElan(elemID) {
 	instance.addEndpoint(elemID, {
+		uuid: elemID,
 		anchor : ["Left"],
 		connectorOverlays : [["Arrow", {
 					width : 10,
@@ -561,15 +569,17 @@ function drawElan(elemID) {
 	}, endPointOptions);
 }
 function createNewElan(elemID, updateOnServer) {
-	text = "E-LAN" + elans++;
-	$(elemID).html("<p>" + text + "</p>");
+	text = elemID;
+	var txts=text.split("_");
+	text=txts[1]+txts[2];
+	$("#"+elemID).html("<p>" + text + "</p>");
 	if (!cur_ns.descriptor.elans) {
 		cur_ns.descriptor.elans = [];
 	}
 	drawElan(elemID);
 	if (updateOnServer) {
 		cur_ns.descriptor.elans.push({
-			"id" : text,
+			"id" : elemID,
 			"type" : "interface"
 		});
 		updateService(cur_ns);
