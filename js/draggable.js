@@ -195,7 +195,7 @@ function drawVNFandNS(id, descriptor) {
 	}
 }
 
-function updateService(cur_ns) {
+function updateService() {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
 				+ queryString["ptId"] + "/services/" + nsId,
@@ -214,7 +214,7 @@ function updateService(cur_ns) {
 		}
 	});
 }
-//delete all links related to a node
+// delete all links related to a node
 function deleteRelatedLinks(objectId) {
 	var cur_links = cur_ns.descriptor.virtual_links;
 	var removed = cur_links.filter(function(el) {
@@ -222,14 +222,15 @@ function deleteRelatedLinks(objectId) {
 	});
 	cur_ns.descriptor.virtual_links = removed;
 }
-//delete a single link
-function deleteLink(uuids)
-{
-	var cur_links=cur_ns.descriptor.virtual_links;
-		var removed=cur_links.filter(function(el){
-			return !(el.connection_points_reference[0]==uuids[0]&&el.connection_points_reference[1]==uuids[1]);
-		});
-		cur_ns.descriptor.virtual_links=removed;
+// delete a single link
+function deleteLink(uuids) {
+	var cur_links = cur_ns.descriptor.virtual_links;
+	var removed = cur_links
+			.filter(function(el) {
+				return !(el.connection_points_reference[0] == uuids[0] && el.connection_points_reference[1] == uuids[1]);
+			});
+	cur_ns.descriptor.virtual_links = removed;
+	updateService(cur_ns);
 }
 
 function deleteNodeOnServer(id) {
@@ -265,7 +266,7 @@ function deleteNodeOnServer(id) {
 		cur_ns.descriptor.elans = removed;
 		deleteRelatedLinks(id);
 	}
-	updateService(cur_ns);
+	updateService();
 }
 // add a node of a network service to editor
 function addNode(data, x, y) {
@@ -291,7 +292,7 @@ function addNode(data, x, y) {
 			deleteNodeOnServer(this.id);
 			instance.detachAllConnections($(this));
 			instance.removeAllEndpoints($(this));
-			$(this).remove();	
+			$(this).remove();
 		}
 	});
 }
@@ -571,7 +572,7 @@ function updateDescriptor(type, list, elemId) {
 	} else {
 		cur_ns.descriptor.network_functions = list;
 	}
-	updateService(cur_ns);
+	updateService();
 	drawVNFandNS(elemId, lastDraggedDescriptor["descriptor"]);
 }
 function drawConnectionPoint(elemID) {
@@ -600,7 +601,7 @@ function createNewConnectionPoint(elemID, updateOnServer) {
 			"id" : elemID,
 			"type" : "interface"
 		});
-		updateService(cur_ns);
+		updateService();
 	}
 }
 function drawElan(elemID) {
@@ -629,13 +630,25 @@ function createNewElan(elemID, updateOnServer) {
 			"id" : elemID,
 			"type" : "interface"
 		});
-		updateService(cur_ns);
+		updateService();
 	}
 }
 
 function updateVirtualLinks(conn, remove) {
 	if (!remove) {
 		connections.push(conn);
+		var cp_source = conn.endpoints[0];
+		var cp_target = conn.endpoints[1];
+		var virtual_link = {};
+		virtual_link["id"] = cp_source.elementId + "-2-" + cp_target.elementId;
+		virtual_link["connectivity_type"] = "E-Line";
+		virtual_link["connection_points_reference"] = conn.getUuids();
+		if (!cur_ns.descriptor["virtual_links"]) {
+			cur_ns.descriptor["virtual_links"] = [];
+		}
+		cur_ns.descriptor["virtual_links"].push(virtual_link);
+		updateService();
+		console.log("number of connections:" + connections.length);
 	} else {
 		var idx = -1;
 		for ( var i = 0; i < connections.length; i++) {
@@ -646,19 +659,8 @@ function updateVirtualLinks(conn, remove) {
 		}
 		if (idx != -1)
 			connections.splice(idx, 1);
+		console.log("number of connections:" + connections.length);
 	}
-	var cp_source = conn.endpoints[0];
-	var cp_target = conn.endpoints[1];
-	var virtual_link = {};
-	virtual_link["id"] = cp_source.elementId + "-2-" + cp_target.elementId;
-	virtual_link["connectivity_type"] = "E-Line";
-	virtual_link["connection_points_reference"] = conn.getUuids();
-	if (!cur_ns.descriptor["virtual_links"]) {
-		cur_ns.descriptor["virtual_links"] = [];
-	}
-	cur_ns.descriptor["virtual_links"].push(virtual_link);
-	updateService(cur_ns);
-	console.log("number of connections:" + connections.length);
 	if (connections.length > 0) {
 		var s = "<span><strong>Connections</strong></span><br/><br/><table><tr><th>Scope</th><th>Source</th><th>Target</th></tr>";
 		for ( var j = 0; j < connections.length; j++) {
@@ -747,7 +749,7 @@ function configureJsPlumb() {
 													instance
 															.removeAllEndpoints($(this));
 													$(this).remove();
-													
+
 												}
 											});
 						}
@@ -774,9 +776,8 @@ function configureJsPlumb() {
 	});
 	instance.bind("click", function(connection, originalEvent) {
 		var popupOkCancel = confirm("Do you want to delete this connection?");
-		if (popupOkCancel === true) {	
+		if (popupOkCancel === true) {
 			deleteLink(connection.getUuids());
-			updateService(cur_ns);
 			instance.detach(connection);
 		}
 	});
