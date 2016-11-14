@@ -321,7 +321,7 @@ function createNewService(clone, cloneId) {
 					xhrFields : {
 						withCredentials : true
 					},
-					data : JSON.stringify(newData.descriptor),
+					data : JSON.stringify(newData),
 					success : function (data) {
 						window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + data.id;
 					},
@@ -343,6 +343,13 @@ function createNewService(clone, cloneId) {
 		var name = $('#nsNameInput').val();
 		var vendor = $('#nsVendorInput').val();
 		var version = $('#nsVersionInput').val();
+		var newData={};
+		newData["meta"]={};
+		newData["descriptor"]={
+				"version" : version,
+				"vendor" : vendor,
+				"name" : name
+			};
 		$.ajax({
 			url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
 			method : 'POST',
@@ -351,11 +358,7 @@ function createNewService(clone, cloneId) {
 			xhrFields : {
 				withCredentials : true
 			},
-			data : JSON.stringify({
-				"version" : version,
-				"vendor" : vendor,
-				"name" : name
-			}),
+			data : JSON.stringify(newData),
 			success : function (data) {
 				window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + data.id;
 			},

@@ -17,6 +17,7 @@ var elans = 0;
 var connections = [];
 var color = "#d39963";
 var interval = null;
+
 var endPointOptions = {
 	endpoint : "Dot",
 	paintStyle : {
@@ -115,7 +116,7 @@ var viewModel = new ViewModel();
 					lastDraggedDescriptor = ko.utils
 							.unwrapObservable(valueAccessor().value);
 				},
-				cursor : 'default'
+				cursor : 'default',
 			};
 			dragElement.draggable(dragOptions);
 		}
@@ -205,7 +206,7 @@ function updateService() {
 		xhrFields : {
 			withCredentials : true
 		},
-		data : JSON.stringify(cur_ns.descriptor),
+		data : JSON.stringify(cur_ns),
 		success : function(data) {
 			console.log("service " + nsId + " updated..!!");
 		},
@@ -285,8 +286,10 @@ function addNode(data, x, y) {
 	} else {
 		drawVNFandNS(elem[0].id, data.descriptor);
 	}
-	instance.draggable(elem[0].id);
-	$("#" + elem[0].id).click(function() {
+	instance.draggable(elem[0].id, {
+		stop : savePositionForNode
+	});
+	$("#" + elem[0].id).dblclick(function() {
 		var deleteThisNode = confirm("Do you want to delete this node?");
 		if (deleteThisNode === true) {
 			deleteNodeOnServer(this.id);
@@ -449,16 +452,11 @@ function displayNS() {
 					+ vnf.vnf_version];
 			vnf_data['id'] = vnf.vnf_id;
 			vnf_data['type'] = 'vnf';
+			$x=cur_ns.meta.positions[vnf.vnf_id][0];
+			$y=cur_ns.meta.positions[vnf.vnf_id][1];
 			addNode(vnf_data, $x, $y);
-			$x = $x + 100;
-			if ($x > max) {
-				$x = min;
-				$y = $y + 100;
-			}
 			countDropped++;
 		}
-		$y = $y + 100;
-		$x = min;
 	}
 	if (cur_ns.descriptor.network_services != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
@@ -467,16 +465,11 @@ function displayNS() {
 					+ ns.ns_version];
 			ns_data['id'] = ns.ns_id;
 			ns_data['type'] = 'ns';
+			$x=cur_ns.meta.positions[ns.ns_id][0];
+			$y=cur_ns.meta.positions[ns.ns_id][1];
 			addNode(ns_data, $x, $y);
-			$x = $x + 100;
-			if ($x > max) {
-				$x = min;
-				$y = $y + 100;
-			}
 			countDropped++;
 		}
-		$y = $y + 100;
-		$x = min;
 	}
 
 	if (cur_ns.descriptor.connection_points != null) {
@@ -485,16 +478,11 @@ function displayNS() {
 			var txts = cp.id.split("_");
 			cp['name'] = txts[1] + txts[2];
 			cp['type'] = 'connection-point';
+			$x=cur_ns.meta.positions[cp.id][0];
+			$y=cur_ns.meta.positions[cp.id][1];
 			addNode(cp, $x, $y);
-			$x = $x + 100;
-			if ($x > max) {
-				$x = min;
-				$y = $y + 100;
-			}
 			countDropped++;
 		}
-		$y = $y + 100;
-		$x = min;
 	}
 
 	if (cur_ns.descriptor.elans != null) {
@@ -503,12 +491,9 @@ function displayNS() {
 			var txts = elan.id.split("_");
 			elan['name'] = txts[1] + txts[2];
 			elan['type'] = 'e-lan';
+			$x=cur_ns.meta.positions[elan.id][0];
+			$y=cur_ns.meta.positions[elan.id][1];
 			addNode(elan, $x, $y);
-			$x = $x + 100;
-			if ($x > max) {
-				$x = min;
-				$y = $y + 100;
-			}
 			countDropped++;
 		}
 	}
@@ -554,6 +539,10 @@ function reconfigureNode(ui, data, old_class, editor) {
 		top : $newPosY,
 		width : ''
 	});
+	var evt = {};
+	evt.pos =[$newPosX, $newPosY];
+	evt.selection = [[{"id":newId}]];
+	savePositionForNode(evt);
 	document.getElementById("editor").appendChild(data[0]);
 }
 
@@ -700,6 +689,13 @@ function animateConnections(conn) {
 		}
 	}, 100);
 }
+function savePositionForNode(event) {
+	var position = event.pos;
+	var node= event.selection[0][0];
+	var nodeId=node.id;
+	cur_ns.meta.positions[nodeId] = position;
+	updateService();
+}
 
 function configureJsPlumb() {
 	instance = jsPlumb.getInstance(jsPlumbOptions);
@@ -736,10 +732,11 @@ function configureJsPlumb() {
 								createNewElan(data.attr('id'), true);
 							}
 							instance.draggable(data.attr('id'), {
+								stop : savePositionForNode,
 								containment : "parent"
 							});
 							$(data)
-									.click(
+									.dblclick(
 											function() {
 												var deleteThisNode = confirm("Do you want to delete this node?");
 												if (deleteThisNode === true) {
@@ -753,6 +750,7 @@ function configureJsPlumb() {
 												}
 											});
 						}
+
 					});
 	// suspend drawing and initialise.
 	// bind to connection/connectionDetached events, and update the list of
@@ -774,7 +772,7 @@ function configureJsPlumb() {
 		new animateConnections(info.connection);
 		updateVirtualLinks(info.connection, true);
 	});
-	instance.bind("click", function(connection, originalEvent) {
+	instance.bind("dblclick", function(connection, originalEvent) {
 		var popupOkCancel = confirm("Do you want to delete this connection?");
 		if (popupOkCancel === true) {
 			deleteLink(connection.getUuids());
@@ -795,6 +793,8 @@ function loadCurrentNS() {
 		},
 		success : function(data) {
 			document.getElementById("nav_ns").text = "NS: " + data.name;
+			if(!data.meta.positions)
+				data.meta.positions={};
 			cur_ns = data;
 			displayNS();
 		},
@@ -814,11 +814,11 @@ $(document).ready(function() {
 
 	$(".connection-point").draggable({
 		helper : "clone",
-		revert : "invalid"
+		revert : "invalid",
 	});
 	$(".e-lan").draggable({
 		helper : "clone",
-		revert : "invalid"
+		revert : "invalid",
 	});
 	// delay loading the current network service until the sidebar has loaded
 	// completely
