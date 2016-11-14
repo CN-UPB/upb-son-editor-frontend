@@ -214,6 +214,7 @@ function updateService(cur_ns) {
 		}
 	});
 }
+//delete all links related to a node
 function deleteRelatedLinks(objectId) {
 	var cur_links = cur_ns.descriptor.virtual_links;
 	var removed = cur_links.filter(function(el) {
@@ -221,16 +222,16 @@ function deleteRelatedLinks(objectId) {
 	});
 	cur_ns.descriptor.virtual_links = removed;
 }
-
+//delete a single link
 function deleteLink(uuids)
 {
 	var cur_links=cur_ns.descriptor.virtual_links;
 		var removed=cur_links.filter(function(el){
-			return el.connection_points_reference!=uuids;
+			return !(el.connection_points_reference[0]==uuids[0]&&el.connection_points_reference[1]==uuids[1]);
 		});
-		cur_links=removed;
-	
+		cur_ns.descriptor.virtual_links=removed;
 }
+
 function deleteNodeOnServer(id) {
 	if (id.split("_")[0] == "vnf") {
 		var cur_vnfs = cur_ns.descriptor.network_functions;
@@ -656,23 +657,7 @@ function updateVirtualLinks(conn, remove) {
 		cur_ns.descriptor["virtual_links"] = [];
 	}
 	cur_ns.descriptor["virtual_links"].push(virtual_link);
-	$.ajax({
-		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
-				+ queryString["ptId"] + "/services/" + nsId,
-		method : 'PUT',
-		contentType : "application/json; charset=utf-8",
-		dataType : 'json',
-		xhrFields : {
-			withCredentials : true
-		},
-		data : JSON.stringify(cur_ns.descriptor),
-		success : function(data) {
-			console.log("service " + nsId + " updated..!!");
-		},
-		error : function(err) {
-			console.log(err);
-		}
-	});
+	updateService(cur_ns);
 	console.log("number of connections:" + connections.length);
 	if (connections.length > 0) {
 		var s = "<span><strong>Connections</strong></span><br/><br/><table><tr><th>Scope</th><th>Source</th><th>Target</th></tr>";
@@ -789,9 +774,9 @@ function configureJsPlumb() {
 	});
 	instance.bind("click", function(connection, originalEvent) {
 		var popupOkCancel = confirm("Do you want to delete this connection?");
-		if (popupOkCancel === true) {
-			console.log(connection.getUuids());
+		if (popupOkCancel === true) {	
 			deleteLink(connection.getUuids());
+			updateService(cur_ns);
 			instance.detach(connection);
 		}
 	});
