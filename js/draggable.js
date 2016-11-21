@@ -185,13 +185,12 @@ function drawVNFandNS(id, descriptor) {
 					location : calcLabelPos(anchors[i])
 				} ] ]
 			}, endPointOptions);
-			e.bind("mouseenter", function(ep) {
+			e.bind("mouseover", function(ep) {
 				ep.showOverlay("lbl");
 			});
-			e.bind("mouseexit", function(ep) {
+			e.bind("mouseout", function(ep) {
 				ep.hideOverlay("lbl");
 			});
-
 		}
 	}
 }
@@ -435,25 +434,44 @@ function loadPlatforms() {
 		}
 	});
 }
-
+function rewriteData(type, data) {
+	if (type == 'vnf') {
+		var vnf_data = vnf_map[data.vnf_vendor + ":" + data.vnf_name + ":"
+				+ data.vnf_version];
+		vnf_data['id'] = data.vnf_id;
+		vnf_data['type'] = 'vnf';
+		return vnf_data;
+	}
+	if (type == 'ns') {
+		var ns_data = ns_map[data.ns_vendor + ":" + data.ns_name + ":"
+				+ data.ns_version];
+		ns_data['id'] = data.ns_id;
+		ns_data['type'] = 'ns';
+		return ns_data;
+	}
+	if (type == 'connection-point') {
+		var cp = data;
+		var txts = data.id.split("_");
+		cp['name'] = txts[1] + txts[2];
+		cp['type'] = 'connection-point';
+		return cp;
+	}
+	if (type == 'e-lan') {
+		var elan = data;
+		var txts = data.id.split("_");
+		elan['name'] = txts[1] + txts[2];
+		elan['type'] = 'e-lan';
+		return elan;
+	}
+}
 // display loaded network service in the editor
 function displayNS() {
-	var $editor = $("#editor");
-	var editorWidth = $editor.width();
-	var max = editorWidth - 75;
-	var min = 25;
-	var ymin = 25;
-	var $x = min;
-	var $y = ymin;
 	if (cur_ns.descriptor.network_functions != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
 			vnf = cur_ns.descriptor.network_functions[i];
-			vnf_data = vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":"
-					+ vnf.vnf_version];
-			vnf_data['id'] = vnf.vnf_id;
-			vnf_data['type'] = 'vnf';
-			$x=cur_ns.meta.positions[vnf.vnf_id][0];
-			$y=cur_ns.meta.positions[vnf.vnf_id][1];
+			$x = cur_ns.meta.positions[vnf.vnf_id][0];
+			$y = cur_ns.meta.positions[vnf.vnf_id][1];
+			vnf_data = rewriteData('vnf', vnf);
 			addNode(vnf_data, $x, $y);
 			countDropped++;
 		}
@@ -461,12 +479,9 @@ function displayNS() {
 	if (cur_ns.descriptor.network_services != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
 			ns = cur_ns.descriptor.network_services[i];
-			ns_data = ns_map[ns.ns_vendor + ":" + ns.ns_name + ":"
-					+ ns.ns_version];
-			ns_data['id'] = ns.ns_id;
-			ns_data['type'] = 'ns';
-			$x=cur_ns.meta.positions[ns.ns_id][0];
-			$y=cur_ns.meta.positions[ns.ns_id][1];
+			$x = cur_ns.meta.positions[ns.ns_id][0];
+			$y = cur_ns.meta.positions[ns.ns_id][1];
+			ns_data = rewriteData('ns', ns);
 			addNode(ns_data, $x, $y);
 			countDropped++;
 		}
@@ -475,11 +490,9 @@ function displayNS() {
 	if (cur_ns.descriptor.connection_points != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.connection_points).length; i++) {
 			var cp = cur_ns.descriptor.connection_points[i];
-			var txts = cp.id.split("_");
-			cp['name'] = txts[1] + txts[2];
-			cp['type'] = 'connection-point';
-			$x=cur_ns.meta.positions[cp.id][0];
-			$y=cur_ns.meta.positions[cp.id][1];
+			$x = cur_ns.meta.positions[cp.id][0];
+			$y = cur_ns.meta.positions[cp.id][1];
+			cp = rewriteData('connection-point', cp);
 			addNode(cp, $x, $y);
 			countDropped++;
 		}
@@ -488,11 +501,9 @@ function displayNS() {
 	if (cur_ns.descriptor.elans != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.elans).length; i++) {
 			var elan = cur_ns.descriptor.elans[i];
-			var txts = elan.id.split("_");
-			elan['name'] = txts[1] + txts[2];
-			elan['type'] = 'e-lan';
-			$x=cur_ns.meta.positions[elan.id][0];
-			$y=cur_ns.meta.positions[elan.id][1];
+			$x = cur_ns.meta.positions[elan.id][0];
+			$y = cur_ns.meta.positions[elan.id][1];
+			elan = rewriteData('e-lan', elan);
 			addNode(elan, $x, $y);
 			countDropped++;
 		}
@@ -528,6 +539,7 @@ function reconfigureNode(ui, data, old_class, editor) {
 	var newId = old_class + "_" + data.attr('id') + "_" + countDropped;
 	countDropped = countDropped + 1;
 	data.attr('id', newId);
+
 	data.removeClass(old_class);
 	data.addClass(old_class + '-after-drop');
 	data.removeClass('ui-draggable');
@@ -540,10 +552,11 @@ function reconfigureNode(ui, data, old_class, editor) {
 		width : ''
 	});
 	var evt = {};
-	evt.pos =[$newPosX, $newPosY];
-	evt.selection = [[{"id":newId}]];
+	evt.pos = [ $newPosX, $newPosY ];
+	evt.selection = [ [ {
+		"id" : newId
+	} ] ];
 	savePositionForNode(evt);
-	document.getElementById("editor").appendChild(data[0]);
 }
 
 function updateDescriptor(type, list, elemId) {
@@ -558,8 +571,16 @@ function updateDescriptor(type, list, elemId) {
 	list.push(newEntry);
 	if (type == "ns") {
 		cur_ns.descriptor.network_services = list;
+		var ns_data=rewriteData('ns',newEntry);
+		$x = cur_ns.meta.positions[ns_data.id][0];
+		$y = cur_ns.meta.positions[ns_data.id][1];
+		addNode(ns_data, $x, $y);
 	} else {
 		cur_ns.descriptor.network_functions = list;
+		var vnf_data=rewriteData('vnf', newEntry);
+		$x = cur_ns.meta.positions[vnf_data.id][0];
+		$y = cur_ns.meta.positions[vnf_data.id][1];
+		addNode(vnf_data, $x, $y);
 	}
 	updateService();
 	drawVNFandNS(elemId, lastDraggedDescriptor["descriptor"]);
@@ -580,7 +601,12 @@ function createNewConnectionPoint(elemID, updateOnServer) {
 	text = elemID;
 	var txts = text.split("_");
 	text = txts[1] + txts[2];
-	$("#" + elemID).html("<p>" + text + "</p>");
+	var cp={};
+	cp.id=elemID;
+	var cp_data=rewriteData('connection-point',cp);
+	$x = cur_ns.meta.positions[cp_data.id][0];
+	$y = cur_ns.meta.positions[cp_data.id][1];
+	addNode(cp_data,$x,$y);
 	if (!cur_ns.descriptor.connection_points) {
 		cur_ns.descriptor.connection_points = [];
 	}
@@ -609,7 +635,12 @@ function createNewElan(elemID, updateOnServer) {
 	text = elemID;
 	var txts = text.split("_");
 	text = txts[1] + txts[2];
-	$("#" + elemID).html("<p>" + text + "</p>");
+	var elan={};
+	elan.id=elemID;
+	var elan_data=rewriteData('e-lan',elan);
+	$x = cur_ns.meta.positions[elan_data.id][0];
+	$y = cur_ns.meta.positions[elan_data.id][1];
+	addNode(elan_data,$x,$y);
 	if (!cur_ns.descriptor.elans) {
 		cur_ns.descriptor.elans = [];
 	}
@@ -691,8 +722,8 @@ function animateConnections(conn) {
 }
 function savePositionForNode(event) {
 	var position = event.pos;
-	var node= event.selection[0][0];
-	var nodeId=node.id;
+	var node = event.selection[0][0];
+	var nodeId = node.id;
 	cur_ns.meta.positions[nodeId] = position;
 	updateService();
 }
@@ -793,8 +824,8 @@ function loadCurrentNS() {
 		},
 		success : function(data) {
 			document.getElementById("nav_ns").text = "NS: " + data.name;
-			if(!data.meta.positions)
-				data.meta.positions={};
+			if (!data.meta.positions)
+				data.meta.positions = {};
 			cur_ns = data;
 			displayNS();
 		},
