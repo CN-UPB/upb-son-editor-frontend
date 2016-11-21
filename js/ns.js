@@ -15,28 +15,19 @@ function showDialog() {
 	});
 }
 
-//ui-accordin-hover
-$(function() {
-    $("#accordion").accordion({active : false,
-		collapsible : true,
-		heightStyle : "content" });
-    $(".trigger").click(function() {
-        $("#accordion").accordion("enable").accordion("activate", parseInt($(this).data("index"), 10)).accordion("disable");
-    });
-});
 
 //showing msg on search bar
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip();
 });
+
 
 //update network service descriptor
 function updateConfig(){
-	descriptorVersion = $('#descriptor_version').val();
 	name    = $('#dsName').val();
 	vendor  = $('#dsVendor').val();
 	version = $('#dsVersion').val();
-	author = $('#dsauthor').val();
+	maintainer = $('#dsmaintainer').val();
 	description = $('#dsdescription').val();
 
 	$.ajax({
@@ -49,11 +40,10 @@ function updateConfig(){
 		},
 		
 		data : JSON.stringify({
-			"descriptorVersion": descriptorVersion,
+			"name": name,
 			"version": version,
 			"vendor": vendor,
-			"name": name,
-			"author": author,
+			"maintainer": maintainer,
 			"description": description 
 		}),
 		success : function (data) {
