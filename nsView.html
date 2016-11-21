@@ -146,8 +146,11 @@
 
 				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
 					<div data-bind="attr: {'id': id}">
-						<p data-bind="text: id">vnf1</p>
+						<p data-bind="text: id">vnf1</p>	
+						<a data-bind="attr: {'type': 'rename', 'id': id}" class="node-button" href="#"><span class="glyphicon glyphicon-edit"></span></a>
+						<a data-bind="attr: {'type': 'delete'}"class="node-button" href="#"><span class="glyphicon glyphicon-trash"></span></a>
 					</div>
+
 				</div>									
 				<div id="connection-list" ></div>										
 
