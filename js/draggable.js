@@ -517,8 +517,10 @@ function setSize() {
 	minWidth = windowWidth * 0.1;
 	$('.left-navigation-bar').css('min-height', windowHeight);
 	$('.left-navigation-bar').css('min-width', minWidth);
+	$('#editor-parent').css('min-height', windowHeight);
+	$('#editor-parent').css('marginLeft', $('.left-navigation-bar').width());
 	$('#editor').css('min-height', windowHeight);
-	$('#editor').css('marginLeft', minWidth);
+	//$('#editor').css('width', $('#editor-parent').width());
 	$('.vnf').css('width', $('.left-navigation-bar').width() - 10);
 	$('.ns').css('width', $('.left-navigation-bar').width() - 10);
 }
