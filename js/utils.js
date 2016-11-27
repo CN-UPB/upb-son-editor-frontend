@@ -42,18 +42,31 @@ $(document).ajaxError(function (event, response, request) {
 	{
 		var json = response.responseJSON;
 		var authUrl = json.authorizationUrl;
-		$('#loginButton').click(function () {
-			//open github login in new window
-			window.open(authUrl);
-		});
-
+		var message = json.message;
+		
 		//open dialog with login button
-		$("#loginDialog").dialog();
+		var loginDialog = $("<div title='Please Login'>"
+							 +"<h3>"+ message+"</h3>"
+							+"</div>").dialog(
+							{
+								modal: true,
+								buttons:[
+									{
+										text: "Login with Github",
+										icon: "icon-github-sign",
+										click: function () {
+											//open github login in new window
+											window.open(authUrl);
+										}
+									}
+								]
+							});
+		
 
 		//callback from new window
 		window.onmessage = function (e) {
 			//close dialog
-			$("#loginDialog").dialog("close");
+			loginDialog.dialog("close");
 			//repeat the original request
 			$.ajax(request);
 		};
