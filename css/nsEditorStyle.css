@@ -242,8 +242,8 @@ div .ns-after-drop p{
 div .connection-point-after-drop{
 	background: url(cpIcon.png) no-repeat;
 	background-size: contain;
-	height: 40px;
-	width: 40px;
+	height: 60px;
+	width: 60px;
 	font-weight: bold;
 	font-size:16px;
 	-moz-border-radius: 50px;
@@ -263,7 +263,7 @@ div .connection-point-after-drop:hover {
 
 div .connection-point-after-drop p{
 	position: absolute;
-    top: 70px;;
+   	top: 90px;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
@@ -284,17 +284,18 @@ div .connection-point-after-drop p{
 }
 
 div .e-lan-after-drop{
-	background: url(elanIcon.png) no-repeat;
-	background-size: contain;
-	border: 3px solid #337ab7;
-	height: 60px;
-	width: 60px;
+		font-family: Arial;
 	font-weight: bold;
 	font-size:16px;
+	background: url(elanIcon.png) no-repeat;
+	background-size: contain;
+	height: 66px;
+	width: 66px;
 	cursor: pointer;
 	z-index: 24;
 	text-align: center;
 	vertical-align: middle;
+	border: 3px solid #337ab7;
 } 
 
 div .e-lan-after-drop:hover {
@@ -380,4 +381,19 @@ input, labelClass {
 }
 .editor-area {
 	margin-left: 355px;
+}
+.node-button{
+	display:none;
+	position:relative;
+	top:40%;
+}
+.glyphicon{
+		 font-size: 25px;
+		 text-shadow: 0 0 5px grey;
+}
+.glyphicon-edit{
+	 color:black;
+}
+.glyphicon-trash{
+	color:red;
 }

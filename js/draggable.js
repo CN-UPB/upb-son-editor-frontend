@@ -268,10 +268,11 @@ function deleteNodeOnServer(id) {
 	}
 	updateService();
 }
-// add a node of a network service to editor
+// add a node of a network service to editor using ko
 function addNode(data, x, y) {
 	viewModel.addToEditor(data);
-	var elem = $('#' + data.id);
+	var elem = $(document.getElementById(data.id));
+	elem.removeClass(data.type);
 	elem.addClass(data.type + "-after-drop");
 	elem.css({
 		position : 'absolute',
@@ -279,16 +280,17 @@ function addNode(data, x, y) {
 		top : y
 	});
 	if (data.type == "connection-point") {
-		drawConnectionPoint(elem[0].id);
+		drawConnectionPoint(data.id);
 	} else if (data.type == "e-lan") {
-		drawElan(elem[0].id);
+		drawElan(data.id);
 	} else {
-		drawVNFandNS(elem[0].id, data.descriptor);
+		drawVNFandNS(data.id, data.descriptor);
 	}
-	instance.draggable(elem[0].id, {
+	instance.draggable(data.id, {
 		stop : savePositionForNode
 	});
-	$("#" + elem[0].id).dblclick(function() {
+	var node = "#" + data.id;
+	$(node).bind("dblclick", function() {
 		var deleteThisNode = confirm("Do you want to delete this node?");
 		if (deleteThisNode === true) {
 			deleteNodeOnServer(this.id);
@@ -296,6 +298,12 @@ function addNode(data, x, y) {
 			instance.removeAllEndpoints($(this));
 			$(this).remove();
 		}
+	});
+	$(node).bind("mouseover", function() {
+		$(node).children("a").css("display", "inline");
+	});
+	$(node).bind("mouseout", function() {
+		$(node).children("a").css("display", "none");
 	});
 }
 
@@ -434,6 +442,7 @@ function loadPlatforms() {
 		}
 	});
 }
+// write data for viewModel
 function rewriteData(type, data) {
 	if (type == 'vnf') {
 		var vnf_data = vnf_map[data.vnf_vendor + ":" + data.vnf_name + ":"
@@ -452,7 +461,11 @@ function rewriteData(type, data) {
 	if (type == 'connection-point') {
 		var cp = data;
 		var txts = data.id.split("_");
-		cp['name'] = txts[1] + txts[2];
+		if (txts == data.id) {
+			cp['name'] = data.name;
+		} else {
+			cp['name'] = txts[1] + txts[2];
+		}
 		cp['type'] = 'connection-point';
 		return cp;
 	}
@@ -469,8 +482,13 @@ function displayNS() {
 	if (cur_ns.descriptor.network_functions != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
 			vnf = cur_ns.descriptor.network_functions[i];
-			$x = cur_ns.meta.positions[vnf.vnf_id][0];
-			$y = cur_ns.meta.positions[vnf.vnf_id][1];
+			if (!cur_ns.meta.positions[vnf.vnf_id]) {
+				$x = 0;
+				$y = 0;
+			} else {
+				$x = cur_ns.meta.positions[vnf.vnf_id][0];
+				$y = cur_ns.meta.positions[vnf.vnf_id][1];
+			}
 			vnf_data = rewriteData('vnf', vnf);
 			addNode(vnf_data, $x, $y);
 			countDropped++;
@@ -490,8 +508,13 @@ function displayNS() {
 	if (cur_ns.descriptor.connection_points != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.connection_points).length; i++) {
 			var cp = cur_ns.descriptor.connection_points[i];
-			$x = cur_ns.meta.positions[cp.id][0];
-			$y = cur_ns.meta.positions[cp.id][1];
+			if (!cur_ns.meta.positions[cp.id]) {
+				$x = 0;
+				$y = 0;
+			} else {
+				$x = cur_ns.meta.positions[cp.id][0];
+				$y = cur_ns.meta.positions[cp.id][1];
+			}
 			cp = rewriteData('connection-point', cp);
 			addNode(cp, $x, $y);
 			countDropped++;
@@ -571,13 +594,13 @@ function updateDescriptor(type, list, elemId) {
 	list.push(newEntry);
 	if (type == "ns") {
 		cur_ns.descriptor.network_services = list;
-		var ns_data=rewriteData('ns',newEntry);
+		var ns_data = rewriteData('ns', newEntry);
 		$x = cur_ns.meta.positions[ns_data.id][0];
 		$y = cur_ns.meta.positions[ns_data.id][1];
 		addNode(ns_data, $x, $y);
 	} else {
 		cur_ns.descriptor.network_functions = list;
-		var vnf_data=rewriteData('vnf', newEntry);
+		var vnf_data = rewriteData('vnf', newEntry);
 		$x = cur_ns.meta.positions[vnf_data.id][0];
 		$y = cur_ns.meta.positions[vnf_data.id][1];
 		addNode(vnf_data, $x, $y);
@@ -601,12 +624,12 @@ function createNewConnectionPoint(elemID, updateOnServer) {
 	text = elemID;
 	var txts = text.split("_");
 	text = txts[1] + txts[2];
-	var cp={};
-	cp.id=elemID;
-	var cp_data=rewriteData('connection-point',cp);
+	var cp = {};
+	cp.id = elemID;
+	var cp_data = rewriteData('connection-point', cp);
 	$x = cur_ns.meta.positions[cp_data.id][0];
 	$y = cur_ns.meta.positions[cp_data.id][1];
-	addNode(cp_data,$x,$y);
+	addNode(cp_data, $x, $y);
 	if (!cur_ns.descriptor.connection_points) {
 		cur_ns.descriptor.connection_points = [];
 	}
@@ -635,12 +658,12 @@ function createNewElan(elemID, updateOnServer) {
 	text = elemID;
 	var txts = text.split("_");
 	text = txts[1] + txts[2];
-	var elan={};
-	elan.id=elemID;
-	var elan_data=rewriteData('e-lan',elan);
+	var elan = {};
+	elan.id = elemID;
+	var elan_data = rewriteData('e-lan', elan);
 	$x = cur_ns.meta.positions[elan_data.id][0];
 	$y = cur_ns.meta.positions[elan_data.id][1];
-	addNode(elan_data,$x,$y);
+	addNode(elan_data, $x, $y);
 	if (!cur_ns.descriptor.elans) {
 		cur_ns.descriptor.elans = [];
 	}
@@ -724,6 +747,13 @@ function savePositionForNode(event) {
 	var position = event.pos;
 	var node = event.selection[0][0];
 	var nodeId = node.id;
+	if (!cur_ns.meta.positions[nodeId]) {
+		cur_ns.meta.positions[nodeId] = {
+			"x" : 0,
+			"y" : 0
+		}
+	}
+	;
 	cur_ns.meta.positions[nodeId] = position;
 	updateService();
 }
@@ -766,8 +796,15 @@ function configureJsPlumb() {
 								stop : savePositionForNode,
 								containment : "parent"
 							});
+							$(data).bind("mouseover", function() {
+								$(data).children("a").css("display", "inline");
+							});
+							$(data).bind("mouseout", function() {
+								$(data).children("a").css("display", "none");
+							});
 							$(data)
-									.dblclick(
+									.bind(
+											"dblclick",
 											function() {
 												var deleteThisNode = confirm("Do you want to delete this node?");
 												if (deleteThisNode === true) {
@@ -777,7 +814,6 @@ function configureJsPlumb() {
 													instance
 															.removeAllEndpoints($(this));
 													$(this).remove();
-
 												}
 											});
 						}
