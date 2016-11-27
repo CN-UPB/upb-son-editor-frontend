@@ -35,6 +35,8 @@ function goToProjectView(wsId, ptId){
 	window.location.href="projectView.html?wsId="+wsId+"&ptId="+ptId;
 }
 
+var requests = [];
+var LOGIN_DIALOG_STRING = "<div title='Login'><h3>{0}</h3></div>";
 
 //global error handler for ajax requests
 $(document).ajaxError(function (event, response, request) {
@@ -44,16 +46,19 @@ $(document).ajaxError(function (event, response, request) {
 		var authUrl = json.authorizationUrl;
 		var message = json.message;
 		
+		requests.push (request);
+		if (requests.length > 1){
+			//do not open more than one dialog at a time
+			return;
+		}
+
 		//open dialog with login button
-		var loginDialog = $("<div title='Please Login'>"
-							 +"<h3>"+ message+"</h3>"
-							+"</div>").dialog(
+		var loginDialog = $(LOGIN_DIALOG_STRING.format(message)).dialog(
 							{
 								modal: true,
 								buttons:[
 									{
 										text: "Login with Github",
-										icon: "icon-github-sign",
 										click: function () {
 											//open github login in new window
 											window.open(authUrl);
@@ -67,8 +72,11 @@ $(document).ajaxError(function (event, response, request) {
 		window.onmessage = function (e) {
 			//close dialog
 			loginDialog.dialog("close");
-			//repeat the original request
-			$.ajax(request);
+			//repeat the original requests
+			while(requests.length > 0) 
+			{
+				$.ajax(requests.pop());
+			}
 		};
 	} else {
 		$("#errorDialog").dialog();
@@ -88,4 +96,18 @@ function showWaitAnimation(text){
 
 function closeWaitAnimation(){
 	$( "#wait" ).dialog("close");
+}
+
+
+//register a string formatting method
+if (!String.prototype.format) {
+  String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) { 
+      return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+      ;
+    });
+  };
 }
