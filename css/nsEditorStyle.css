@@ -174,7 +174,13 @@ div .vnf-after-drop > p{
 	margin-right: -50;
 	transform: translate(-50%, -50%);
 }
-
+div .vnf-after-drop > input{
+	position: absolute;
+	top: 90px;
+	left: 50%;
+	margin-right: -50;
+	transform: translate(-50%, -50%);
+}
 .ns {
 	font-family: Arial;
 	font-weight: bold;
@@ -216,6 +222,13 @@ div .ns-after-drop p{
     transform: translate(-50%, -50%)
 }
 
+div .ns-after-drop input{
+	position: absolute;
+    top: 110px;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
 
 .connection-point{
 	border: 3px solid #337ab7;
@@ -268,7 +281,13 @@ div .connection-point-after-drop p{
     margin-right: -50%;
     transform: translate(-50%, -50%)
 }
-
+div .connection-point-after-drop input{
+	position: absolute;
+   	top: 90px;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
 .e-lan{
 	margin: 5px 5px 5px 5px;
 	border: 3px solid #337ab7;
@@ -305,6 +324,13 @@ div .e-lan-after-drop:hover {
 }
 
 div .e-lan-after-drop p{
+	position: absolute;
+    top: 90px;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+div .e-lan-after-drop input{
 	position: absolute;
     top: 90px;
     left: 50%;

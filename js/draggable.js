@@ -100,6 +100,26 @@ var ViewModel = function() {
 	this.setPlatforms = function(platforms) {
 		ko.utils.arrayPushAll(this.platforms, platforms);
 	}.bind(this);
+
+	this.renameNode = function(data) {
+		var node = "#" + data.id;
+		var inputBox=$(node).children("input")[0];
+		$(inputBox).css("display", "inline");
+		$(inputBox).bind("mouseout", function() {
+			$(inputBox).css("display", "none");
+		});
+	};
+
+	this.deleteNode = function(data) {
+			var node = "#" + data.id;
+			var deleteThisNode = confirm("Do you want to delete this node?");
+			if (deleteThisNode === true) {
+				deleteNodeOnServer(data.id);
+				instance.detachAllConnections($(node));
+				instance.removeAllEndpoints($(node));
+				$(node).remove();
+			}
+	};
 };
 
 var viewModel = new ViewModel();
@@ -301,6 +321,7 @@ function addNode(data, x, y) {
 	});
 	$(node).bind("mouseover", function() {
 		$(node).children("a").css("display", "inline");
+
 	});
 	$(node).bind("mouseout", function() {
 		$(node).children("a").css("display", "none");
@@ -449,6 +470,7 @@ function rewriteData(type, data) {
 				+ data.vnf_version];
 		vnf_data['id'] = data.vnf_id;
 		vnf_data['type'] = 'vnf';
+		vnf_data["inputValue"] = ko.observable(vnf_data.id);
 		return vnf_data;
 	}
 	if (type == 'ns') {
@@ -456,6 +478,7 @@ function rewriteData(type, data) {
 				+ data.ns_version];
 		ns_data['id'] = data.ns_id;
 		ns_data['type'] = 'ns';
+		ns_data["inputValue"] = ko.observable(ns_data.id);
 		return ns_data;
 	}
 	if (type == 'connection-point') {
@@ -466,7 +489,9 @@ function rewriteData(type, data) {
 		} else {
 			cp['name'] = txts[1] + txts[2];
 		}
+		cp['id'] = cp['id'].replace(":", "_");
 		cp['type'] = 'connection-point';
+		cp["inputValue"] = ko.observable(cp.id);
 		return cp;
 	}
 	if (type == 'e-lan') {
@@ -474,21 +499,34 @@ function rewriteData(type, data) {
 		var txts = data.id.split("_");
 		elan['name'] = txts[1] + txts[2];
 		elan['type'] = 'e-lan';
+		elan['id'] = elan['id'].replace(":", "_");
+		elan['inputValue'] = ko.observable(elan.id);
 		return elan;
 	}
 }
+function getGridPosition(index) {
+	var $editor = $("#editor");
+	var editorWidth = $editor.width();
+	var dist = 100;
+	var max = editorWidth - editorWidth % dist;
+	var min = 25;
+	var $x = min + (dist * index) % max;
+	var $y = min + dist * Math.floor((index * dist) / max);
+	return [ $x, $y ];
+}
+
 // display loaded network service in the editor
 function displayNS() {
+	var index = 0;
 	if (cur_ns.descriptor.network_functions != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
 			vnf = cur_ns.descriptor.network_functions[i];
 			if (!cur_ns.meta.positions[vnf.vnf_id]) {
-				$x = 0;
-				$y = 0;
-			} else {
-				$x = cur_ns.meta.positions[vnf.vnf_id][0];
-				$y = cur_ns.meta.positions[vnf.vnf_id][1];
+				cur_ns.meta.positions[vnf.vnf_id] = getGridPosition(index);
+				index++;
 			}
+			$x = cur_ns.meta.positions[vnf.vnf_id][0];
+			$y = cur_ns.meta.positions[vnf.vnf_id][1];
 			vnf_data = rewriteData('vnf', vnf);
 			addNode(vnf_data, $x, $y);
 			countDropped++;
@@ -497,6 +535,10 @@ function displayNS() {
 	if (cur_ns.descriptor.network_services != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
 			ns = cur_ns.descriptor.network_services[i];
+			if (!cur_ns.meta.positions[ns.ns_id]) {
+				cur_ns.meta.positions[ns.ns_id] = getGridPosition(index);
+				index++;
+			}
 			$x = cur_ns.meta.positions[ns.ns_id][0];
 			$y = cur_ns.meta.positions[ns.ns_id][1];
 			ns_data = rewriteData('ns', ns);
@@ -509,12 +551,12 @@ function displayNS() {
 		for ( var i = 0; i < (cur_ns.descriptor.connection_points).length; i++) {
 			var cp = cur_ns.descriptor.connection_points[i];
 			if (!cur_ns.meta.positions[cp.id]) {
-				$x = 0;
-				$y = 0;
-			} else {
-				$x = cur_ns.meta.positions[cp.id][0];
-				$y = cur_ns.meta.positions[cp.id][1];
+				cur_ns.meta.positions[cp.id] = getGridPosition(index);
+				index++;
 			}
+			$x = cur_ns.meta.positions[cp.id][0];
+			$y = cur_ns.meta.positions[cp.id][1];
+
 			cp = rewriteData('connection-point', cp);
 			addNode(cp, $x, $y);
 			countDropped++;
@@ -524,6 +566,10 @@ function displayNS() {
 	if (cur_ns.descriptor.elans != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.elans).length; i++) {
 			var elan = cur_ns.descriptor.elans[i];
+			if (!cur_ns.meta.positions[elan.id]) {
+				cur_ns.meta.positions[elan.id] = getGridPosition(index);
+				index++;
+			}
 			$x = cur_ns.meta.positions[elan.id][0];
 			$y = cur_ns.meta.positions[elan.id][1];
 			elan = rewriteData('e-lan', elan);
