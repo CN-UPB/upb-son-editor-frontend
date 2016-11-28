@@ -1,5 +1,4 @@
 $(function() {
-
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/" + queryString["nsId"],
 		dataType : "json",
