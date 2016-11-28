@@ -82,7 +82,7 @@
 }
 
 .editor-area{
-	margin: 5px;
+	margin: 10px;
 	border: 1px ridge;
 	background-color: #cdcdcd;
 }
@@ -90,7 +90,9 @@
 .scrollbar{
 	position: relative;
 	height: 495px;
-	overflow: scroll; /*for horizontal and vertical scroll bars */
+	overflow: auto; /*for horizontal and vertical scroll bars */
+	/*overflow-y: auto;
+	overflow-x: auto;*/
 }
 
 .menu{
