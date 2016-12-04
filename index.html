@@ -18,6 +18,7 @@
 		<script src="js/constants.js"></script>
 		<script src="js/home.js"></script> 
 		<script src="js/utils.js"></script>
+		<script src="js/userInfo.js"></script>
 		
 	</head>
 	<body>
@@ -29,6 +30,28 @@
 				<ul class="nav navbar-nav">
 					<li class="active">
 						<a onclick="goToHomeView();">Home</a>
+					</li>
+					
+				</ul>
+				<!--<div class="userinfo nav" id="username">Signed in as</div>-->
+				<ul class="userinfo nav navbar-nav">
+					<li>
+
+						<!--<a id="username"></a>-->
+						<div class="dropdown">
+							<a id="userImg" onclick="showMyInfo()" class="dropbtn">
+								<span class="glyphicon glyphicon-triangle-bottom pull-right"></span>
+								<img class="avatar" width="20" height="20">
+
+							</a>
+							<div id="myDropdown" class="dropdown-content">
+								<!--<div>Signed in as</div>-->
+								<a id="target-username">
+									
+									<!--<strong id="target-username"></strong>-->
+								</a>
+							</div>
+						</div>
 					</li>
 				</ul>
 			</div>

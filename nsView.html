@@ -23,7 +23,7 @@
 		<script src="js/ns.js"></script>
 		<script src="js/utils.js"></script>
 		<script src="js/ns-configuration.js"></script>
-
+		<script src="js/userInfo.js"></script>
 		  
 	</head>
 	<body>
@@ -37,6 +37,26 @@
 				<li><a class="top-navigation-menu" id="nav_project" onclick="goToProjectView();">Project Name</a></li>
 				<li class="active"><a class="top-navigation-menu" id="nav_ns" onclick="history.go(0);">Network Service Name</a></li>
 			</ul>
+			<ul class="userinfo nav navbar-nav">
+				<li>
+
+						<!--<a id="username"></a>-->
+					<div class="dropdown">
+						<a id="userImg" onclick="showMyInfo()" class="dropbtn">
+							<span class="glyphicon glyphicon-triangle-bottom pull-right"></span>
+							<img class="avatar" width="20" height="20">
+
+						</a>
+						<div id="myDropdown" class="dropdown-content">
+								<!--<div>Signed in as</div>-->
+							<a id="target-username">
+									
+									<!--<strong id="target-username"></strong>-->
+							</a>
+						</div>
+					</div>
+				</li>
+			</ul>			
 		</nav>
 
 		<div class="container-fluid">	

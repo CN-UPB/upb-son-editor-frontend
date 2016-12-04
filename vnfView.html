@@ -22,6 +22,7 @@
 		<script src="js/lib/knockout.mapping-latest.js"></script>
 		<script src="js/lib/js-yaml.min.js"></script>
 		<script src="js/lib/bootstrap-filestyle.min.js"> </script>
+		<script src="js/userInfo.js"></script>
 	</head>
 	<body>
 		<nav class="navbar navbar-default">
@@ -35,6 +36,26 @@
 					<li><a id="nav_project"onclick="goToProjectView();">Project</a></li>
 					<li class="active"><a id="nav_vnf" onclick="history.go(0);" data-bind="text: name">VNF</a></li>
 				</ul>
+				<ul class="userinfo nav navbar-nav">
+					<li>
+
+						<!--<a id="username"></a>-->
+						<div class="dropdown">
+							<a id="userImg" onclick="showMyInfo()" class="dropbtn">
+								<span class="glyphicon glyphicon-triangle-bottom pull-right"></span>
+								<img class="avatar" width="20" height="20">
+
+							</a>
+							<div id="myDropdown" class="dropdown-content">
+								<!--<div>Signed in as</div>-->
+								<a id="target-username">
+									
+									<!--<strong id="target-username"></strong>-->
+								</a>
+							</div>
+						</div>
+					</li>
+				</ul>				
 			</div>
 		</nav>
 		<!--jquery ui-->

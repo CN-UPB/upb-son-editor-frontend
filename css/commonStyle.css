@@ -84,3 +84,59 @@ textarea.parsley-error {
 .nav {
 	font-weight:bold;
 }
+
+.userinfo{
+	float: right;
+}
+
+/*#username{
+	float: right;
+}*/
+
+.avatar {
+    /*margin: 10px 5px 10px 10px;*/
+    margin-right: 5px;
+    border-radius: 3px;
+    display: inline-block;
+    line-height: 1;
+    /*float: right;*/
+    vertical-align: middle;
+}
+
+.dropdown {
+    /*float: right;*/
+    position: relative;
+    display: inline-block;
+    /*width: 160px;*/
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    right: 0;
+    z-index: 999;
+}
+
+/*.dropdown-content div {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}*/
+
+.dropdown-content a {
+    color: black;
+    margin: 10px;
+    /*padding: 12px 16px;*/
+    text-decoration: none;
+    display: block;
+    font-weight: normal;
+}
+
+.dropdown div:hover {background-color: #f1f1f1}
+
+.show {display:block;}
