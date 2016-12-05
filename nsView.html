@@ -150,8 +150,8 @@
 				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
 					<div data-bind="attr: {'id': id}">
 						<p data-bind="text: inputValue">vnf1</p>	
-						<a id="rename" data-bind="click: function(data){$parent.renameNode(data);}" class="node-button"><span class="glyphicon glyphicon-edit"></span></a>
-						<a id="delete" data-bind="click: function(data){$parent.deleteNode(data);}" class="node-button" ><span class="glyphicon glyphicon-trash"></span></a>
+						<a id="rename" data-bind="click: $parent.renameNode" class="node-button"><span class="glyphicon glyphicon-edit"></span></a>
+						<a id="delete" data-bind="click: $parent.deleteNode" class="node-button" ><span class="glyphicon glyphicon-trash"></span></a>
 						<input style="display: none" type="text" data-bind="textInput: inputValue"/>
 					</div>
 				</div>									
