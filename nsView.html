@@ -125,7 +125,7 @@
 							<li class="active" role="presentation"><a id="toggle-panel-left-vnf" >Virtual Network Function<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-vnfs">
 									<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">
-										<div data-bind="attr: {'id': name}, drag: {value:$data}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
+										<div data-bind="attr: {'id': descriptor.name}, drag: {value:$data}" class="vnf" ><p data-bind="text: descriptor.name">vnf1</p></div>
 									</div>
 								</div>
 							</li>
@@ -133,13 +133,13 @@
 							<li role="presentation"><a id="toggle-panel-left-ns">Network Services<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-ns">
 									<div data-bind="foreach: nss" id="ns-panel" class="ns-list">
-										<div data-bind="attr: {'id': name}, drag: {value:$data}" class="ns" ><p data-bind="text: name">ns1</p></div>
+										<div data-bind="attr: {'id': descriptor.name}, drag: {value:$data}" class="ns" ><p data-bind="text: descriptor.name">ns1</p></div>
 									</div>
 								</div>
 							</li>
 							<li role="presentation"><a id="toggle-panel-left-infrastructure">Infrastructure<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-infrastructure">
-									<div id="cp" class="connection-point" > <p>CP</p></div>
+									<div id="cp" class="cp" > <p>CP</p></div>
 									<div id="e-lan" class="e-lan" > <p>E-LAN</p></div>
 								</div>
 							</li>	
@@ -149,10 +149,8 @@
 
 				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
 					<div data-bind="attr: {'id': id}">
-						<p data-bind="text: inputValue">vnf1</p>	
-						<a id="rename" data-bind="click: $parent.renameNode" class="node-button"><span class="glyphicon glyphicon-edit"></span></a>
+						<input type="text" data-bind="textInput: id" data-bind="event: {mouseout:  $parent.rename}"/>
 						<a id="delete" data-bind="click: $parent.deleteNode" class="node-button" ><span class="glyphicon glyphicon-trash"></span></a>
-						<input style="display: none" type="text" data-bind="textInput: inputValue"/>
 					</div>
 				</div>									
 				<div id="connection-list" ></div>										

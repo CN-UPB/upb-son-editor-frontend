@@ -167,20 +167,13 @@ div .vnf-after-drop:hover {
     opacity:0.9;
 }
 
-div .vnf-after-drop > p{
+div .vnf-after-drop>input{
 	position: absolute;
 	top: 90px;
-	left: 50%;
-	margin-right: -50;
-	transform: translate(-50%, -50%);
+	transform: translate(-20%, -50%);
+	border: none;
 }
-div .vnf-after-drop > input{
-	position: absolute;
-	top: 90px;
-	left: 50%;
-	margin-right: -50;
-	transform: translate(-50%, -50%);
-}
+
 .ns {
 	font-family: Arial;
 	font-weight: bold;
@@ -214,23 +207,15 @@ div .ns-after-drop:hover {
     opacity:0.9;
 }
 
-div .ns-after-drop p{
+
+div .ns-after-drop>input{
 	position: absolute;
     top: 110px;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
+	transform: translate(-20%, -50%);
+	border: none;
 }
 
-div .ns-after-drop input{
-	position: absolute;
-    top: 110px;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
-}
-
-.connection-point{
+.cp{
 	border: 3px solid #337ab7;
 	margin: 5px;
 	height: 40px;
@@ -247,12 +232,12 @@ div .ns-after-drop input{
 	text-align: center;
 }
 
-.connection-point > p {
+.cp > p {
 	display: table-cell;
 	vertical-align: middle;
 }
 
-div .connection-point-after-drop{
+div .cp-after-drop{
 	background: url(cpIcon.png) no-repeat;
 	background-size: contain;
 	height: 60px;
@@ -268,25 +253,17 @@ div .connection-point-after-drop{
 	vertical-align: middle;
 } 
 
-div .connection-point-after-drop:hover {
+div .cp-after-drop:hover {
     -webkit-box-shadow: 2px 2px 19px #444;
     -moz-box-shadow: 2px 2px 19px #fff;
     opacity:0.9;
 }
 
-div .connection-point-after-drop p{
+div .cp-after-drop>input{
 	position: absolute;
    	top: 90px;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
-}
-div .connection-point-after-drop input{
-	position: absolute;
-   	top: 90px;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
+	transform: translate(-20%, -50%);
+	border: none;
 }
 .e-lan{
 	margin: 5px 5px 5px 5px;
@@ -322,20 +299,11 @@ div .e-lan-after-drop:hover {
     -moz-box-shadow: 2px 2px 19px #fff;
     opacity:0.9;
 }
-
-div .e-lan-after-drop p{
+div .e-lan-after-drop>input{
 	position: absolute;
     top: 90px;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
-}
-div .e-lan-after-drop input{
-	position: absolute;
-    top: 90px;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
+ 	transform: translate(-20%, -50%);
+ 	border: none;
 }
 
 .ui-draggable{
@@ -411,14 +379,11 @@ input, labelClass {
 .node-button{
 	display:none;
 	position:relative;
-	top:40%;
+	top:30%;
 }
 .glyphicon{
 		 font-size: 25px;
 		 text-shadow: 0 0 5px grey;
-}
-.glyphicon-edit{
-	 color:black;
 }
 .glyphicon-trash{
 	color:red;
