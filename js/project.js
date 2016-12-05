@@ -68,7 +68,7 @@ function loadServices() {
 			//display available services and their onclick event.
 			services = data;
 			for (i = 0; i < services.length; i++) {
-				var serviceName = services[i].name;
+				var serviceName = services[i].descriptor.name;
 				availableItems.push("NS: " + serviceName);
 				var serviceId = services[i].id;
 				itemDictionary[serviceName] = serviceId;
@@ -136,7 +136,7 @@ function loadVnfs() {
 			//display available vnfs and their onclick event.
 			vnfs = data;
 			for (i = 0; i < vnfs.length; i++) {
-				var vnfName = vnfs[i].name;
+				var vnfName = vnfs[i].descriptor.name;
 				availableItems.push("VNF: " + vnfName);
 				var vnfId = vnfs[i].id;
 				itemDictionary[vnfName] = vnfId;

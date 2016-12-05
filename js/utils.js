@@ -1,3 +1,8 @@
+$(document).ready(function () {
+
+	loadUserInfo();
+
+});
 function getQueryString() {
 	var queryString = new Array();
 	if (window.location.search.split('?').length > 1) {
@@ -98,6 +103,37 @@ function closeWaitAnimation(){
 	$( "#wait" ).dialog("close");
 }
 
+function loadUserInfo(){
+
+	$.ajax({
+		url : serverURL + "user",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			//console.log(data);
+			//console.log(data.login);
+			//$('#username').css('float','right');
+			document.getElementById("target-username").text = data.login;
+			$('.avatar').attr("src", data.avatar_url);
+		}
+	});
+}
+
+function logOutFromEditor(){
+	window.location.reload(true);
+	$.ajax({
+		url : serverURL + "logout",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function(){
+			window.location.reload(true);
+		}
+	});
+}
 
 //register a string formatting method
 if (!String.prototype.format) {

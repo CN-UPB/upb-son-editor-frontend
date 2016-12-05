@@ -19,7 +19,7 @@
 		<script src="js/constants.js"></script>
 		<script src="js/workspace-configuration.js"></script>
 		<script src="js/utils.js"></script>
-		<script src="js/userInfo.js"></script>
+		<!--<script src="js/userInfo.js"></script>-->
 	</head>
 	<body>
 		<nav class="navbar navbar-default">
@@ -40,22 +40,13 @@
 				</ul>
 				<ul class="userinfo nav navbar-nav">
 					<li>
-
-						<!--<a id="username"></a>-->
-						<div class="dropdown">
-							<a id="userImg" onclick="showMyInfo()" class="dropbtn">
-								<span class="glyphicon glyphicon-triangle-bottom pull-right"></span>
-								<img class="avatar" width="20" height="20">
-
-							</a>
-							<div id="myDropdown" class="dropdown-content">
-								<!--<div>Signed in as</div>-->
-								<a id="target-username">
-									
-									<!--<strong id="target-username"></strong>-->
-								</a>
-							</div>
+						<div id="userNameImg">
+							<img class="avatar" width="20" height="20">
+							<a id="target-username"></a>
 						</div>
+					</li>
+					<li>
+						<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
 					</li>
 				</ul>				
 			</div>
