@@ -7,6 +7,10 @@ $(function() {
 		},
 		success : function (data) {
 			$('#dsName').val(data.name);
+			$('#dsVendor').val(data.vendor);
+			$('#dsVersion').val(data.version);
+			$('#dsMaintainer').val(data.maintainer);
+			$('#dsDescription').val(data.description);
 		}
 	});
 });

@@ -313,6 +313,7 @@ function createNewService(clone, cloneId) {
 				newData.descriptor.name = $('#nsNameInput').val();
 				newData.descriptor.vendor = $('#nsVendorInput').val();
 				newData.descriptor.version = $('#nsVersionInput').val();
+				newData.descriptor.descriptor_version = $('#nsDescriptorVersionInput').val();
 				$.ajax({
 					url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
 					method : 'POST',
@@ -343,12 +344,14 @@ function createNewService(clone, cloneId) {
 		var name = $('#nsNameInput').val();
 		var vendor = $('#nsVendorInput').val();
 		var version = $('#nsVersionInput').val();
-		var newData={};
+        var descriptor_version = $('#nsDescriptorVersionInput').val();
+        var newData={};
 		newData["meta"]={};
 		newData["descriptor"]={
 				"version" : version,
 				"vendor" : vendor,
-				"name" : name
+				"name" : name,
+            	"descriptor_version" : descriptor_version
 			};
 		$.ajax({
 			url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/",
