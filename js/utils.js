@@ -44,7 +44,7 @@ var requests = [];
 var LOGIN_DIALOG_STRING = "<div title='Login'><h3>{0}</h3></div>";
 
 //global error handler for ajax requests
-$(document).ajaxError(function (event, response, request) {
+$(document).ajaxError(function (event, response, request, thrownError) {
 	if (response.status == 401) //not authorized
 	{
 		var json = response.responseJSON;

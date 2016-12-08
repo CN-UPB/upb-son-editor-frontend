@@ -24,6 +24,7 @@ $(function () {
 
 //update network service descriptor
 function updateConfig(){
+	
 	name    = $('#dsName').val();
 	vendor  = $('#dsVendor').val();
 	version = $('#dsVersion').val();
@@ -40,11 +41,13 @@ function updateConfig(){
 		},
 		
 		data : JSON.stringify({
+			"descriptor": {
 			"name": name,
 			"version": version,
 			"vendor": vendor,
 			"maintainer": maintainer,
 			"description": description 
+		}
 		}),
 		success : function (data) {
 			$("#successDescriptorDialogUpdated").dialog({
@@ -53,6 +56,7 @@ function updateConfig(){
 				buttons : {
 					ok : function () {
 						$(this).dialog("close");
+						$("#nav_ns").html("NS: " + data.name);
 					}
 				}
 			});

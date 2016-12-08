@@ -136,7 +136,7 @@
 							<li class="active" role="presentation"><a id="toggle-panel-left-vnf" >Virtual Network Function<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-vnfs">
 									<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">
-										<div data-bind="attr: {'id': name}, drag: {value:$data}" class="vnf" ><p data-bind="text: name">vnf1</p></div>
+										<div data-bind="attr: {'id': descriptor.name}, drag: {value:$data}" class="vnf" ><p data-bind="text: descriptor.name">vnf1</p></div>
 									</div>
 								</div>
 							</li>
@@ -144,13 +144,13 @@
 							<li role="presentation"><a id="toggle-panel-left-ns">Network Services<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-ns">
 									<div data-bind="foreach: nss" id="ns-panel" class="ns-list">
-										<div data-bind="attr: {'id': name}, drag: {value:$data}" class="ns" ><p data-bind="text: name">ns1</p></div>
+										<div data-bind="attr: {'id': descriptor.name}, drag: {value:$data}" class="ns" ><p data-bind="text: descriptor.name">ns1</p></div>
 									</div>
 								</div>
 							</li>
 							<li role="presentation"><a id="toggle-panel-left-infrastructure">Infrastructure<span class="glyphicon glyphicon-triangle-bottom pull-right"></span></a>
 								<div class="panel" id="show-infrastructure">
-									<div id="cp" class="connection-point" > <p>CP</p></div>
+									<div id="cp" class="cp" > <p>CP</p></div>
 									<div id="e-lan" class="e-lan" > <p>E-LAN</p></div>
 								</div>
 							</li>	
@@ -160,11 +160,9 @@
 
 				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
 					<div data-bind="attr: {'id': id}">
-						<p data-bind="text: id">vnf1</p>	
-						<a data-bind="attr: {'type': 'rename', 'id': id}" class="node-button" href="#"><span class="glyphicon glyphicon-edit"></span></a>
-						<a data-bind="attr: {'type': 'delete'}"class="node-button" href="#"><span class="glyphicon glyphicon-trash"></span></a>
+						<input type="text" data-bind="textInput: id" data-bind="event: {mouseout:  $parent.rename}"/>
+						<a id="delete" data-bind="click: $parent.deleteNode" class="node-button" ><span class="glyphicon glyphicon-trash"></span></a>
 					</div>
-
 				</div>									
 				<div id="connection-list" ></div>										
 
@@ -177,16 +175,16 @@
 				<div>
 
 					<label for="name">Name:</label><br>
-					<input class="labelClass" id ='dsName' data-toggle="tooltip" data-placement="top" title="the name of the NS without its version. It can be created with any name written in lower letters and no strange symbols."></input>
+					<input class="labelClass" id ='dsName' data-toggle="tooltip" data-placement="bottom" title="the name of the NS without its version. It can be created with any name written in lower letters and no strange symbols."></input>
 
 					<label for="vendor">Vendor:</label><br>
-					<input class="labelClass" id ='dsVendor' data-toggle="tooltip" data-placement="top" title="will identify the NS uniquely across all NS vendors. It should at least be comprised of the reverse domain name that is under your controll. Moreover, it might have as many sub-groups as needed. For example: eu.sonata-nfv.nec."></input>
+					<input class="labelClass" id ='dsVendor' data-toggle="tooltip" data-placement="bottom" title="will identify the NS uniquely across all NS vendors. It should at least be comprised of the reverse domain name that is under your controll. Moreover, it might have as many sub-groups as needed. For example: eu.sonata-nfv.nec."></input>
 
 					<label for="version">Version:</label><br>
-					<input class="labelClass" id ='dsVersion' data-toggle="tooltip" data-placement="top" title="names the version of the NS descritor. Any typical version with numbers and dots, such as 1.0, 1.1, and 1.0.1 is allows here. The NS version must be increased with any new (changed) instance of the network function descriptor. Please note: The whole network service is composed of the descriptor and other artifacts, like VNFs. Thus, the network service may change, even if the description remains constant, just because another artifact changes. This might or might not be reflected in the version of the package descriptor."></input>
+					<input class="labelClass" id ='dsVersion' data-toggle="tooltip" data-placement="bottom" title="names the version of the NS descritor. Any typical version with numbers and dots, such as 1.0, 1.1, and 1.0.1 is allows here. The NS version must be increased with any new (changed) instance of the network function descriptor. Please note: The whole network service is composed of the descriptor and other artifacts, like VNFs. Thus, the network service may change, even if the description remains constant, just because another artifact changes. This might or might not be reflected in the version of the package descriptor."></input>
 
 					<label for="maintainer">Maintainer:</label><br>
-					<input class="labelClass" id ='dsMaintainer' data-toggle="tooltip" data-placement="top" title="describes the author of the network service descriptor."></input>
+					<input class="labelClass" id ='dsMaintainer' data-toggle="tooltip" data-placement="bottom" title="describes the maintainer of the network service descriptor."></input>
 
 					<label for="description">Description:</label>
 					<input class="labelClass" id ='dsDescription' data-toggle="tooltip" data-placement="top" title="provides an arbitrary description of the network service."></input>
