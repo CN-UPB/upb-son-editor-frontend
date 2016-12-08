@@ -16,7 +16,7 @@
   <script src="js/constants.js"></script>
   <script src="js/project.js"></script>
   <script src="js/utils.js"></script>
-
+  <!--<script src="js/userInfo.js"></script>-->
 </head>
 <body>
 
@@ -30,6 +30,17 @@
        <li><a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a></li>
        <li class="active"><a id="nav_project" onclick="history.go(0);">Project</a></li>
     </ul>
+	<ul class="userinfo nav navbar-nav">
+		<li>
+			<div id="userNameImg">
+				<img class="avatar" width="20" height="20">
+				<a id="target-username"></a>
+			</div>
+		</li>
+			<li>
+				<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
+			</li>
+	</ul>
   </div>
 </nav>
   

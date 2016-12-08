@@ -84,3 +84,23 @@ textarea.parsley-error {
 .nav {
 	font-weight:bold;
 }
+
+.userinfo{
+	float: right;
+}
+
+#userNameImg{
+	padding: 15px;
+}
+
+.avatar {
+    margin-right: 5px;
+    border-radius: 3px;
+    display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+#log-out{
+	cursor: pointer;
+}

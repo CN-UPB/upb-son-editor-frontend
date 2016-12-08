@@ -30,6 +30,17 @@
 					<li><a id="nav_project"onclick="goToProjectView();">Project</a></li>
 					<li class="active"><a id="nav_vnf" onclick="history.go(0);" data-bind="text: name">VNF</a></li>
 				</ul>
+				<ul class="userinfo nav navbar-nav">
+					<li>
+						<div id="userNameImg">
+							<img class="avatar" width="20" height="20">
+							<a id="target-username"></a>
+						</div>
+					</li>
+					<li>
+						<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
+					</li>
+				</ul>				
 			</div>
 		</nav>
 		<!--jquery ui-->
