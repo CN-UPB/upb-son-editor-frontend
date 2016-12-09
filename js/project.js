@@ -14,7 +14,7 @@ var Descriptor = function(data) {
     this.id = ko.observable(data.id);
 	var self = this;
 	this.delete_desc = function() {
-		if (self.type === "VNF"){
+		if (self.type() === "VNF"){
             deleteVnf(self.id());
         } else {
 			deleteService(self.id());
@@ -22,7 +22,7 @@ var Descriptor = function(data) {
     };
 
 	this.clone = function() {
-        if (self.type === "VNF"){
+        if (self.type() === "VNF"){
             cloneVnf(self.id());
         } else {
             cloneService(self.id());
@@ -30,7 +30,7 @@ var Descriptor = function(data) {
     };
 
     this.edit = function() {
-        if (self.type === "VNF"){
+        if (self.type() === "VNF"){
             editVnf(self.id());
         } else {
             editService(self.id());
