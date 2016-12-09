@@ -20,11 +20,9 @@
 		<script src="js/togglePanel.js"></script>
 		<script src="js/draggable.js"></script>
 		<script src="js/constants.js"></script>
-		<script src="js/ns.js"></script>
 		<script src="js/utils.js"></script>
 		<script src="js/ns-configuration.js"></script>
-		<!--<script src="js/userInfo.js"></script>-->
-		  
+
 	</head>
 	<body>
 		<nav class="navbar navbar-default">
@@ -175,19 +173,22 @@
 				<div>
 
 					<label for="name">Name:</label><br>
-					<input class="labelClass" id ='dsName' data-toggle="tooltip" data-placement="bottom" title="the name of the NS without its version. It can be created with any name written in lower letters and no strange symbols."></input>
+					<input class="labelClass" id ='dsName' data-toggle="tooltip" data-placement="bottom" title="The name of the network service description."></input>
 
 					<label for="vendor">Vendor:</label><br>
-					<input class="labelClass" id ='dsVendor' data-toggle="tooltip" data-placement="bottom" title="will identify the NS uniquely across all NS vendors. It should at least be comprised of the reverse domain name that is under your controll. Moreover, it might have as many sub-groups as needed. For example: eu.sonata-nfv.nec."></input>
+					<input class="labelClass" id ='dsVendor' data-toggle="tooltip" data-placement="bottom" title="The vendor id allows to identify a VNF descriptor uniquely across all function descriptor vendors."></input>
 
 					<label for="version">Version:</label><br>
-					<input class="labelClass" id ='dsVersion' data-toggle="tooltip" data-placement="bottom" title="names the version of the NS descritor. Any typical version with numbers and dots, such as 1.0, 1.1, and 1.0.1 is allows here. The NS version must be increased with any new (changed) instance of the network function descriptor. Please note: The whole network service is composed of the descriptor and other artifacts, like VNFs. Thus, the network service may change, even if the description remains constant, just because another artifact changes. This might or might not be reflected in the version of the package descriptor."></input>
+					<input class="labelClass" id ='dsVersion' data-toggle="tooltip" data-placement="bottom" title="The version of the service descriptor."></input>
 
-					<label for="maintainer">Maintainer:</label><br>
-					<input class="labelClass" id ='dsMaintainer' data-toggle="tooltip" data-placement="bottom" title="describes the maintainer of the network service descriptor."></input>
+					<label for="author">Author:</label><br>
+					<input class="labelClass" id ='dsAuthor' data-toggle="tooltip" data-placement="bottom" title="The person or organization that created the NS descriptor."></input>
 
-					<label for="description">Description:</label>
-					<input class="labelClass" id ='dsDescription' data-toggle="tooltip" data-placement="top" title="provides an arbitrary description of the network service."></input>
+					<label for="description">Description:</label><br>
+					<input class="labelClass" id ='dsDescription' data-toggle="tooltip" data-placement="bottom" title="A longer description of the network service."></input>
+
+					<label for="descriptorVersion">Descriptor Version:</label>
+					<input class="labelClass" id ='dsDescriptorVersion' data-toggle="tooltip" data-placement="top" title="The version of the description definition used to describe the function descriptor."></input>
 				</div>	
 			</div>
 		</div>
@@ -199,7 +200,7 @@
 		</div>
 
 		<div id="successDescriptorDialogUpdated" title="Success" hidden>
-			<h4>Network Service descriptor is updated!</h4>
+			<h4>Network Service descriptor was updated!</h4>
 		</div>
 
 		<div id="errorDialog" title="Error" hidden>

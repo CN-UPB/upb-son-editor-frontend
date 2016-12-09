@@ -7,6 +7,50 @@ var nsId = "";
 var availableItems = [];
 var itemDictionary = {};
 
+var Descriptor = function(data) {
+	this.name = ko.observable(data.name);
+    this.description = ko.observable(data.description);
+    this.type = ko.observable(data.type);
+    this.id = ko.observable(data.id);
+	var self = this;
+	this.delete_desc = function() {
+		if (self.type === "VNF"){
+            deleteVnf(self.id());
+        } else {
+			deleteService(self.id());
+		}
+    };
+
+	this.clone = function() {
+        if (self.type === "VNF"){
+            cloneVnf(self.id());
+        } else {
+            cloneService(self.id());
+        }
+    };
+
+    this.edit = function() {
+        if (self.type === "VNF"){
+            editVnf(self.id());
+        } else {
+            editService(self.id());
+        }
+    };
+}
+
+function ViewModel() {
+	this.descriptors = ko.observableArray([]);
+
+	var self = this;
+
+	this.addDescriptor= function(data){
+		self.descriptors.push(new Descriptor(data));
+    }
+}
+
+var viewModel = new ViewModel();
+
+
 $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
@@ -33,6 +77,9 @@ $(document).ready(function () {
 			document.getElementById("nav_project").text = "Project: " + data.name;
 		}
 	});
+
+	ko.applyBindings(viewModel);
+
 	loadServices();
 	loadVnfs();
 	//search bar(uses jquery ui Autocomplete)
@@ -44,16 +91,15 @@ $(document).ready(function () {
 			if (item.startsWith("NS")) {
 				item = item.substring(4, item.length);
 				selectedId = itemDictionary[item];
-				goToServiceView(item, selectedId);
+				editService(selectedId);
 			} else {
 				item = item.substring(5, item.length);
 				selectedId = itemDictionary[item];
-				editVnf(item, selectedId);
+				editVnf(selectedId);
 			}
 		}
 	});
 });
-
 //load infos of all network services from the server
 function loadServices() {
 	$.ajax({
@@ -67,55 +113,22 @@ function loadServices() {
 			console.log(data);
 			//display available services and their onclick event.
 			services = data;
-			for (i = 0; i < services.length; i++) {
+			for (var i = 0; i < services.length; i++) {
 				var serviceName = services[i].descriptor.name;
 				availableItems.push("NS: " + serviceName);
 				var serviceId = services[i].id;
 				itemDictionary[serviceName] = serviceId;
 				var serviceInfo = services[i].descriptor.description;
-				var tdName = document.createElement("td");
-				tdName.innerHTML = serviceName;
-				var tdInfo = document.createElement("td");
-				tdInfo.innerHTML = serviceInfo;
-				var tdType = document.createElement("td");
-				tdType.innerHTML = "NS";
-				var tdOptions = document.createElement("td");
-				var optionTable = document.createElement("table");
-				var trOptionTable = document.createElement("tr");
-				var tdEdit = document.createElement("td");
-				tdEdit.className = "btn btn-primary btn-sm";
-				tdEdit.style.marginLeft = "10px";
-				tdEdit.style.marginRight = "15px";
-				tdEdit.innerHTML = "Edit";
-				var tdClone = document.createElement("td");
-				tdClone.className = "btn btn-primary btn-sm";
-				tdClone.style.marginRight = "15px";
-				tdClone.innerHTML = "Clone";
-				var tdDelete = document.createElement("td");
-				tdDelete.className = "btn btn-danger btn-sm";
-				tdDelete.innerHTML = "Delete";
-				trOptionTable.appendChild(tdEdit);
-				trOptionTable.appendChild(tdClone);
-				trOptionTable.appendChild(tdDelete);
-				optionTable.appendChild(trOptionTable);
-				tdOptions.appendChild(optionTable);
-				var trService = document.createElement("tr");
-				trService.appendChild(tdName);
-				trService.appendChild(tdInfo);
-				trService.appendChild(tdType);
-				trService.appendChild(tdOptions);
-				document.getElementById("display_NS_VNFS").appendChild(trService);
-				(function (serviceId) {
-					tdEdit.addEventListener('click', function () {
-						editService(serviceId);
-					}, false);
-					tdClone.addEventListener('click', function () {
-						cloneService(serviceId);
-					}, false);
-					tdDelete.addEventListener('click', function () {
-						deleteService(serviceId);
-					}, false);
-				})(serviceId)
+				if (!serviceInfo){
+					serviceInfo = "";
+				}
+				var nsData = {
+					name : serviceName,
+					description : serviceInfo,
+					id: serviceId,
+					type: "NS"
+				};
+				viewModel.addDescriptor(nsData);
 			}
 		}
 	});
@@ -135,55 +148,22 @@ function loadVnfs() {
 			console.log(data);
 			//display available vnfs and their onclick event.
 			vnfs = data;
-			for (i = 0; i < vnfs.length; i++) {
+			for (var i = 0; i < vnfs.length; i++) {
 				var vnfName = vnfs[i].descriptor.name;
 				availableItems.push("VNF: " + vnfName);
 				var vnfId = vnfs[i].id;
 				itemDictionary[vnfName] = vnfId;
 				var vnfInfo = vnfs[i].descriptor.description;
-				var tdName = document.createElement("td");
-				tdName.innerHTML = vnfName;
-				var tdInfo = document.createElement("td");
-				tdInfo.innerHTML = vnfInfo;
-				var tdType = document.createElement("td");
-				tdType.innerHTML = "VNF";
-				var tdOptions = document.createElement("td");
-				var optionTable = document.createElement("table");
-				var trOptionTable = document.createElement("tr");
-				var tdEdit = document.createElement("td");
-				tdEdit.className = "btn btn-primary btn-sm";
-				tdEdit.style.marginLeft = "10px";
-				tdEdit.style.marginRight = "15px";
-				tdEdit.innerHTML = "Edit";
-				var tdClone = document.createElement("td");
-				tdClone.className = "btn btn-primary btn-sm";
-				tdClone.style.marginRight = "15px";
-				tdClone.innerHTML = "Clone";
-				var tdDelete = document.createElement("td");
-				tdDelete.className = "btn btn-danger btn-sm";
-				tdDelete.innerHTML = "Delete";
-				trOptionTable.appendChild(tdEdit);
-				trOptionTable.appendChild(tdClone);
-				trOptionTable.appendChild(tdDelete);
-				optionTable.appendChild(trOptionTable);
-				tdOptions.appendChild(optionTable);
-				var trVnf = document.createElement("tr");
-				trVnf.appendChild(tdName);
-				trVnf.appendChild(tdInfo);
-				trVnf.appendChild(tdType);
-				trVnf.appendChild(tdOptions);
-				document.getElementById("display_NS_VNFS").appendChild(trVnf);
-				(function (vnfId) {
-					tdEdit.addEventListener('click', function () {
-						editVnf(vnfId);
-					}, false);
-					tdClone.addEventListener('click', function () {
-						cloneVnf(vnfId);
-					}, false);
-					tdDelete.addEventListener('click', function () {
-						deleteVnf(vnfId);
-					}, false);
-				})(vnfId)
+				if (!vnfInfo){
+					vnfInfo = "";
+				}
+                var vnfData = {
+                    name : vnfName,
+                    description : vnfInfo,
+                    id: vnfId,
+                    type: "VNF"
+                };
+				viewModel.addDescriptor(vnfData);
 			}
 		}
 	});
