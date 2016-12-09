@@ -85,6 +85,14 @@ textarea.parsley-error {
 	font-weight:bold;
 }
 
+.nav>li>a {
+    cursor: pointer;
+}
+
+a.navbar-brand {
+    cursor: pointer;
+}
+
 .userinfo{
 	float: right;
 }

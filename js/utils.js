@@ -42,6 +42,7 @@ function goToProjectView(wsId, ptId){
 
 var requests = [];
 var LOGIN_DIALOG_STRING = "<div title='Login'><h3>{0}</h3></div>";
+var ERROR_DIALOG_STRING = "<div id='errorDialog' title='Error'></div>";
 
 //global error handler for ajax requests
 $(document).ajaxError(function (event, response, request, thrownError) {
@@ -84,9 +85,18 @@ $(document).ajaxError(function (event, response, request, thrownError) {
 			}
 		};
 	} else {
-		$("#errorDialog").dialog();
-		var json = JSON.parse(response.responseText);
-		$("#errorDialog").text(json.message);
+		if (!$("#errorDialog").length){
+			$(ERROR_DIALOG_STRING).dialog();
+		} else {
+            $("#errorDialog").dialog();
+        }
+        if (response.status > 0)
+		{
+			var json = JSON.parse(response.responseText);
+			$("#errorDialog").html(json.message);
+		} else {
+			$("#errorDialog").text("Connection Failed. Please Try again later")
+		}
 
 	}
 });
