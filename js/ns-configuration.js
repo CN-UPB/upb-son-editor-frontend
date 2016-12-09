@@ -28,6 +28,17 @@ function validate() {
     }
 }
 
+function uploadFile(event){
+    var input = event.target;
+    var reader = new FileReader();
+    reader.onload = function (){
+        cur_ns.descriptor = jsyaml.safeLoad(reader.result);
+        editor.setValue(cur_ns.descriptor);
+        
+    }
+    reader.readAsText(input.files[0]);
+};
+
 
 function saveNsConfiguration() {
     if (validate()) {
