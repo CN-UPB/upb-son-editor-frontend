@@ -16,6 +16,9 @@
 		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
+        <script src="js/lib/bootstrap-filestyle.min.js"> </script>
+        <script src="js/lib/jsoneditor.min.js"></script>
+        <script src="js/lib/js-yaml.min.js"></script>
 		<script src="js/lib/jsPlumb-2.1.7-min.js"></script>
 		<script src="js/togglePanel.js"></script>
 		<script src="js/draggable.js"></script>
@@ -48,13 +51,13 @@
 			</ul>			
 		</nav>
 
-		<div class="container-fluid">	
+		<div class="container-fluid" id="editorContainer">	
 			<div class="row">
 				<div class="col-md-2 no-padding">
 					<div class="action-section">
 						<div class="row">
 							<div class="col-md-6">
-								<a onclick="showDialog()"><i class="fa fa-cog fa-2x"></i><br>Configure</br></a>
+								<a onclick="showNsConfiguration()"><i class="fa fa-cog fa-2x"></i><br>Configure</br></a>
 							</div>
 
 							<div class="col-md-6">
@@ -162,34 +165,17 @@
 						<a id="delete" data-bind="click: $parent.deleteNode" class="node-button" ><span class="glyphicon glyphicon-trash"></span></a>
 					</div>
 				</div>									
+
 				<div id="connection-list" ></div>										
-
 			</div>
-
 		</div>
 
-		<div id="createDialog" title="Create Networkservice Descriptor" hidden>
-			<div class="demo">
-				<div>
-
-					<label for="name">Name:</label><br>
-					<input class="labelClass" id ='dsName' data-toggle="tooltip" data-placement="bottom" title="The name of the network service description."></input>
-
-					<label for="vendor">Vendor:</label><br>
-					<input class="labelClass" id ='dsVendor' data-toggle="tooltip" data-placement="bottom" title="The vendor id allows to identify a VNF descriptor uniquely across all function descriptor vendors."></input>
-
-					<label for="version">Version:</label><br>
-					<input class="labelClass" id ='dsVersion' data-toggle="tooltip" data-placement="bottom" title="The version of the service descriptor."></input>
-
-					<label for="author">Author:</label><br>
-					<input class="labelClass" id ='dsAuthor' data-toggle="tooltip" data-placement="bottom" title="The person or organization that created the NS descriptor."></input>
-
-					<label for="description">Description:</label><br>
-					<input class="labelClass" id ='dsDescription' data-toggle="tooltip" data-placement="bottom" title="A longer description of the network service."></input>
-
-					<label for="descriptorVersion">Descriptor Version:</label>
-					<input class="labelClass" id ='dsDescriptorVersion' data-toggle="tooltip" data-placement="top" title="The version of the description definition used to describe the function descriptor."></input>
-				</div>	
+		<div id="nsConfigurationContainer" hidden>
+			<div id="nsConfigurationForm">
+			</div>
+			<div id="buttons" align="center">
+				<button  class="btn btn-primary" onclick="saveNsConfiguration();">Save</button>
+				<button class="btn btn-default" onclick="closeNsConfiguration();">Close</button>
 			</div>
 		</div>
 

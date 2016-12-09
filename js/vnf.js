@@ -162,7 +162,7 @@ $(document).ready(function() {
                 schema: vnfd_schema,
             });
             editor.watch('root.name', function() {
-                $("#nav_vnf").text("VNF: "+ editor.getEditor('root.name').getValue())
+                $("#nav_vnf").text("VNF: "+ editor.getEditor('root.name').getValue());
             });
             if (queryString["operation"] != "create") {
                 loadVnf(queryString["vnfId"]);
