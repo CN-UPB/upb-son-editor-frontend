@@ -161,8 +161,8 @@
 
 				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
 					<div data-bind="attr: {'id': id}">
-						<input type="text" data-bind="textInput: id" data-bind="event: {mouseout:  $parent.rename}"/>
-						<a id="delete" data-bind="click: $parent.deleteNode" class="node-button" ><span class="glyphicon glyphicon-trash"></span></a>
+						<input type="text" data-bind="textInput: id, event: {blur:  $parent.rename}"/>
+						<a id="delete" data-bind="click: deleteNode" class="node-button" ><span class="glyphicon glyphicon-trash"></span></a>
 					</div>
 				</div>									
 

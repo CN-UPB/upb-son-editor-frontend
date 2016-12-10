@@ -34,7 +34,6 @@ function uploadFile(event){
     reader.onload = function (){
         cur_ns.descriptor = jsyaml.safeLoad(reader.result);
         editor.setValue(cur_ns.descriptor);
-        
     }
     reader.readAsText(input.files[0]);
 };
@@ -53,8 +52,8 @@ function closeNsConfiguration() {
 	cur_ns.descriptor = editor.getValue();
 	updateService();
 	$("#nsConfigurationContainer").hide();
+	location.reload();
 	$("#editorContainer").show();
-
     }
 }
 
