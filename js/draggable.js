@@ -76,6 +76,22 @@ var jsPlumbOptions = {
     Endpoint: "Dot",
     Container: "editor"
 };
+var Node = function(node_data) {
+    var self = this;
+    self.old_id = ko.observable(node_data.id);
+    self.id = ko.observable(node_data.id);
+    self.deleteNode = function() {
+        var node = "#" + self.id();
+        var deleteThisNode = confirm("Do you want to delete this node?");
+        if (deleteThisNode === true) {
+            instance.detachAllConnections($(node));
+            instance.removeAllEndpoints($(node));
+            deleteNodeOnServer(self.id(), $(node).attr("class"));
+            viewModel.editor_nodes.remove(self);
+        }
+    }
+    ;
+};
 var ViewModel = function() {
     this.vnfs = ko.observableArray([]);
     this.addVnf = function(vnf) {
@@ -91,8 +107,8 @@ var ViewModel = function() {
     .bind(this);
     this.editor_nodes = ko.observableArray([]);
     var self = this;
-    self.addToEditor = function(descriptor) {
-        self.editor_nodes.push(descriptor);
+    this.addToEditor = function(node_data) {
+        self.editor_nodes.push(new Node(node_data));
     }
     ;
     this.platforms = ko.observableArray([]);
@@ -101,17 +117,12 @@ var ViewModel = function() {
     }
     ;
     self.rename = function() {
-        console.log(data);
-    }
-    ;
-    self.deleteNode = function() {
-        var node = "#" + this.id;
-        var deleteThisNode = confirm("Do you want to delete this node?");
-        if (deleteThisNode === true) {
-            instance.detachAllConnections($(node));
-            instance.removeAllEndpoints($(node));
-            deleteNodeOnServer(this.id, $(node).attr("class"));
-            self.editor_nodes.remove(this);
+        var node = $("#" + this.id());
+        var oldID = this.old_id();
+        var newID = this.id();
+        if (oldID != newID) {
+            renameNodeOnServer(oldID, newID, node.attr("class"));
+            this.old_id(newID);
         }
     }
     ;
@@ -209,6 +220,7 @@ function drawVnfOrNs(id, descriptor) {
     }
 }
 function updateService() {
+    cur_ns.meta.counter = countDropped;
     $.ajax({
         url: serverURL + "workspaces/" + queryString["wsId"] + "/projects/" + queryString["ptId"] + "/services/" + nsId,
         method: 'PUT',
@@ -227,12 +239,44 @@ function updateService() {
     });
 }
 // delete all links related to a node
+function updateRelatedLinks(oldId, newID) {
+    var cur_links = cur_ns.descriptor.virtual_links;
+    if (cur_links) {
+        for (var i = 0; i < cur_links.length; i++) {
+            for (var j = 0; j < cur_links[i].connection_points_reference.length; j++) {
+                if (cur_links[i].connection_points_reference[j].startsWith(oldId + ":")) {
+                    var link = cur_links[i];
+                    var newRef = link.connection_points_reference[j].replace(oldId, newID);
+                    // TODO change uuids of endpoints
+                    // var connections = instance.getConnections("*",
+                    // {target:oldId, source: oldId});
+                    // for (var k=0; k<connections.length; k++){
+                    // var uuids = connections[k].getUuids();
+                    // if (uuids[0].startsWith(oldId + ":")){
+                    // instance.detach(uuids);
+                    // uuids[0] = newRef;
+                    // instance.connect({uuids: uuids});
+                    // } else if (uuids[1].startsWith(oldId + ":")){
+                    // instance.detach(uuids);
+                    // uuids[1] = newRef;
+                    // instance.connect({uuids: uuids});
+                    // }
+                    // }
+                    cur_links[i].connection_points_reference[j] = newRef;
+                }
+            }
+        }
+    }
+}
+// delete all links related to a node
 function deleteRelatedLinks(objectId) {
     var cur_links = cur_ns.descriptor.virtual_links;
-    var removed = cur_links.filter(function(el) {
-        return el.id.search(objectId) == -1;
-    });
-    cur_ns.descriptor.virtual_links = removed;
+    if (cur_links) {
+        var removed = cur_links.filter(function(el) {
+            return el.id.search(objectId) == -1;
+        });
+        cur_ns.descriptor.virtual_links = removed;
+    }
 }
 // delete a single link
 function deleteLink(uuids) {
@@ -276,12 +320,62 @@ function deleteNodeOnServer(id, className) {
         cur_ns.descriptor.elans = removed;
         deleteRelatedLinks(id);
     }
+    if (cur_ns.meta.positions[id]) {
+        delete cur_ns.meta.positions[id];
+    }
+    updateService();
+}
+function renameNodeOnServer(oldId, newID, className) {
+    if (className.split("-")[0] == "vnf") {
+        var cur_vnfs = cur_ns.descriptor.network_functions;
+        for (var i = 0; i < cur_vnfs.length; i++) {
+            if (cur_vnfs[i].vnf_id === oldId) {
+                cur_vnfs[i].vnf_id = newID;
+                break;
+            }
+        }
+        updateRelatedLinks(oldId, newID);
+    }
+    if (className.split("-")[0] == "ns") {
+        var cur_nss = cur_ns.descriptor.network_services;
+        for (var i = 0; i < cur_nss.length; i++) {
+            if (cur_nss[i].ns_id == oldId) {
+                cur_nss[i].ns_id = newID;
+                break;
+            }
+        }
+        updateRelatedLinks(oldId, newID);
+    }
+    if (className.split("-")[0] == "cp") {
+        var cur_cp = cur_ns.descriptor.connection_points;
+        for (var i = 0; i < cur_cp.length; i++) {
+            if (cur_cp[i].id == oldId) {
+                cur_cp[i].id = newID;
+                break;
+            }
+        }
+        updateRelatedLinks(oldId, newID);
+    }
+    if (className.split("-")[0] == "e") {
+        var cur_elan = cur_ns.descriptor.elans;
+        for (var i = 0; i < cur_elan.length; i++) {
+            if (cur_elan[i].id == oldId) {
+                cur_elan[i].id = newID;
+                break;
+            }
+        }
+        updateRelatedLinks(oldId, newID);
+    }
+    if (cur_ns.meta.positions[oldId]) {
+        cur_ns.meta.positions[newID] = cur_ns.meta.positions[oldId];
+        delete cur_ns.meta.positions[oldId];
+    }
     updateService();
 }
 // add a node of a network service to editor using ko
 function addNode(type, data, x, y) {
     viewModel.addToEditor(data);
-    var elem = $(document.getElementById(data.id));
+    var elem = $("#" + data.id);
     elem.removeClass(type);
     elem.addClass(type + "-after-drop");
     elem.css({
@@ -434,7 +528,8 @@ function loadPlatforms() {
 // write data for viewModel
 function rewriteData(type, data) {
     if (type == 'vnf') {
-        var vnf_data = vnf_map[data.vnf_vendor + ":" + data.vnf_name + ":" + data.vnf_version];
+        var vnf_data = {};
+        vnf_data = vnf_map[data.vnf_vendor + ":" + data.vnf_name + ":" + data.vnf_version];
         vnf_data['id'] = data.vnf_id;
         return vnf_data;
     }
@@ -445,19 +540,19 @@ function rewriteData(type, data) {
     }
     if (type == 'cp') {
         var cp = data;
-        //var txts = data.id.split("_");
-        //if (txts == data.id) {
-        //	cp['name'] = data.name;
-        //} else {
-        //	cp['name'] = txts[1] + txts[2];
-        //}
+        // var txts = data.id.split("_");
+        // if (txts == data.id) {
+        // cp['name'] = data.name;
+        // } else {
+        // cp['name'] = txts[1] + txts[2];
+        // }
         cp['id'] = cp['id'].replace(":", "_");
         return cp;
     }
     if (type == 'e-lan') {
         var elan = data;
-        //var txts = data.id.split("_");
-        //elan['name'] = txts[1] + txts[2];
+        // var txts = data.id.split("_");
+        // elan['name'] = txts[1] + txts[2];
         elan['id'] = elan['id'].replace(":", "_");
         return elan;
     }
@@ -477,28 +572,28 @@ function displayNS() {
     var index = 0;
     if (cur_ns.descriptor.network_functions != null ) {
         for (var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
-            vnf = cur_ns.descriptor.network_functions[i];
+            var vnf = cur_ns.descriptor.network_functions[i];
             if (!cur_ns.meta.positions[vnf.vnf_id]) {
                 cur_ns.meta.positions[vnf.vnf_id] = getGridPosition(index);
                 index++;
             }
             $x = cur_ns.meta.positions[vnf.vnf_id][0];
             $y = cur_ns.meta.positions[vnf.vnf_id][1];
-            vnf_data = rewriteData('vnf', vnf);
+            var vnf_data = rewriteData('vnf', vnf);
             addNode("vnf", vnf_data, $x, $y);
             countDropped++;
         }
     }
     if (cur_ns.descriptor.network_services != null ) {
         for (var i = 0; i < (cur_ns.descriptor.network_services).length; i++) {
-            ns = cur_ns.descriptor.network_services[i];
+            var ns = cur_ns.descriptor.network_services[i];
             if (!cur_ns.meta.positions[ns.ns_id]) {
                 cur_ns.meta.positions[ns.ns_id] = getGridPosition(index);
                 index++;
             }
             $x = cur_ns.meta.positions[ns.ns_id][0];
             $y = cur_ns.meta.positions[ns.ns_id][1];
-            ns_data = rewriteData('ns', ns);
+            var ns_data = rewriteData('ns', ns);
             addNode("ns", ns_data, $x, $y);
             countDropped++;
         }
@@ -625,7 +720,7 @@ function createNewConnectionPoint(elemID, updateOnServer) {
     var cp_data = rewriteData('cp', cp);
     $x = cur_ns.meta.positions[cp_data.id][0];
     $y = cur_ns.meta.positions[cp_data.id][1];
-    addNode(cp_data, $x, $y);
+    addNode('cp', cp_data, $x, $y);
     if (!cur_ns.descriptor.connection_points) {
         cur_ns.descriptor.connection_points = [];
     }
@@ -659,7 +754,7 @@ function createNewElan(elemID, updateOnServer) {
     var elan_data = rewriteData('e-lan', elan);
     $x = cur_ns.meta.positions[elan_data.id][0];
     $y = cur_ns.meta.positions[elan_data.id][1];
-    addNode(elan_data, $x, $y);
+    addNode("e-lan", elan_data, $x, $y);
     if (!cur_ns.descriptor.elans) {
         cur_ns.descriptor.elans = [];
     }
@@ -825,6 +920,16 @@ function loadCurrentNS() {
             document.getElementById("nav_ns").text = "NS: " + data.descriptor.name;
             if (!data.meta.positions)
                 data.meta.positions = {};
+            if (!data.meta.counter) {
+                data.meta.counter = 0;
+                if (data.descriptor.network_functions)
+                    data.meta.counter += data.descriptor.network_functions.length;
+                if (data.descriptor.network_services)
+                    data.meta.counter += data.descriptor.network_services.length;
+                if (data.descriptor.connection_points)
+                    data.meta.counter += data.descriptor.connection_points.length;
+            }
+            countDropped = data.meta.counter;
             cur_ns = data;
             displayNS();
         },
