@@ -77,6 +77,7 @@ var jsPlumbOptions = {
     Container: "editor"
 };
 var Node = function(node_data) {
+	var self = this;
     self.old_id = ko.observable(node_data.id);
     self.id = ko.observable(node_data.id);
     self.deleteNode = function() {
