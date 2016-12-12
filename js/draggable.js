@@ -12,11 +12,11 @@ var cur_ns = {};
 var instance = {};
 var lastDraggedDescriptor = {};
 var countDropped = 0;
-var connectionPoints = 0;
-var elans = 0;
 var connections = [];
 var color = "#d39963";
 var interval = null ;
+var isDragAction = false;
+var dragCount = 0;
 var endPointOptions = {
     endpoint: "Dot",
     paintStyle: {
@@ -77,18 +77,30 @@ var jsPlumbOptions = {
     Container: "editor"
 };
 var Node = function(node_data) {
-    var self = this;
+	var self = this;
     self.old_id = ko.observable(node_data.id);
     self.id = ko.observable(node_data.id);
     self.deleteNode = function() {
+    	if (isDragAction){
+    		//do not trigger delete from dragging
+    		return;
+		}
         var node = "#" + self.id();
-        var deleteThisNode = confirm("Do you want to delete this node?");
-        if (deleteThisNode === true) {
-            instance.detachAllConnections($(node));
-            instance.removeAllEndpoints($(node));
-            deleteNodeOnServer(self.id(), $(node).attr("class"));
-            viewModel.editor_nodes.remove(self);
-        }
+        $("#deleteDialog").dialog({
+        	modal: true,
+        	buttons:{
+				"Ok" : function(){
+					$(this).dialog("close");
+					instance.detachAllConnections($(node));
+					instance.removeAllEndpoints($(node));
+					deleteNodeOnServer(self.id(), $(node).attr("class"));
+					viewModel.editor_nodes.remove(self);
+				},
+				Cancel: function(){
+					$(this).dialog("close");
+			}
+		}
+        }).text("Do you want to delete this node?");
     }
     ;
 };
@@ -102,7 +114,7 @@ var ViewModel = function() {
     this.nss = ko.observableArray([]);
     this.addNs = function(ns) {
         this.nss.push(ns);
-        ns_map[ns.vendor + ":" + ns.name + ":" + ns.version] = ns;
+        ns_map[ns.descriptor.vendor + ":" + ns.descriptor.name + ":" + ns.descriptor.version] = ns;
     }
     .bind(this);
     this.editor_nodes = ko.observableArray([]);
@@ -148,7 +160,7 @@ var viewModel = new ViewModel();
 function calcAnchors(anchorCount) {
     var r = 0.5
       , step = Math.PI * 2 / anchorCount
-      , current = 0
+      , current = Math.PI
       , a = [];
     for (var i = 0; i < anchorCount; i++) {
         var x = r + (r * Math.sin(current))
@@ -190,11 +202,11 @@ function calcLabelPos(anchor) {
 function drawVnfOrNs(id, descriptor) {
     var connectionPoints = descriptor['connection_points'];
     if (connectionPoints) {
-        anchors = calcAnchors(connectionPoints.length);
+        var anchors = calcAnchors(connectionPoints.length);
         var i;
         for (i = 0; i < connectionPoints.length; i++) {
             var connectionPoint = connectionPoints[i];
-            e = instance.addEndpoint(id, {
+            var e = instance.addEndpoint(id, {
                 uuid: id + ":" + connectionPoint.id,
                 anchor: anchors[i],
                 connectorOverlays: [["Arrow", {
@@ -279,47 +291,81 @@ function deleteRelatedLinks(objectId) {
     }
 }
 // delete a single link
-function deleteLink(uuids) {
+function deleteLink(connection) {
     var cur_links = cur_ns.descriptor.virtual_links;
-    var removed = cur_links.filter(function(el) {
-        return !(el.connection_points_reference[0] == uuids[0] && el.connection_points_reference[1] == uuids[1]);
-    });
-    cur_ns.descriptor.virtual_links = removed;
+    var cp_source = connection.endpoints[0];
+    var cp_target = connection.endpoints[1];
+    var elan, other;
+    if (cp_source.getParameters().isElan){
+        elan = cp_source;
+        other = cp_target;
+    } else if (cp_target.getParameters().isElan){
+        elan = cp_target;
+        other = cp_source;
+    }
+    if (elan){
+        for (var i=0; i < cur_ns.descriptor.virtual_links.length; i++){
+            if (cur_ns.descriptor.virtual_links[i].id == elan.getUuid()){
+            	var refID = cur_ns.descriptor.virtual_links[i].connection_points_reference.indexOf(other.getUuid());
+            	if (refID>-1){
+                    cur_ns.descriptor.virtual_links[i].connection_points_reference.splice(refID, 1);
+				}
+            }
+        }
+    } else {
+        var removed = cur_links.filter(function(el) {
+            return !(el.connection_points_reference[0] == cp_source.getUuid() && el.connection_points_reference[1] == cp_target.getUuid());
+        });
+        cur_ns.descriptor.virtual_links = removed;
+        if (cur_ns.descriptor.virtual_links.length == 0){
+            delete cur_ns.descriptor.virtual_links;
+        }
+    }
     updateService(cur_ns);
 }
 function deleteNodeOnServer(id, className) {
-    if (className.split("-")[0] == "vnf") {
+    if (className.startsWith("vnf")) {
         var cur_vnfs = cur_ns.descriptor.network_functions;
         var removed = cur_vnfs.filter(function(el) {
             return el.vnf_id != id;
         });
         cur_ns.descriptor.network_functions = removed;
+        if (cur_ns.descriptor.network_functions.length == 0){
+            delete cur_ns.descriptor.network_functions;
+        }
         deleteRelatedLinks(id);
-    }
-    if (className.split("-")[0] == "ns") {
+    } else if (className.startsWith("ns")) {
         var cur_nss = cur_ns.descriptor.network_services;
         var removed = cur_nss.filter(function(el) {
             return el.ns_id != id;
         });
         cur_ns.descriptor.network_services = removed;
+        if (cur_ns.descriptor.network_services.length == 0){
+            delete cur_ns.descriptor.network_services;
+        }
         deleteRelatedLinks(id);
-    }
-    if (className.split("-")[0] == "cp") {
+    } else if (className.startsWith("cp")) {
         var cur_cp = cur_ns.descriptor.connection_points;
         var removed = cur_cp.filter(function(el) {
             return el.id != id;
         });
         cur_ns.descriptor.connection_points = removed;
+        if (cur_ns.descriptor.connection_points.length == 0){
+            delete cur_ns.descriptor.connection_points;
+        }
         deleteRelatedLinks(id);
+    } else if (className.startsWith("e-lan")) {
+        for (var i=0; i<cur_ns.descriptor.virtual_links.length; i++){
+			if (cur_ns.descriptor.virtual_links[i].id == id){
+                cur_ns.descriptor.virtual_links.splice(i, 1);
+                break;
+			}
+		}
+		if (cur_ns.descriptor.virtual_links.length == 0){
+            delete cur_ns.descriptor.virtual_links;
+		}
     }
-    if (className.split("-")[0] == "e") {
-        var cur_elan = cur_ns.descriptor.elans;
-        var removed = cur_elan.filter(function(el) {
-            return el.id != id;
-        });
-        cur_ns.descriptor.elans = removed;
-        deleteRelatedLinks(id);
-    }
+
     if (cur_ns.meta.positions[id]) {
         delete cur_ns.meta.positions[id];
     }
@@ -357,10 +403,10 @@ function renameNodeOnServer(oldId, newID, className) {
         updateRelatedLinks(oldId, newID);
     }
     if (className.split("-")[0] == "e") {
-        var cur_elan = cur_ns.descriptor.elans;
-        for (var i = 0; i < cur_elan.length; i++) {
-            if (cur_elan[i].id == oldId) {
-                cur_elan[i].id = newID;
+        var links = cur_ns.descriptor.virtual_links;
+        for (var i = 0; i < links.length; i++) {
+            if (links[i].id == oldId) {
+                links[i].id = newID;
                 break;
             }
         }
@@ -386,12 +432,13 @@ function addNode(type, data, x, y) {
     if (type == "cp") {
         drawConnectionPoint(data.id);
     } else if (type == "e-lan") {
-        drawElan(data.id);
+        drawElan(data);
     } else {
         drawVnfOrNs(data.id, data.descriptor);
     }
     instance.draggable(data.id, {
-        stop: savePositionForNode
+    	drag: activateDragging,
+        stop: savePositionForNode,
     });
     var node = "#" + data.id;
     $(node).bind("mouseover", function() {
@@ -612,24 +659,23 @@ function displayNS() {
             countDropped++;
         }
     }
-    if (cur_ns.descriptor.elans != null ) {
-        for (var i = 0; i < (cur_ns.descriptor.elans).length; i++) {
-            var elan = cur_ns.descriptor.elans[i];
-            if (!cur_ns.meta.positions[elan.id]) {
-                cur_ns.meta.positions[elan.id] = getGridPosition(index);
-                index++;
-            }
-            $x = cur_ns.meta.positions[elan.id][0];
-            $y = cur_ns.meta.positions[elan.id][1];
-            elan = rewriteData('e-lan', elan);
-            addNode("e-lan", elan, $x, $y);
-            countDropped++;
-        }
-    }
     if (cur_ns.descriptor.virtual_links != null ) {
         for (var i = 0; i < (cur_ns.descriptor.virtual_links).length; i++) {
             var virtual_link = cur_ns.descriptor.virtual_links[i];
-            drawVirtualLink(virtual_link);
+            if (virtual_link.connectivity_type == "E-LAN"){
+                var elan = virtual_link;
+                if (!cur_ns.meta.positions[elan.id]) {
+                    cur_ns.meta.positions[elan.id] = getGridPosition(index);
+                    index++;
+                }
+                $x = cur_ns.meta.positions[elan.id][0];
+                $y = cur_ns.meta.positions[elan.id][1];
+                elan = rewriteData('e-lan', elan);
+                addNode("e-lan", elan, $x, $y);
+                countDropped++;
+            } else {
+                drawVirtualLink(virtual_link);
+            }
         }
     }
 }
@@ -702,7 +748,7 @@ function updateDescriptor(type, list, elemId) {
 function drawConnectionPoint(elemID) {
     instance.addEndpoint(elemID, {
         uuid: elemID,
-        anchor: ["Left"],
+        anchor: [ "Perimeter", { shape:"Circle" } ],
         connectorOverlays: [["Arrow", {
             width: 10,
             length: 20,
@@ -733,53 +779,72 @@ function createNewConnectionPoint(elemID, updateOnServer) {
         updateService();
     }
 }
-function drawElan(elemID) {
-    instance.addEndpoint(elemID, {
-        uuid: elemID,
-        anchor: ["Left"],
-        connectorOverlays: [["Arrow", {
-            width: 10,
-            length: 20,
-            location: 0.45,
-            id: "arrow"
-        }]]
-    }, endPointOptions);
+function drawElan(data) {
+	var  connections = data.connection_points_reference;
+	instance.addEndpoint(data.id, {
+		uuid : data.id,
+		parameters: {
+			isElan: true
+		},
+		anchor : [ "Perimeter", { shape:"Circle" } ],
+		connectorOverlays : [ [ "Arrow", {
+			width : 10,
+			length : 20,
+			location : 0.45,
+			id : "arrow"
+		} ] ]
+	}, endPointOptions);
+	for (var i=0; i<connections.length; i++){
+		instance.connect({'uuids':[data.id, connections[i]]})
+	}
 }
 function createNewElan(elemID, updateOnServer) {
-    text = elemID;
-    var txts = text.split("_");
-    text = txts[1] + txts[2];
-    var elan = {};
-    elan.id = elemID;
-    var elan_data = rewriteData('e-lan', elan);
-    $x = cur_ns.meta.positions[elan_data.id][0];
-    $y = cur_ns.meta.positions[elan_data.id][1];
-    addNode("e-lan", elan_data, $x, $y);
-    if (!cur_ns.descriptor.elans) {
-        cur_ns.descriptor.elans = [];
+	var text = elemID;
+	//var txts = text.split("_");
+	//text = txts[1] + txts[2];
+	var elan = {"id" : elemID,
+        "connectivity_type" : "E-LAN",
+        "connection_points_reference": []
+	};
+    if (!cur_ns.descriptor.virtual_links) {
+        cur_ns.descriptor.virtual_links = [];
     }
-    drawElan(elemID);
-    if (updateOnServer) {
-        cur_ns.descriptor.elans.push({
-            "id": elemID,
-            "type": "interface"
-        });
-        updateService();
-    }
+    cur_ns.descriptor.virtual_links.push(elan);
+    $x = cur_ns.meta.positions[elan.id][0];
+    $y = cur_ns.meta.positions[elan.id][1];
+    addNode("e-lan", elan, $x, $y);
+	updateService();
 }
 function updateVirtualLinks(conn, remove) {
     if (!remove) {
         connections.push(conn);
         var cp_source = conn.endpoints[0];
         var cp_target = conn.endpoints[1];
-        var virtual_link = {};
-        virtual_link["id"] = cp_source.elementId + "-2-" + cp_target.elementId;
-        virtual_link["connectivity_type"] = "E-Line";
-        virtual_link["connection_points_reference"] = conn.getUuids();
-        if (!cur_ns.descriptor["virtual_links"]) {
-            cur_ns.descriptor["virtual_links"] = [];
-        }
-        cur_ns.descriptor["virtual_links"].push(virtual_link);
+        var elan, other;
+        if (cp_source.getParameters().isElan){
+			elan = cp_source;
+			other = cp_target;
+		} else if (cp_target.getParameters().isElan){
+            elan = cp_target;
+            other = cp_source;
+		}
+		if (elan){
+			for (var i=0; i < cur_ns.descriptor.virtual_links.length; i++){
+				if (cur_ns.descriptor.virtual_links[i].id == elan.getUuid()){
+                    cur_ns.descriptor.virtual_links[i].connection_points_reference.push(other.getUuid())
+				}
+			}
+		} else {
+            var virtual_link = {
+            	id: cp_source.elementId + "-2-" + cp_target.elementId,
+                connectivity_type: "E-Line",
+				connection_points_reference: conn.getUuids()
+			};
+            if (!cur_ns.descriptor["virtual_links"]) {
+                cur_ns.descriptor["virtual_links"] = [];
+            }
+            cur_ns.descriptor["virtual_links"].push(virtual_link);
+		}
         updateService();
         console.log("number of connections:" + connections.length);
     } else {
@@ -799,7 +864,7 @@ function updateVirtualLinks(conn, remove) {
         for (var j = 0; j < connections.length; j++) {
             s = s + "<tr><td>" + connections[j].scope + "</td>" + "<td>" + connections[j].sourceId + "</td><td>" + connections[j].targetId + "</td></tr>";
         }
-        showConnectionInfo(s);
+        //showConnectionInfo(s);
     } else
         hideConnectionInfo();
 }
@@ -838,9 +903,20 @@ function savePositionForNode(event) {
             "y": 0
         }
     }
-    ;cur_ns.meta.positions[nodeId] = position;
+    cur_ns.meta.positions[nodeId] = position;
+    dragCount = 0;
     updateService();
 }
+
+//helper to check if nodes where dragged or jus clicked
+function activateDragging(){
+    isDragAction = false;
+	dragCount++;
+	if (dragCount>5){
+		isDragAction = true;
+	}
+}
+
 function configureJsPlumb() {
     instance = jsPlumb.getInstance(jsPlumbOptions);
     $("#editor").droppable({
@@ -868,6 +944,7 @@ function configureJsPlumb() {
                 createNewElan(data.attr('id'), true);
             }
             instance.draggable(data.attr('id'), {
+                drag: activateDragging,
                 stop: savePositionForNode,
                 containment: "parent"
             });
@@ -900,11 +977,19 @@ function configureJsPlumb() {
         updateVirtualLinks(info.connection, true);
     });
     instance.bind("dblclick", function(connection, originalEvent) {
-        var popupOkCancel = confirm("Do you want to delete this connection?");
-        if (popupOkCancel === true) {
-            deleteLink(connection.getUuids());
-            instance.detach(connection);
-        }
+    	$("#deleteDialog").dialog({
+    		modal: true,
+			buttons: {
+    			Delete: function () {
+                    deleteLink(connection);
+                    instance.detach(connection);
+                    $(this).dialog("close");
+                },
+				Cancel: function () {
+                    $(this).dialog("close");
+                }
+			}
+		}).text("Do you want to delete this connection?");
     });
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
 }
