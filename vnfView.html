@@ -46,16 +46,14 @@
 		</nav>
 		<!--jquery ui-->
 		<div class="container">
-			<div align="right">
+			<div class="uploadYml" align="right">
                 <input type='file' class="filestyle" data-input="false" data-buttonText="Upload .yml file" accept='.yml' onchange='uploadFile(event)'/>
             </div>
-			<div id="vnfForm"></div>
-			<div id="saveButton" align="center">
+			<div id="vnfForm" class="configurationForm"></div>
+			<div id="buttons" align="center">
 				<button class="btn btn-primary" onclick="saveTables();">Save</button>
+				<button class="btn btn-default" onclick="goToProjectView();">Close</button>
 			</div>
-			<ul id="previous" class="pager">
-				<li><a onclick="goToProjectView();">Previous</a></li>
-			</ul>
 		</div>	
 		<div id="successVnfDialog" title="Success" hidden>
 			<h4>New VNF is created!</h4>

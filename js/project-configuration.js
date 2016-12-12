@@ -115,19 +115,9 @@ $(document).ready(function () {
 		},
 		success : function (data) {
 			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
-		}
-	});
-	$.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId ,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			document.getElementById("nav_project").text = "Project: " +data.name;
 			catalogues=data.catalogues;
 			var selectBox=document.getElementById("select_box");
-			for(i=0;i<catalogues.length;i++)
+			for(var i=0;i<catalogues.length;i++)
 			{
 				var catalogueName=catalogues[i].name;
 				availableCatalogues.push(catalogueName);
@@ -139,7 +129,17 @@ $(document).ready(function () {
 			$(".chosen-select").chosen();
 		}
 	});
-	ptId=queryString["ptId"];
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId ,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_project").text = "Project: " +data.name;
+			
+		}
+	});
 	projectModel=new ProjectModel();
 	loadConfiguration(ptId);
 	ko.applyBindings(projectModel);

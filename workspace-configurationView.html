@@ -91,7 +91,7 @@
 								<div id="catalogue" class="form-group">
 									<label class="control-label col-md-2">Name:</label>
 									<div class="col-md-2">
-										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_-.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_-. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
 									</div>
 									<label class="control-label col-md-1">URL:</label>
 									<div class="col-md-5">
@@ -112,10 +112,8 @@
 			</form>
 			<div align="center"> 									
 				<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
+				<button class="btn btn-default" onclick="goToWorkspaceView();">Close</button>
 			</div>
-			<ul class="pager">
-				<li><a onclick="goToWorkspaceView();">Previous</a></li>
-			</ul>
 		</div>
 		<div id="successSaveConfiDialog" title="Success" hidden>
 			<h4>Workspace configuration is updated!</h4>

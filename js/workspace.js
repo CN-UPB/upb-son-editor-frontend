@@ -26,9 +26,7 @@ $(document).ready(function () {
 		success : function (data) {
 			//display available projects and their onclick event.
 			projects = data;
-			console.log("projects:")
-			console.log(projects);
-			for (i = 0; i < projects.length; i++) {
+			for (var i = 0; i < projects.length; i++) {
 				var ptName = projects[i].name;
 				var ptId = projects[i].id;
 				var project = projects[i];

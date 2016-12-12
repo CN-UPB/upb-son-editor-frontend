@@ -82,26 +82,39 @@ $(document).ready(function () {
 
 	loadServices();
 	loadVnfs();
-	//search bar(uses jquery ui Autocomplete)
+	// search bar(uses jquery ui Autocomplete)
 	$("#search_item").autocomplete({
 		source : availableItems,
 		select : function (event, ui) {
 			var item = ui.item.label;
 			var selectedId;
-			if (item.startsWith("NS")) {
-				item = item.substring(4, item.length);
-				selectedId = itemDictionary[item];
-				editService(selectedId);
-			} else {
-				item = item.substring(5, item.length);
-				selectedId = itemDictionary[item];
-				editVnf(selectedId);
+			if(item.startsWith("Create"))
+			{
+				if(item== "Create new NS") 
+						showCreateNSDialog();
+				else
+						createNewVnf();
 			}
-		}
+			else
+			{
+				if (item.startsWith("NS")) 
+				{
+					item = item.substring(4, item.length);
+					selectedId = itemDictionary[item];
+					editService(selectedId);
+				} 
+				else 
+				{
+					item = item.substring(5, item.length);
+					selectedId = itemDictionary[item];
+					editVnf(selectedId);
+				}
+			}}
 	});
 });
-//load infos of all network services from the server
+// load infos of all network services from the server
 function loadServices() {
+	availableItems.push("Create new NS");
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
 		dataType : "json",
@@ -111,7 +124,7 @@ function loadServices() {
 		success : function (data) {
 			console.log("services:");
 			console.log(data);
-			//display available services and their onclick event.
+			// display available services and their onclick event.
 			services = data;
 			for (var i = 0; i < services.length; i++) {
 				var serviceName = services[i].descriptor.name;
@@ -134,8 +147,9 @@ function loadServices() {
 	});
 }
 
-//load infos of all VNFs from the server
+// load infos of all VNFs from the server
 function loadVnfs() {
+	availableItems.push("Create new VNF");
 	vnf = [];
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
@@ -146,7 +160,7 @@ function loadVnfs() {
 		success : function (data) {
 			console.log("vnfs:");
 			console.log(data);
-			//display available vnfs and their onclick event.
+			// display available vnfs and their onclick event.
 			vnfs = data;
 			for (var i = 0; i < vnfs.length; i++) {
 				var vnfName = vnfs[i].descriptor.name;
@@ -169,7 +183,8 @@ function loadVnfs() {
 	});
 }
 
-//load all network services and vnfs from the server, which will be displayed to the user
+// load all network services and vnfs from the server, which will be displayed
+// to the user
 function loadList(selectedIndex) {
 	document.getElementById("display_NS_VNFS").innerHTML = "";
 	availableItems = [];
@@ -188,7 +203,8 @@ function loadList(selectedIndex) {
 	}
 }
 
-//delete a network service from the server and it will be called by clicking "delete" button belongs to a service
+// delete a network service from the server and it will be called by clicking
+// "delete" button belongs to a service
 function deleteService(serviceId) {
 	$("#ConfirmDeletionDialog_Service").dialog({
 		modal : true,
@@ -226,7 +242,8 @@ function deleteService(serviceId) {
 	});
 }
 
-//delete a VNF from the server and it will be called by clicking "delete" button belongs to a VNF
+// delete a VNF from the server and it will be called by clicking "delete"
+// button belongs to a VNF
 function deleteVnf(vnfId) {
 	$("#ConfirmDeletionDialog_VNF").dialog({
 		modal : true,
@@ -264,13 +281,14 @@ function deleteVnf(vnfId) {
 	});
 }
 
-//clone a existing VNF to create a new one and it will be called by clicking "clone" button belongs to a VNF
+// clone a existing VNF to create a new one and it will be called by clicking
+// "clone" button belongs to a VNF
 function cloneVnf(vnfId) {
 	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "clone";
-
 }
 
-//clone a existing network service to create a new one and it will be called by clicking "clone" button belongs to a service
+// clone a existing network service to create a new one and it will be called by
+// clicking "clone" button belongs to a service
 function cloneService(serviceId) {
 	showCreateNSDialog(true, serviceId);
 }
@@ -279,10 +297,10 @@ function createNewVnf() {
 	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&operation=" + "create";
 }
 
-//send the name of the new network service to server
+// send the name of the new network service to server
 function createNewService(clone, cloneId) {
 	if (clone) {
-		//load cloned service from server
+		// load cloned service from server
 		$.ajax({
 			url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/" + cloneId,
 			dataType : "json",
@@ -360,23 +378,25 @@ function createNewService(clone, cloneId) {
 	}
 }
 
-//open the network service editor and it will be called by clicking "edit" button belongs to a service 
+// open the network service editor and it will be called by clicking "edit"
+// button belongs to a service
 function editService(serviceId) {
 	window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + serviceId;
 
 }
 
-//open the VNF editor and it will be called by clicking "edit" button belongs to a VNF
+// open the VNF editor and it will be called by clicking "edit" button belongs
+// to a VNF
 function editVnf(vnfId) {
 	window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit";
 }
 
-//open configuration from the current project
+// open configuration from the current project
 function goToConfigurationView() {
 	window.location.href = "project-configurationView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
 }
 
-//create new networkservice dialog (uses jquery ui Dialog)
+// create new networkservice dialog (uses jquery ui Dialog)
 function showCreateNSDialog(clone, cloneId) {
 	$("#createNetworkserviceDialog").dialog({
 		modal : true,

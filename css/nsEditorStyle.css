@@ -70,15 +70,6 @@
 	width: 100%;
 }
 
-#nsConfigurationForm{
-	margin:0px 20px 10px 20px;
-	overflow-y: scroll;
-	overflow-x: hidden;
-}
-
-#uploadNsYml{
-	margin:10px 20px 10px 20px;
-}
 .left-navigation-bar{
 	border-style: ridge none none none;
 	border-width: 1px;

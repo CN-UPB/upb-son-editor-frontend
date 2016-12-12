@@ -34,7 +34,7 @@ function uploadFile(event){
     reader.onload = function (){
         cur_ns.descriptor = jsyaml.safeLoad(reader.result);
         editor.setValue(cur_ns.descriptor);
-    }
+    };
     reader.readAsText(input.files[0]);
 };
 
