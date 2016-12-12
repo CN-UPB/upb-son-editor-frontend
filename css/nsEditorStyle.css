@@ -168,10 +168,9 @@ div .vnf-after-drop:hover {
 }
 
 div .vnf-after-drop>input{
-	position: absolute;
-	top: 90px;
-	transform: translate(-20%, -50%);
+	transform: translate(0%,300%);
 	border: none;
+	background-color: rgba(255,255,255,0)
 }
 
 .ns {
@@ -209,10 +208,9 @@ div .ns-after-drop:hover {
 
 
 div .ns-after-drop>input{
-	position: absolute;
-    top: 110px;
-	transform: translate(-20%, -50%);
+	transform: translate(0%,300%);
 	border: none;
+	background-color: rgba(255,255,255,0)
 }
 
 .cp{
@@ -260,10 +258,9 @@ div .cp-after-drop:hover {
 }
 
 div .cp-after-drop>input{
-	position: absolute;
-   	top: 90px;
-	transform: translate(-20%, -50%);
+	transform: translate(0%,300%);
 	border: none;
+	background-color: rgba(255,255,255,0)
 }
 .e-lan{
 	margin: 5px 5px 5px 5px;
@@ -300,10 +297,9 @@ div .e-lan-after-drop:hover {
     opacity:0.9;
 }
 div .e-lan-after-drop>input{
-	position: absolute;
-    top: 90px;
- 	transform: translate(-20%, -50%);
- 	border: none;
+	transform: translate(0%,300%);
+	border: none;
+	background-color: rgba(255,255,255,0)
 }
 
 .ui-draggable{
@@ -378,8 +374,7 @@ input, labelClass {
 }
 .node-button{
 	display:none;
-	position:relative;
-	top:30%;
+	top:20%;
 }
 .glyphicon{
 		 font-size: 25px;

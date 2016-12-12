@@ -435,6 +435,8 @@ function addNode(type, data, x, y) {
         left: x,
         top: y
     });
+    var nameBox=elem.children("input")[0];
+    nameBox.style.width = ((nameBox.value.length +2) * 8) + 'px';
     if (type == "cp") {
         drawConnectionPoint(data.id);
     } else if (type == "e-lan") {
@@ -792,6 +794,62 @@ function createNewElan(elemID, updateOnServer) {
     addNode("e-lan", elan, $x, $y);
 	updateService();
 }
+function updateForwardGraph(source, target)
+{
+	if(cur_ns.descriptor.forwarding_graphs)
+	{///TODO
+		for(var i=0;i<cur_ns.descriptor.forwarding_graphs.length;i++)
+		{
+			var forwarding_graph=cur_ns.descriptor.forwarding_graphs[i];
+			for(var j=0;j<forwarding_graph.network_forwarding_paths.length;j++)
+			{
+				var path=forwarding_graph.network_forwarding_paths[j];
+				var connection_points=path.connection_points;
+			}
+		}
+	}
+	else
+	{
+		var forwarding_graphs=[];
+		var forwarding_graph={};
+		forwarding_graph["fg_id"]="ns:fg01";
+		forwarding_graph["number_of_endpoints"]=2;
+		forwarding_graph["number_of_virtual_links"]=1;
+		var constituent_vnfs=[];
+		var sourceName;
+		if(!source.startsWith("ns"))
+		{
+			sourceName=source.split(":")[0];
+			constituent_vnfs.push(sourceName);
+		}
+		if(!target.startsWith("ns"))
+		{
+			var targetName=source.split(":")[0];
+			if(targetName!=sourceName)
+			{
+				constituent_vnfs.push(targetName);
+			}
+		}
+		forwarding_graph["constituent_vnfs"]=constituent_vnfs;
+		var paths=[];
+		var path={};
+		path["fp_id"]=forwarding_graph["fg_id"]+":fp01";
+		var connection_points=[];
+		var connection_point1={};
+		var connection_point2={};
+		connection_point1["connection_point_ref"]=source;
+		connection_point1["position"]=1;
+		connection_point2["connection_point_ref"]=target;
+		connection_point2["position"]=2;
+		connection_points.push(connection_point1);
+		connection_points.push(connection_point2);
+		path["connection_points"]=connection_points;
+		paths.push(path);
+		forwarding_graph["network_forwarding_paths"]=paths;
+		forwarding_graphs.push(forwarding_graph);
+		cur_ns.descriptor.forwarding_graphs=forwarding_graphs;
+	}
+}
 function updateVirtualLinks(conn, remove) {
     if (!remove) {
         connections.push(conn);
@@ -808,7 +866,7 @@ function updateVirtualLinks(conn, remove) {
 		if (elan){
 			for (var i=0; i < cur_ns.descriptor.virtual_links.length; i++){
 				if (cur_ns.descriptor.virtual_links[i].id == elan.getUuid()){
-                    cur_ns.descriptor.virtual_links[i].connection_points_reference.push(other.getUuid())
+                    cur_ns.descriptor.virtual_links[i].connection_points_reference.push(other.getUuid());
 				}
 			}
 		} else {
@@ -822,8 +880,8 @@ function updateVirtualLinks(conn, remove) {
             }
             cur_ns.descriptor["virtual_links"].push(virtual_link);
 		}
+		updateForwardGraph(cp_source.getUuid(), cp_target.getUuid());
         updateService();
-        console.log("number of connections:" + connections.length);
     } else {
         var idx = -1;
         for (var i = 0; i < connections.length; i++) {
@@ -834,7 +892,6 @@ function updateVirtualLinks(conn, remove) {
         }
         if (idx != -1)
             connections.splice(idx, 1);
-        console.log("number of connections:" + connections.length);
     }
     if (connections.length > 0) {
         var s = "<span><strong>Connections</strong></span><br/><br/><table><tr><th>Scope</th><th>Source</th><th>Target</th></tr>";
