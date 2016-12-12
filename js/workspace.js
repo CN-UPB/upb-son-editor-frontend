@@ -5,16 +5,7 @@ var queryString = {};
 $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
-	$.ajax({
-		url : serverURL + "workspaces/" + wsId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-		document.getElementById("nav_workspace").text = "Workspace: " + data.name;
-		}
-	});
+	setWorkspaceInNav(wsId);
 	var availableProjects = ["Create new project"];
 	var ptDictionary = {};
 	$.ajax({

@@ -28,7 +28,7 @@ function goToWorkspaceView(wsId){
 	}
 	window.location.href="workspaceView.html?wsId="+wsId;
 }
-
+ 
 function goToProjectView(wsId, ptId){
 	var queryString = getQueryString();
 	if (wsId == null){
@@ -39,7 +39,33 @@ function goToProjectView(wsId, ptId){
 	}
 	window.location.href="projectView.html?wsId="+wsId+"&ptId="+ptId;
 }
+function setWorkspaceInNav(wsId)
+{	
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+		document.getElementById("nav_workspace").text = "Workspace: " + data.name;
+		}
+	});
+}
 
+function setProjectInNav(wsId, ptId)
+{
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_project").text = "Project: " + data.name;
+		}
+	});
+}
 var requests = [];
 var LOGIN_DIALOG_STRING = "<div title='Login'><h3>{0}</h3></div>";
 var ERROR_DIALOG_STRING = "<div id='errorDialog' title='Error'></div>";

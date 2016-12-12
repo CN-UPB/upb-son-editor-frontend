@@ -55,31 +55,9 @@ $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
 	ptId = queryString["ptId"];
-	nsId = queryString["nsId"];
-
-	$.ajax({
-		url : serverURL + "workspaces/" + wsId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
-		}
-	});
-	$.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		success : function (data) {
-			document.getElementById("nav_project").text = "Project: " + data.name;
-		}
-	});
-
+	setWorkspaceInNav(wsId);
+	setProjectInNav(wsId,ptId);
 	ko.applyBindings(viewModel);
-
 	loadServices();
 	loadVnfs();
 	// search bar(uses jquery ui Autocomplete)

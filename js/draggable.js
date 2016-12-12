@@ -85,7 +85,8 @@ var Node = function(node_data) {
     		//do not trigger delete from dragging
     		return;
 		}
-        var node = "#" + self.id();
+		var dataId=self.id().replace(":","\\:");
+        var node = "#" + dataId;
         $("#deleteDialog").dialog({
         	modal: true,
         	buttons:{
@@ -129,7 +130,8 @@ var ViewModel = function() {
     }
     ;
     self.rename = function() {
-        var node = $("#" + this.id());
+    	var dataId=this.id().replace(":", "\\:");
+        var node = $("#" + dataId);
         var oldID = this.old_id();
         var newID = this.id();
         if (oldID != newID) {
@@ -201,13 +203,16 @@ function calcLabelPos(anchor) {
 }
 function drawVnfOrNs(id, descriptor) {
     var connectionPoints = descriptor['connection_points'];
+
     if (connectionPoints) {
         var anchors = calcAnchors(connectionPoints.length);
         var i;
         for (i = 0; i < connectionPoints.length; i++) {
             var connectionPoint = connectionPoints[i];
+            var labels=connectionPoint.id.split(":");
+            var cpLabel=id+":"+labels[1];
             var e = instance.addEndpoint(id, {
-                uuid: id + ":" + connectionPoint.id,
+                uuid: cpLabel,
                 anchor: anchors[i],
                 connectorOverlays: [["Arrow", {
                     width: 10,
@@ -217,7 +222,7 @@ function drawVnfOrNs(id, descriptor) {
                 }]],
                 overlays: [["Label", {
                     cssClass: "endpointLabel",
-                    label: connectionPoint.id,
+                    label: cpLabel,
                     id: "lbl",
                     location: calcLabelPos(anchors[i])
                 }]]
@@ -421,7 +426,8 @@ function renameNodeOnServer(oldId, newID, className) {
 // add a node of a network service to editor using ko
 function addNode(type, data, x, y) {
     viewModel.addToEditor(data);
-    var elem = $("#" + data.id);
+    var dataId=data.id.replace(":", "\\:");
+    var elem = $("#" + dataId);
     elem.removeClass(type);
     elem.addClass(type + "-after-drop");
     elem.css({
@@ -440,7 +446,10 @@ function addNode(type, data, x, y) {
     	drag: activateDragging,
         stop: savePositionForNode,
     });
-    var node = "#" + data.id;
+    
+    
+  	var dataId=data.id.replace(":", "\\:");
+  	var node = "#" + dataId;
     $(node).bind("mouseover", function() {
         $(node).children("a").css("display", "inline");
     });
@@ -535,30 +544,8 @@ function loadAllNSs() {
         }
     });
 }
-// ajax calls for navigation bar to fetch workspace name, project name, and
-// network service name
-function setNaviBar() {
-    $.ajax({
-        url: serverURL + "workspaces/" + wsId,
-        dataType: "json",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function(data) {
-            document.getElementById("nav_workspace").text = "Workspace: " + data.name;
-        }
-    });
-    $.ajax({
-        url: serverURL + "workspaces/" + wsId + "/projects/" + ptId,
-        dataType: "json",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function(data) {
-            document.getElementById("nav_project").text = "Project: " + data.name;
-        }
-    });
-}
+
+
 // load platforms for deploy dialog
 function loadPlatforms() {
     $.ajax({
@@ -587,20 +574,10 @@ function rewriteData(type, data) {
     }
     if (type == 'cp') {
         var cp = data;
-        // var txts = data.id.split("_");
-        // if (txts == data.id) {
-        // cp['name'] = data.name;
-        // } else {
-        // cp['name'] = txts[1] + txts[2];
-        // }
-        cp['id'] = cp['id'].replace(":", "_");
         return cp;
     }
     if (type == 'e-lan') {
         var elan = data;
-        // var txts = data.id.split("_");
-        // elan['name'] = txts[1] + txts[2];
-        elan['id'] = elan['id'].replace(":", "_");
         return elan;
     }
 }
@@ -1025,7 +1002,8 @@ $(document).ready(function() {
     wsId = queryString["wsId"];
     ptId = queryString["ptId"];
     nsId = queryString["nsId"];
-    setNaviBar();
+    setWorkspaceInNav(wsId);
+	setProjectInNav(wsId, ptId);
     loadPlatforms();
     setSize();
     $(window).resize(function() {

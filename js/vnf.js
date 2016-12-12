@@ -139,31 +139,8 @@ $(document)
 					queryString = getQueryString();
 					var wsId = queryString["wsId"];
 					var ptId = queryString["ptId"];
-					$
-							.ajax({
-								url : serverURL + "workspaces/" + wsId,
-								dataType : "json",
-								xhrFields : {
-									withCredentials : true
-								},
-								success : function(data) {
-									document.getElementById("nav_workspace").text = "Workspace: "
-											+ data.name;
-								}
-							});
-					$
-							.ajax({
-								url : serverURL + "workspaces/" + wsId
-										+ "/projects/" + ptId,
-								dataType : "json",
-								xhrFields : {
-									withCredentials : true
-								},
-								success : function(data) {
-									document.getElementById("nav_project").text = "Project: "
-											+ data.name;
-								}
-							});
+					setWorkspaceInNav(wsId);
+					setProjectInNav(wsId, ptId);
 					JSONEditor.defaults.theme = 'bootstrap3';
 					JSONEditor.defaults.iconlib = 'jQueryUI';
 					JSONEditor.defaults.editors.object.options.remove_empty_properties = true;
