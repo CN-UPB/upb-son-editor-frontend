@@ -106,6 +106,7 @@ function loadConfiguration(ptId) {
 $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
+	ptId=queryString["ptId"];
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId,
 		dataType : "json",
@@ -114,6 +115,16 @@ $(document).ready(function () {
 		},
 		success : function (data) {
 			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
+		}
+	});
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId ,
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			document.getElementById("nav_project").text = "Project: " +data.name;
 			catalogues=data.catalogues;
 			var selectBox=document.getElementById("select_box");
 			for(i=0;i<catalogues.length;i++)
