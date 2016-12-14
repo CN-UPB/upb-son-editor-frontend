@@ -201,7 +201,7 @@ function calcLabelPos(anchor) {
     }
     return [labelX, labelY];
 }
-function drawVnfOrNs(id, descriptor) {
+function drawVnfOrNs(type,id, descriptor) {
     var connectionPoints = descriptor['connection_points'];
 
     if (connectionPoints) {
@@ -235,6 +235,7 @@ function drawVnfOrNs(id, descriptor) {
             });
         }
     }
+    addNodeToAdjacencyMatrix(type,id);
 }
 function updateService() {
     cur_ns.meta.counter = countDropped;
@@ -442,7 +443,7 @@ function addNode(type, data, x, y) {
     } else if (type == "e-lan") {
         drawElan(data);
     } else {
-        drawVnfOrNs(data.id, data.descriptor);
+        drawVnfOrNs(type,data.id, data.descriptor);
     }
     instance.draggable(data.id, {
     	drag: activateDragging,
@@ -662,6 +663,17 @@ function drawVirtualLink(virtual_link) {
     instance.connect({
         uuids: virtual_link["connection_points_reference"]
     });
+    var source=virtual_link["connection_points_reference"][0];
+    if(!source.startsWith("ns:"))
+    {
+    	source=source.split(":")[0];
+    }
+    var target=virtual_link["connection_points_reference"][1];
+    if(!target.startsWith("ns:"))
+    {
+    	target=target.split(":")[0];
+    }
+    addEdgeToAdjacencyMatrix(source, target);
 }
 // function to set the editor height dynamically fitting to the browser window
 function setSize() {
@@ -722,7 +734,7 @@ function updateDescriptor(type, list, elemId) {
         addNode(type, vnf_data, $x, $y);
     }
     updateService();
-    drawVnfOrNs(elemId, lastDraggedDescriptor["descriptor"]);
+    drawVnfOrNs(type,elemId, lastDraggedDescriptor["descriptor"]);
 }
 function drawConnectionPoint(elemID) {
     instance.addEndpoint(elemID, {
@@ -735,6 +747,7 @@ function drawConnectionPoint(elemID) {
             id: "arrow"
         }]]
     }, endPointOptions);
+    addNodeToAdjacencyMatrix("cp",elemID);
 }
 function createNewConnectionPoint(elemID, updateOnServer) {
     text = elemID;
@@ -794,62 +807,7 @@ function createNewElan(elemID, updateOnServer) {
     addNode("e-lan", elan, $x, $y);
 	updateService();
 }
-function updateForwardGraph(source, target)
-{
-	if(cur_ns.descriptor.forwarding_graphs)
-	{///TODO
-		for(var i=0;i<cur_ns.descriptor.forwarding_graphs.length;i++)
-		{
-			var forwarding_graph=cur_ns.descriptor.forwarding_graphs[i];
-			for(var j=0;j<forwarding_graph.network_forwarding_paths.length;j++)
-			{
-				var path=forwarding_graph.network_forwarding_paths[j];
-				var connection_points=path.connection_points;
-			}
-		}
-	}
-	else
-	{
-		var forwarding_graphs=[];
-		var forwarding_graph={};
-		forwarding_graph["fg_id"]="ns:fg01";
-		forwarding_graph["number_of_endpoints"]=2;
-		forwarding_graph["number_of_virtual_links"]=1;
-		var constituent_vnfs=[];
-		var sourceName;
-		if(!source.startsWith("ns"))
-		{
-			sourceName=source.split(":")[0];
-			constituent_vnfs.push(sourceName);
-		}
-		if(!target.startsWith("ns"))
-		{
-			var targetName=source.split(":")[0];
-			if(targetName!=sourceName)
-			{
-				constituent_vnfs.push(targetName);
-			}
-		}
-		forwarding_graph["constituent_vnfs"]=constituent_vnfs;
-		var paths=[];
-		var path={};
-		path["fp_id"]=forwarding_graph["fg_id"]+":fp01";
-		var connection_points=[];
-		var connection_point1={};
-		var connection_point2={};
-		connection_point1["connection_point_ref"]=source;
-		connection_point1["position"]=1;
-		connection_point2["connection_point_ref"]=target;
-		connection_point2["position"]=2;
-		connection_points.push(connection_point1);
-		connection_points.push(connection_point2);
-		path["connection_points"]=connection_points;
-		paths.push(path);
-		forwarding_graph["network_forwarding_paths"]=paths;
-		forwarding_graphs.push(forwarding_graph);
-		cur_ns.descriptor.forwarding_graphs=forwarding_graphs;
-	}
-}
+
 function updateVirtualLinks(conn, remove) {
     if (!remove) {
         connections.push(conn);
@@ -880,6 +838,17 @@ function updateVirtualLinks(conn, remove) {
             }
             cur_ns.descriptor["virtual_links"].push(virtual_link);
 		}
+	    var source=cp_source.getUuid();
+	    if(!source.startsWith("ns:"))
+	    {
+	    	source=source.split(":")[0];
+	    }
+	    var target=cp_target.getUuid();
+	    if(!target.startsWith("ns:"))
+	    {
+	    	target=target.split(":")[0];
+	    }
+	    addEdgeToAdjacencyMatrix(source, target);
 		updateForwardGraph(cp_source.getUuid(), cp_target.getUuid());
         updateService();
     } else {
@@ -1048,6 +1017,8 @@ function loadCurrentNS() {
                 if (data.descriptor.connection_points)
                     data.meta.counter += data.descriptor.connection_points.length;
             }
+            if(!data.meta.adjacency_matrix)
+            	data.meta.adjacency_matrix={};
             countDropped = data.meta.counter;
             cur_ns = data;
             displayNS();
