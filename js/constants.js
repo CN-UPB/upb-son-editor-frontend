@@ -1,1 +1,1 @@
-var serverURL = "http://fg-cn-sandman1.cs.upb.de:5000/";
+var serverURL = "https://fg-cn-sandman1.cs.upb.de:5555/";
