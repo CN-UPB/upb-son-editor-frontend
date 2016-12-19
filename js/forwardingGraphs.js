@@ -187,8 +187,8 @@ function computeForwardingPaths() {
 	writeGraphToDescriptor(paths);
 	cur_ns.descriptor["forwarding_graphs"] = forwardingGraphs;
 	updateService();
-	//console.log("forwarding graphs computed");
-	//console.log(paths);
+	console.log("forwarding graphs computed");
+	console.log(paths);
 	//console.log(forwardingGraphs);
 	return paths;
 }
