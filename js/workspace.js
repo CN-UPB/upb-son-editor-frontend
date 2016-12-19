@@ -1,6 +1,29 @@
 var projects = [];
 var wsId = "";
 var queryString = {};
+var tableViewModel;
+
+var Project = function(data) {
+	this.name = ko.observable(data.name);
+    this.id = ko.observable(data.id);
+	var self = this;
+	this.delete_ws = function() {
+		deleteWs(self.id());
+    };
+
+    this.edit = function() {
+        goToProjectView(wsId, self.id());
+    };
+};
+
+var TableViewModel = function (){
+	this.projects = ko.observableArray([]);
+	var self = this;
+	this.addProject = function(data){
+		self.projects.push(new Project(data));
+	}
+};
+
 
 $(document).ready(function () {
 	queryString = getQueryString();
@@ -8,6 +31,8 @@ $(document).ready(function () {
 	setWorkspaceInNav(wsId);
 	var availableProjects = ["Create new project"];
 	var ptDictionary = {};
+	tableViewModel = new TableViewModel();
+	ko.applyBindings(tableViewModel);
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/",
 		dataType : "json",
@@ -18,40 +43,10 @@ $(document).ready(function () {
 			//display available projects and their onclick event.
 			projects = data;
 			for (var i = 0; i < projects.length; i++) {
-				var ptName = projects[i].name;
-				var ptId = projects[i].id;
 				var project = projects[i];
 				availableProjects.push(project.name);
 				ptDictionary[project.name] = project.id;
-				var tdName = document.createElement("td");
-				tdName.innerHTML = ptName;
-				var tdOptions = document.createElement("td");
-				var optionTable = document.createElement("table");
-				var trOptionTable = document.createElement("tr");
-				var tdEdit = document.createElement("td");
-				tdEdit.className = "btn btn-primary btn-sm";
-				tdEdit.style.marginLeft = "10px";
-				tdEdit.style.marginRight = "15px";
-				tdEdit.innerHTML = "Edit";
-				var tdDelete = document.createElement("td");
-				tdDelete.className = "btn btn-danger btn-sm";
-				tdDelete.innerHTML = "Delete";
-				trOptionTable.appendChild(tdEdit);
-				trOptionTable.appendChild(tdDelete);
-				optionTable.appendChild(trOptionTable);
-				tdOptions.appendChild(optionTable);
-				var trWs = document.createElement("tr");
-				trWs.appendChild(tdName);
-				trWs.appendChild(tdOptions);
-				document.getElementById("display_ptTable").appendChild(trWs);
-				(function(ptName,ptId){
-					tdEdit.addEventListener('click', function () {
-						goToProjectView(wsId, ptId);
-					}, false);
-					tdDelete.addEventListener('click', function () {
-						deletePt(ptId);
-					}, false);
-				})(ptName, ptId)
+				tableViewModel.addProject(project);
 			}
 
 			//search bar(uses jquery ui Autocomplete)
@@ -79,10 +74,11 @@ function showCreateDialog() {
 			Cancel : function () {
 				$(this).dialog("close");
 			},
-			"Create" : function () {
+			Create : function () {
+				$('form').parsley().validate();
 				if($('form').parsley().isValid())
 				{
-					createNewProject(wsId, $('#ptNameInput').val());
+					createNewProject(wsId, $('#ptNameInput').val(), $('#ptUrlInput').val());
 					$(this).dialog("close");
 				}
 			}
@@ -91,7 +87,7 @@ function showCreateDialog() {
 }
 
 //send the name of the new workspace to server
-function createNewProject(wsId, ptName) {
+function createNewProject(wsId, ptName, repoURL) {
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/",
 		method : 'POST',
@@ -101,7 +97,8 @@ function createNewProject(wsId, ptName) {
 			withCredentials : true
 		},
 		data : JSON.stringify({
-			"name" : ptName
+			"name" : ptName,
+			"repo" : repoURL
 		}),
 		success : function (data) {
 			goToProjectView(wsId, data.id);

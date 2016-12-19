@@ -122,3 +122,8 @@ a.navbar-brand {
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+
+/* hiding close button in jqueryui dialog*/
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}

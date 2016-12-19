@@ -16,52 +16,49 @@ function getQueryString() {
 	return queryString;
 };
 
-function goToHomeView()
-{
-	window.location.href="index.html";
+function goToHomeView() {
+	window.location.href = "index.html";
 }
 
-function goToWorkspaceView(wsId){
+function goToWorkspaceView(wsId) {
 	var queryString = getQueryString();
-	if (wsId == null){
+	if (wsId == null) {
 		wsId = queryString["wsId"];
 	}
-	window.location.href="workspaceView.html?wsId="+wsId;
+	window.location.href = "workspaceView.html?wsId=" + wsId;
 }
- 
-function goToProjectView(wsId, ptId){
+
+function goToProjectView(wsId, ptId) {
 	var queryString = getQueryString();
-	if (wsId == null){
+	if (wsId == null) {
 		wsId = queryString["wsId"];
 	}
-	if (ptId == null){
+	if (ptId == null) {
 		ptId = queryString["ptId"];
 	}
-	window.location.href="projectView.html?wsId="+wsId+"&ptId="+ptId;
+	window.location.href = "projectView.html?wsId=" + wsId + "&ptId=" + ptId;
 }
-function setWorkspaceInNav(wsId)
-{	
+function setWorkspaceInNav(wsId) {
 	$.ajax({
-		url : serverURL + "workspaces/" + wsId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
+		url: serverURL + "workspaces/" + wsId,
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
 		},
-		success : function (data) {
-		document.getElementById("nav_workspace").text = "Workspace: " + data.name;
+		success: function (data) {
+			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
 		}
 	});
 }
 
-function setProjectInNav(wsId, ptId)
-{
+function setProjectInNav(wsId, ptId) {
 	$.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
+		url: serverURL + "workspaces/" + wsId + "/projects/" + ptId,
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
 		},
-		success : function (data) {
+		success: function (data) {
 			document.getElementById("nav_project").text = "Project: " + data.name;
 		}
 	});
@@ -69,55 +66,56 @@ function setProjectInNav(wsId, ptId)
 var requests = [];
 var LOGIN_DIALOG_STRING = "<div title='Login'><h3>{0}</h3></div>";
 var ERROR_DIALOG_STRING = "<div id='errorDialog' title='Error'></div>";
+var WAIT_DIALOG_STRING = "<div id='wait'><div id='waitText'></div><div id='progressbar'></div></div>";
 
 //global error handler for ajax requests
 $(document).ajaxError(function (event, response, request, thrownError) {
+	//in case of any error close the wait animation
+	closeWaitAnimation();
 	if (response.status == 401) //not authorized
 	{
 		var json = response.responseJSON;
 		var authUrl = json.authorizationUrl;
 		var message = json.message;
-		
-		requests.push (request);
-		if (requests.length > 1){
+
+		requests.push(request);
+		if (requests.length > 1) {
 			//do not open more than one dialog at a time
 			return;
 		}
 
 		//open dialog with login button
 		var loginDialog = $(LOGIN_DIALOG_STRING.format(message)).dialog(
-							{
-								modal: true,
-								buttons:[
-									{
-										text: "Login with Github",
-										click: function () {
-											//open github login in new window
-											window.open(authUrl);
-										}
-									}
-								]
-							});
-		
+			{
+				modal: true,
+				buttons: [
+					{
+						text: "Login with Github",
+						click: function () {
+							//open github login in new window
+							window.open(authUrl);
+						}
+					}
+				]
+			});
+
 
 		//callback from new window
 		window.onmessage = function (e) {
 			//close dialog
 			loginDialog.dialog("close");
 			//repeat the original requests
-			while(requests.length > 0) 
-			{
+			while (requests.length > 0) {
 				$.ajax(requests.pop());
 			}
 		};
 	} else {
-		if (!$("#errorDialog").length){
+		if (!$("#errorDialog").length) {
 			$(ERROR_DIALOG_STRING).dialog();
 		} else {
-            $("#errorDialog").dialog();
-        }
-        if (response.status > 0)
-		{
+			$("#errorDialog").dialog();
+		}
+		if (response.status > 0) {
 			var json = JSON.parse(response.responseText);
 			$("#errorDialog").html(json.message);
 		} else {
@@ -127,27 +125,38 @@ $(document).ajaxError(function (event, response, request, thrownError) {
 	}
 });
 
-function showWaitAnimation(text){
-	$( "#wait" ).dialog({
-		modal: true,
-  		dialogClass: "no-close"
-	});
-	$("#wait").text(text);
+function showWaitAnimation(text, title) {
+	var titleText = title || "Loading";
+	if (!$("#wait").length) {
+		$(WAIT_DIALOG_STRING).dialog({
+			modal: true,
+			dialogClass: "no-close"
+		});
+	} else {
+		$("#wait").dialog({
+			modal: true,
+			dialogClass: "no-close"
+		});
+	}
+	$('#progressbar').progressbar({value: false});
+	$('#waitText').text(text);
+	$('#wait').dialog('option', 'title', title);
+
 }
 
-function closeWaitAnimation(){
-	$( "#wait" ).dialog("close");
+function closeWaitAnimation() {
+	$("#wait").dialog("close");
 }
 
-function loadUserInfo(){
+function loadUserInfo() {
 
 	$.ajax({
-		url : serverURL + "user",
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
+		url: serverURL + "user",
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
 		},
-		success : function (data) {
+		success: function (data) {
 			//console.log(data);
 			//console.log(data.login);
 			//$('#username').css('float','right');
@@ -157,15 +166,15 @@ function loadUserInfo(){
 	});
 }
 
-function logOutFromEditor(){
+function logOutFromEditor() {
 	window.location.reload(true);
 	$.ajax({
-		url : serverURL + "logout",
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
+		url: serverURL + "logout",
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
 		},
-		success : function(){
+		success: function () {
 			window.location.reload(true);
 		}
 	});
@@ -173,13 +182,13 @@ function logOutFromEditor(){
 
 //register a string formatting method
 if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
+	String.prototype.format = function () {
+		var args = arguments;
+		return this.replace(/{(\d+)}/g, function (match, number) {
+			return typeof args[number] != 'undefined'
+				? args[number]
+				: match
+				;
+		});
+	};
 }

@@ -6,13 +6,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"/>
-		
+
 		<link rel="stylesheet" href="css/commonStyle.css"></link>
-		
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-		
+
 		<script src="js/lib/parsley.js"></script>
 		<script src="js/constants.js"></script>
 		<script src="js/workspace.js"></script>
@@ -58,7 +59,7 @@
 				<div class="col-md-4">
 					<button class="btn btn-primary" onclick="showCreateDialog();">New Project</button>
 					<button id="configuration_btn" type="button" class="btn btn-primary" onclick="goToConfigurationView();">Configure</button>
-				</div>	
+				</div>
 			</div>
 			<div class="row top-buffer" style="margin-top:50px;">
 				<div class="col-md-6">
@@ -69,7 +70,14 @@
 								<th>Options</th>
 							</tr>
 						</thead>
-						<tbody id="display_ptTable">
+						<tbody id="display_ptTable" data-bind="foreach: projects">
+							<tr>
+                    			<td data-bind="text: name"></td>
+								<td>
+									<button class="btn btn-primary btn-sm" style="margin-left: 10px; margin-right: 15px;" data-bind="click: edit">Edit</button>
+									<button class="btn btn-danger btn-sm" data-bind="click: delete_ws">Delete</button>
+								</td>
+                			</tr>
 						</tbody>
 					</table>
 				</div>
@@ -78,9 +86,16 @@
 		<div id="createProjectDialog" title="Create new project" hidden>
 			<form data-parsley-validate>
 				<h4>Please input the name of the new project:</h4>
-				<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed."
-				id ='ptNameInput' placeholder="Enter name of project"
-				/>
+				<label for="ptNameInput">
+                    Project Name
+                    <input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[a-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed."
+                        id ='ptNameInput' placeholder="Enter name of project"/>
+				</label>
+                <label for="ptUrlInput">
+                    Github URL
+				    <input  data-parsley-required="false" data-parsley-trigger="change" type="url" data-parsley-pattern-message="Only valid urls are allowed"
+				        id ='ptUrlInput' placeholder="repository URL (optional)"/>
+                </label>
 			</form>
 		</div>
 		<div id="ConfirmDeletionDialog" title="Confirm deletion" hidden>

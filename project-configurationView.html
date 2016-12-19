@@ -58,7 +58,7 @@
 			</div>
 		</nav>
 		<div class="container">
-			<form data-parsley-validate class="form-horizontal" role="form">
+			<form data-parsley-validate id="projectForm" class="form-horizontal" role="form">
 				<div class="form-group" align="left">
 					<div class="col-md-2">
 						<label class="control-label">Project name:</label>
@@ -95,12 +95,29 @@
 						<input data-bind="value: description" type="text" class="form-control" placeholder=""></input>
 					</div>
 				</div>
+				<div class="form-group" align="left">
+					<div class="col-md-2">
+						<label class="control-label">Repository URL:</label>
+					</div>
+					<div class="col-md-8">
+						<input data-bind="value: repo_url" type="text" class="form-control" placeholder="" disabled></input>
+					</div>
+					<div class="col-md-1" data-bind="visible: !isShared()">
+						<button class="btn btn-primary" onclick="shareProject();" type="button" >Share</button>
+					</div>
+					<div class="col-md-1" data-bind="visible: isShared">
+						<button class="btn btn-primary" onclick="commitProject();" type="button" >Commit</button>
+					</div>
+					<div class="col-md-1" data-bind="visible: isShared">
+						<button class="btn btn-primary" onclick="pullProject();"  type="button" >Pull</button>
+					</div>
+				</div>
 				<div class="form-group">
 					<div class="col-md-2">
 						<label class="control-label">Publish to:</label>
 					</div>
 					<div class="col-md-10">
-						 <select id="select_box"data-placeholder="select catalogues" style="width:350px;" multiple class="chosen-select" tabindex="8">
+						 <select id="select_box" data-placeholder="select catalogues" style="width:350px;" multiple class="chosen-select">
 						  </select>
 					</div>
 				</div>
@@ -113,10 +130,30 @@
 		<div id="successSaveConfiDialog" title="Success" hidden>
 			<h4>Project configuration is updated!</h4>
 		</div>
+		<div id="gitSuccess" title="Success" hidden>
+			<h4>Project configuration is updated!</h4>
+		</div>
 		<div id="errorDialog" title="Error" hidden>
 		</div>
 		<div id="FailedValidationDialog" title="Failed" hidden>
 			<h4>Please refill the invalid fileds!</h4>
+		</div>
+
+		<div id="shareDialog" title="Share Project on Github" hidden>
+			This Function is not yet implemented and this is just a placeholder.<br/>
+			<form id="shareForm">
+				<label for="repoURLInput">Repository URL</label>
+				<input  data-parsley-required="true" data-parsley-trigger="change" type="url"
+						id ='repoURLInput' placeholder="repository URL"/>
+			</form>
+		</div>
+
+		<div id="commitDialog" title="Set commit message" hidden>
+			<form id="commitForm">
+				<label for="commitInput">Commit message</label>
+				<input  data-parsley-required="true" data-parsley-trigger="change"
+						id ='commitInput' placeholder="Commit message"/>
+			</form>
 		</div>
 	</body>
 </html>

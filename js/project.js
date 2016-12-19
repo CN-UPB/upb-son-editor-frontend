@@ -36,7 +36,7 @@ var Descriptor = function(data) {
             editService(self.id());
         }
     };
-}
+};
 
 function ViewModel() {
 	this.descriptors = ko.observableArray([]);
@@ -128,7 +128,6 @@ function loadServices() {
 // load infos of all VNFs from the server
 function loadVnfs() {
 	availableItems.push("Create new VNF");
-	vnf = [];
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
 		dataType : "json",
@@ -215,8 +214,7 @@ function deleteService(serviceId) {
 				$(this).dialog("close");
 			}
 
-		},
-
+		}
 	});
 }
 
