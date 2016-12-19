@@ -793,8 +793,8 @@ function drawElan(data) {
 	},
 	anchor : [ "Perimeter", {
 	    shape : "Circle"
-	} ],
-	connectorOverlays : [ [ "Arrow", {
+	} ]
+	,connectorOverlays : [ [ "Arrow", {
 	    width : 10,
 	    length : 20,
 	    location : 0.45,
@@ -892,7 +892,11 @@ function hideConnectionInfo() {
     listDiv.style.display = "none";
 }
 function animateConnections(conn) {
-    var arrow = conn.getOverlay("arrow");
+	var arrow = conn.getOverlay("arrow");
+	var src=conn.source.className;
+	var tgt=conn.target.className;
+	if(!src.startsWith("e-lan")&&!tgt.startsWith("e-lan"))
+	{
     interval = window.setInterval(function() {
 	arrow.loc += 0.05;
 	if (arrow.loc > 1) {
@@ -906,6 +910,11 @@ function animateConnections(conn) {
 	    window.clearInterval(interval);
 	}
     }, 100);
+	}
+	else
+	{
+		arrow.hide();
+	}
 }
 function savePositionForNode(event) {
     var position = event.pos;
@@ -979,7 +988,7 @@ function configureJsPlumb() {
     // bind to connection/connectionDetached events, and update the list of
     // connections on screen.
     instance.bind("connection", function(info, originalEvent) {
-	new animateConnections(info.connection);
+    	new animateConnections(info.connection);
 	if (originalEvent) {
 	    updateVirtualLinks(info.connection, false);
 	}
