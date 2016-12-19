@@ -372,6 +372,11 @@ function goToConfigurationView() {
 	window.location.href = "project-configurationView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
 }
 
+// open emulator view
+function goToEmulatorView() {
+	window.location.href = "emuView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
+}
+
 // create new networkservice dialog (uses jquery ui Dialog)
 function showCreateNSDialog(clone, cloneId) {
 	$("#createNetworkserviceDialog").dialog({

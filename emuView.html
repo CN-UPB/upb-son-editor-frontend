@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>SONATA SDK Editor - Project</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"/>
+  <link rel="stylesheet" media="screen" href="css/commonStyle.css" />
+	
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+  
+  <script src="js/constants.js"></script>
+  <!--<script src="js/project.js"></script>-->
+  <script src="js/utils.js"></script>
+  <script src="js/emu.js"></script>
+  <!--<script src="js/userInfo.js"></script>-->
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" onclick="goToHomeView();">SONATA SDK Editor</a>
+    </div>
+    <ul class="nav navbar-nav">
+	   <li><a onclick="goToHomeView();">Home</a></li>
+       <!--<li><a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a></li>
+       <li class="active"><a id="nav_project" onclick="history.go(0);">Project</a></li>-->
+    </ul>
+	<ul class="userinfo nav navbar-nav">
+		<li>
+			<div id="userNameImg">
+				<img class="avatar" width="20" height="20">
+				<a id="target-username"></a>
+			</div>
+		</li>
+			<li>
+				<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
+			</li>
+	</ul>
+  </div>
+</nav>
+  
+<div class="container">
+<div class="row top-buffer" style="margin-top:50px;">
+	<div class="col-md-8">
+		<table class="table table-bordered">
+			<thead>
+			  <tr>
+				<th width=10%>Name</th>
+				<th width=30%>Description</th>
+				<!--<th width=20%>network_functions</th>
+				<th width=10%>Type</th>
+				<th width=50%>Options</th>-->
+			  </tr>
+			</thead>
+			<tbody id="display_NS_VNFS" data-bind="foreach: descriptors">
+                <tr>
+                    <td data-bind="text: name"></td>
+                    <td data-bind="text: description"></td>
+                    <!--<td data-bind="text: network_functions"></td>
+                    <td data-bind="text: type"></td>-->
+                </tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+</div>
+
+</body>
+</html>
+
