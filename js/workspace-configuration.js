@@ -1,5 +1,6 @@
 var queryString = {};
 var workspaceModel;
+var schemasModel;
 
 var Platform = function () {
 	this.name = ko.observable("");
@@ -36,7 +37,7 @@ var WorkspaceModel = function () {
 	this.deletePlatform = function (platform) {
 		this.platforms.remove(platform);
 	}
-	.bind(this);
+		.bind(this);
 	this.addCatalogue = function () {
 		this.catalogues.push(new Catalogue());
 		$("form").parsley().validate();
@@ -44,21 +45,27 @@ var WorkspaceModel = function () {
 	this.deleteCatalogue = function (catalogue) {
 		this.catalogues.remove(catalogue);
 	}
-	.bind(this);
+		.bind(this);
 	this.init = function (data) {
 		this.name(data.name);
 		if (data.platforms.length != 0)
 			this.platforms($.map(data.platforms, function (item) {
-					return new Platform().init(item)
-				}));
+				return new Platform().init(item)
+			}));
 		if (data.catalogues.length != 0)
 			this.catalogues($.map(data.catalogues, function (item) {
-					return new Catalogue().init(item)
-				}));
+				return new Catalogue().init(item)
+			}));
 		$("form").parsley().validate();
 		return this;
 	}
-}
+};
+
+var SchemasModel = function () {
+	this.vnf_schemas = ko.observableArray();
+	this.ns_schemas = ko.observableArray();
+};
+
 
 //save the configuration from workspace and it will be called by clicking "save" button
 function saveConfiguration() {
@@ -67,33 +74,36 @@ function saveConfiguration() {
 		var configurationJson = ko.toJSON(workspaceModel);
 		console.log("New configuration:");
 		console.log(configurationJson);
+		configurationJson = JSON.load(configurationJson);
+		configurationJson.vnf_schema_index = $('#selectVNFSchema').val();
+		configurationJson.ns_schema_index = $('#selectNSchema').val();
 		$.ajax({
-			url : serverURL + "workspaces/" + queryString["wsId"],
-			method : 'PUT',
-			contentType : "application/json; charset=utf-8",
-			dataType : 'json',
-			xhrFields : {
-				withCredentials : true
+			url: serverURL + "workspaces/" + queryString["wsId"],
+			method: 'PUT',
+			contentType: "application/json; charset=utf-8",
+			dataType: 'json',
+			xhrFields: {
+				withCredentials: true
 			},
-			data : configurationJson,
-			success : function (data) {
+			data: configurationJson,
+			success: function (data) {
 				$("#successSaveConfiDialog").dialog({
-					modal : true,
-					draggable : false,
-					buttons : {
-						ok : function () {
+					modal: true,
+					draggable: false,
+					buttons: {
+						ok: function () {
 							$(this).dialog("close");
 							window.location.reload();
 						}
 					}
 				});
 			},
-			error : function (err) {
+			error: function (err) {
 				$('#errorDialog').text(err.responseText);
 				$('#errorDialog').dialog({
-					modal : true,
-					buttons : {
-						Ok : function () {
+					modal: true,
+					buttons: {
+						Ok: function () {
 							$(this).dialog("close");
 						}
 					}
@@ -102,10 +112,10 @@ function saveConfiguration() {
 		});
 	} else {
 		$("#FailedValidationDialog").dialog({
-			modal : true,
-			draggable : false,
-			buttons : {
-				ok : function () {
+			modal: true,
+			draggable: false,
+			buttons: {
+				ok: function () {
 					$(this).dialog("close");
 				}
 			}
@@ -116,36 +126,52 @@ function saveConfiguration() {
 //load the current configuration of the workspace 
 function loadConfiguration(wsId) {
 	$.ajax({
-		url : serverURL + "workspaces/" + wsId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
+		url: serverURL + "workspaces/" + wsId,
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
 		},
-		success : function (data) {
+		success: function (data) {
 			workspaceModel.init(data);
+			$.ajax({
+				url: serverURL + "workspaces/" + wsId + "/schema/",
+				dataType: "json",
+				xhrFields: {
+					withCredentials: true
+				},
+				success: function (schema_data) {
+					schemasModel.vnf_schemas(schema_data["vnf"]);
+					schemasModel.ns_schemas(schema_data['ns']);
+					$('#selectVNFSchema').val(data.vnf_schema_index);
+					$('#selectNSSchema').val(data.ns_schema_index);
+				}
+			});
 		}
 	});
 }
+
 
 $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
 	$.ajax({
-		url : serverURL + "workspaces/" + wsId,
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
+		url: serverURL + "workspaces/" + wsId,
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
 		},
-		success : function (data) {
+		success: function (data) {
 			document.getElementById("nav_workspace").text = "Workspace: " + data.name;
 		}
 	});
 	workspaceModel = new WorkspaceModel();
 	loadConfiguration(wsId);
-	ko.applyBindings(workspaceModel);
+	ko.applyBindings(workspaceModel, $('#workspaceMain')[0]);
+	schemasModel = new SchemasModel();
+	ko.applyBindings(schemasModel, $('#schemas')[0]);
 	$("#accordion").accordion({
-		active : false,
-		collapsible : false,
-		heightStyle : "content"
+		active: false,
+		collapsible: false,
+		heightStyle: "content"
 	});
 });
