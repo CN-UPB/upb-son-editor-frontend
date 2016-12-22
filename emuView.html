@@ -52,12 +52,13 @@
 		<table class="table table-bordered">
 			<thead>
 			  <tr>
-				<th width=10%>Name</th>
+				<th width=10%>Name of The Service</th>
 				<th width=30%>Description</th>
 				<!--<th width=20%>network_functions</th>
 				<th width=10%>Type</th>
 				<th width=50%>Options</th>-->
 				<th width=30%>VNF List</th>
+				<th width=10%>Number of Virtual Links</th>
 			  </tr>
 			</thead>
 			<tbody id="display_NS_VNFS" data-bind="foreach: descriptors">
@@ -67,6 +68,7 @@
                     <!--<td data-bind="text: network_functions"></td>
                     <td data-bind="text: type"></td>-->
                     <td data-bind="text: network_functions"></td>
+                    <td data-bind="text: forwarding_graphs"></td>
                 </tr>
 			</tbody>
 		</table>
