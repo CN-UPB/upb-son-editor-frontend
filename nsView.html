@@ -20,12 +20,15 @@
         <script src="js/lib/jsoneditor.min.js"></script>
         <script src="js/lib/js-yaml.min.js"></script>
 		<script src="js/lib/jsPlumb-2.1.7-min.js"></script>
+		<script src="js/lib/jquery.panzoom.js"></script>
+		<script src="js/lib/jquery.mousewheel.js"></script>
 		<script src="js/forwardingGraphs.js"></script>
 		<script src="js/togglePanel.js"></script>
 		<script src="js/draggable.js"></script>
 		<script src="js/constants.js"></script>
 		<script src="js/utils.js"></script>
 		<script src="js/ns-configuration.js"></script>
+		<script src="js/panzooming.js"></script>
 
 	</head>
 	<body>
@@ -53,7 +56,7 @@
 		</nav>
 
 		<div class="container-fluid" id="editorContainer">	
-			<div class="row">
+			<div class="row" id="menu-actions">
 				<div class="col-md-2 no-padding">
 					<div class="action-section">
 						<div class="row">
@@ -94,7 +97,7 @@
 							</div>
 
 							<div class="col-md-4">
-								<a href=""><i class="fa fa-hand-paper-o fa-2x"></i><br>Hand</br></a>
+								<a href=""><i class="reset fa fa-hand-paper-o fa-2x"></i><br>Reset Zoom</br></a>
 							</div>
 						</div>
 					</div>
@@ -121,11 +124,11 @@
 							</div>
 
 							<div class="col-md-4">
-								<a href=""><i class="fa fa-search-plus fa-2x"></i><br>Zoom-in</br></a>
+								<a href=""><i class="zoom-in fa fa-search-plus fa-2x"></i><br>Zoom In</br></a>
 							</div>
 
 							<div class="col-md-4">
-								<a href=""><i class="fa fa-search-minus fa-2x"></i><br>Zoom-out</br></a>
+								<a href=""><i class="zoom-out fa fa-search-minus fa-2x"></i><br>Zoom Out</br></a>
 							</div>
 						</div>
 					</div>
@@ -159,15 +162,16 @@
 						</ul>
 					</div>	
 				</div>
+				<div class="pan-parent panzoom" id="editor-parent">
+					<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
+						<div data-bind="attr: {'id': id}">
+							<input type="text" onkeypress="this.style.width = ((this.value.length + 2) * 8) + 'px';"  data-bind="textInput: id, event: {blur:  $parent.rename}"/>
+							<a id="delete" data-bind="click: deleteNode" class="node-button"><span class="glyphicon glyphicon-trash"></span></a>
+						</div>
+					</div>									
 
-				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes" id="editor">
-					<div data-bind="attr: {'id': id}">
-						<input type="text" onkeypress="this.style.width = ((this.value.length + 2) * 8) + 'px';"  data-bind="textInput: id, event: {blur:  $parent.rename}"/>
-						<a id="delete" data-bind="click: deleteNode" class="node-button"><span class="glyphicon glyphicon-trash"></span></a>
-					</div>
-				</div>									
-
-				<div id="connection-list" ></div>										
+					<div id="connection-list" ></div>
+				</div>										
 			</div>
 		</div>
 

@@ -75,9 +75,15 @@
 	border-width: 1px;
 }
 
-.editor-area{
-
+.panzoom{
+	/*border: 2px solid black;*/
 	border: 1px ridge;
+	background-color: white;
+}
+.editor-area{
+	margin: 10px;
+	border: 1px ridge;
+	/*background-color: #cdcdcd;*/
 }
 
 .scrollbar{
@@ -369,9 +375,9 @@ input, labelClass {
     cursor:pointer;
 	opacity: 0.5;
 }
-.editor-area {
+/*.editor-area {
 	margin-left: 355px;
-}
+}*/
 .node-button{
 	display:none;
 	top:20%;
