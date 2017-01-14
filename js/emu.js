@@ -45,11 +45,14 @@ $(document).ready(function () {
 	//setWorkspaceInNav(wsId);
 	//setProjectInNav(wsId,ptId);
 	ko.applyBindings(viewModel);
-	loadAllServices();
+	//loadAllServices();
 });
 // load infos of all network services from the server
-function loadAllServices() {
+//function loadAllServices() {
+var loadRepeat = setInterval(function(){
+	//var nsData = {};
 	//availableItems.push("Create new NS");
+	$("#service-table").find("tr:gt(0)").remove();
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
 		dataType : "json",
@@ -106,7 +109,7 @@ function loadAllServices() {
 			}
 		}
 	});
-}
+}, 5000);
 
 function goToEmulatorView() {
 	window.location.href = "emuView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
