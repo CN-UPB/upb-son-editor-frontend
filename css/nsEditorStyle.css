@@ -79,17 +79,19 @@
 	/*border: 2px solid black;*/
 	border: 1px ridge;
 	background-color: white;
+	/*z-index: -5;*/
 }
 .editor-area{
-	margin: 10px;
-	border: 1px ridge;
+	/*margin: 10px;*/
+	border: 1px ridge white;
+	/*z-index: -5;*/
 	/*background-color: #cdcdcd;*/
 }
 
 .scrollbar{
 	position: relative;
 	height: 495px;
-	overflow: scroll; /*for horizontal and vertical scroll bars */
+	overflow: auto; /*for horizontal and vertical scroll bars */
 }
 
 .menu{

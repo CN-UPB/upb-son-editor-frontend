@@ -713,13 +713,13 @@ function setSize() {
 	$('.left-navigation-bar').css('min-width', minWidth);
 	$('#editor-parent').css('min-height', windowHeight);
 	$('#editor-parent').css('marginLeft', $('.left-navigation-bar').width());
-	$('#editor').css('min-height', windowHeight);
-	//$('#editor').css('marginLeft', minWidth);
+	$('#editor').css('min-height', windowHeight * 2);
+	$('#editor').css('min-width', windowWidth * 2);
 	$('.vnf').css('width', $('.left-navigation-bar').width() - 10);
 	$('.ns').css('width', $('.left-navigation-bar').width() - 10);
 }
 // replace old_class from the source element with new class 'xxx-after-drop'
-function reconfigureNode(ui, data, old_class, editor) {
+function reconfigureNode(ui, data, old_class, editor, current_zoom) {
 	var newId = old_class + "_" + data.attr('id') + "_" + countDropped;
 	if (old_class == "cp") {
 		newId = "ns:" + data.attr('id') + "_" + countDropped;
@@ -729,8 +729,10 @@ function reconfigureNode(ui, data, old_class, editor) {
 	data.removeClass(old_class);
 	data.addClass(old_class + '-after-drop');
 	data.removeClass('ui-draggable');
-	var $newPosX = ui.offset.left - $(editor).offset().left;
-	var $newPosY = ui.offset.top - $(editor).offset().top;
+	//var $newPosX = ui.offset.left - $(editor).offset().left;
+	//var $newPosY = ui.offset.top - $(editor).offset().top;
+	var $newPosX = (ui.offset.left - $(editor).offset().left) / current_zoom;
+	var $newPosY = (ui.offset.top - $(editor).offset().top) / current_zoom;
 	data.css({
 		position : 'absolute',
 		left : $newPosX,
@@ -969,7 +971,8 @@ function configureJsPlumb() {
 					var data = ui.draggable.clone();
 					if (data.hasClass('vnf')) {
 						console.log("inside vnf condition");
-						reconfigureNode(ui, data, "vnf", this);
+						console.log("current zoom: " + current_zoom);
+						reconfigureNode(ui, data, "vnf", this, current_zoom);
 						updateDescriptor("vnf",
 								cur_ns.descriptor.network_functions, data
 										.attr('id'));
@@ -992,6 +995,9 @@ function configureJsPlumb() {
 						createNewElan(data.attr('id'), true);
 					}
 					instance.draggable(data.attr('id'), {
+						start : function(eStart){
+							$("#editor").panzoom("disable");
+						},
 						drag : activateDragging,
 						stop : savePositionForNode,
 						containment : "parent"

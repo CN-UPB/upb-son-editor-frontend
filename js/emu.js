@@ -52,7 +52,20 @@ $(document).ready(function () {
 var loadRepeat = setInterval(function(){
 	//var nsData = {};
 	//availableItems.push("Create new NS");
+	
 	$("#service-table").find("tr:gt(0)").remove();
+
+	$.ajax({
+		url : "https://fg-cn-sandman1.cs.upb.de:8775/v2.1/fc394f2ab2df4114bde39905f800dc57/servers/",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			console.log(data);
+		}
+	});
+/*
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
 		dataType : "json",
@@ -108,8 +121,8 @@ var loadRepeat = setInterval(function(){
 				viewModel.addDescriptor(nsData);
 			}
 		}
-	});
-}, 5000);
+	});*/
+}, 10000);
 
 function goToEmulatorView() {
 	window.location.href = "emuView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
