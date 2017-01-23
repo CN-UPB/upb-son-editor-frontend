@@ -7,8 +7,8 @@ var Project = function(data) {
 	this.name = ko.observable(data.name);
     this.id = ko.observable(data.id);
 	var self = this;
-	this.delete_ws = function() {
-		deleteWs(self.id());
+	this.delete_pj = function() {
+		deletePt(self.id());
     };
 
     this.edit = function() {
