@@ -66,9 +66,12 @@ $(document)
 		    // get schema
 		    $
 			    .ajax({
-				url : "https://raw.githubusercontent.com/sonata-nfv/son-schema/master/service-descriptor/nsd-schema.yml",
-				success : function(data) {
-				    var nsd_schema = jsyaml.safeLoad(data);
+				url : serverURL+ "workspaces/" + wsId + "/schema/ns",
+				dataType : "json",
+				xhrFields : {
+					withCredentials : true
+				},
+				success : function(nsd_schema) {
 				    nsd_schema["title"] = "NS Descriptor";
 				    editor = new JSONEditor(
 					    document

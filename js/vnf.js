@@ -119,6 +119,7 @@ function loadVnf(vnfId) {
 		success : function(data) {
 			document.getElementById("nav_vnf").text = "VNF: " + data.name;
 			editor.setValue(data.descriptor);
+			closeWaitAnimation();
 		}
 	});
 }
@@ -145,31 +146,37 @@ $(document)
 					JSONEditor.defaults.iconlib = 'jQueryUI';
 					JSONEditor.defaults.editors.object.options.remove_empty_properties = true;
 					// get schema
-					$
-							.ajax({
-								url : "https://raw.githubusercontent.com/sonata-nfv/son-schema/master/function-descriptor/vnfd-schema.yml",
-								success : function(data) {
-									var vnfd_schema = jsyaml.safeLoad(data);
-									vnfd_schema["title"] = "VNF Descriptor";
-									editor = new JSONEditor(document
-											.getElementById('vnfForm'), {
-										ajax : true,
-										show_errors : "always",
-										display_required_only : true,
-										schema : vnfd_schema,
-									});
-									editor.watch('root.name', function() {
-										$("#nav_vnf").text(
-												"VNF: "
-														+ editor.getEditor(
-																'root.name')
-																.getValue());
-									});
-									if (queryString["operation"] != "create") {
-										loadVnf(queryString["vnfId"]);
-									}
-								}
+					showWaitAnimation("Loading Schema");
+					$.ajax({
+						url : serverURL + "workspaces/" + wsId + "/schema/vnf",
+						dataType : "json",
+						xhrFields : {
+							withCredentials : true
+						},
+						success : function(vnfd_schema) {
+							vnfd_schema["title"] = "VNF Descriptor";
+							editor = new JSONEditor(document
+									.getElementById('vnfForm'), {
+								ajax : true,
+								show_errors : "always",
+								display_required_only : true,
+								schema : vnfd_schema,
 							});
+							editor.watch('root.name', function() {
+								$("#nav_vnf").text(
+										"VNF: "
+												+ editor.getEditor(
+														'root.name')
+														.getValue());
+							});
+							if (queryString["operation"] != "create") {
+								showWaitAnimation("Loading VNF");
+								loadVnf(queryString["vnfId"]);
+							} else {
+								closeWaitAnimation();
+							}
+						}
+					});
 					windowHeight = $(window).innerHeight();
 					$('#vnfForm').css(
 							'height',

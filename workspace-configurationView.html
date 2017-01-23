@@ -6,15 +6,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"></link>
-		
+
 		<link rel="stylesheet" href="css/commonStyle.css"></link>
-		
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/lib/bootstrap-filestyle.min.js"> </script>
 		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
-		
+
 		<script src="js/lib/parsley.js"></script>
 		<script src="js/constants.js"></script>
 		<script src="js/workspace-configuration.js"></script>
@@ -48,69 +48,91 @@
 					<li>
 						<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
 					</li>
-				</ul>				
+				</ul>
 			</div>
 		</nav>
 		<div class="container">
 			<form data-parsley-validate class="form-horizontal" role="form">
-				<div class="form-group" align="left">
-					<div class="col-md-2">
-						<label class="control-label">Workspace name:</label>
+				<div id="workspaceMain">
+					<div class="form-group" align="left">
+						<div class="col-md-2">
+							<label class="control-label">Workspace name:</label>
+						</div>
+						<div class="col-md-4">
+							<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+						</div>
 					</div>
-					<div class="col-md-4">
-						<input  data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+					<div class="form-group">
+						<div id="accordion">
+							<h3>Platforms</h3>
+							<div>
+								<div data-bind="foreach: platforms" id="platforms">
+									<div id="plattform" class="form-group">
+										<label class="control-label col-md-2">Name:</label>
+										<div class="col-md-2">
+											<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										</div>
+										<label class="control-label col-md-1">URL:</label>
+										<div class="col-md-5">
+											<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
+										</div>
+										<div class="form-group" align="right">
+											<button class="editorButtons delete" data-bind="click: $parent.deletePlatform">Delete</button>
+										</div>
+									</div>
+									<hr></hr>
+								</div>
+								<div class="form-group" align="right">
+									<button class="editorButtons add" data-bind="click: addPlatform">Add plattform</button>
+								</div>
+							</div>
+							<h3>Catalogues</h3>
+							<div>
+								<div data-bind="foreach: catalogues" id="catalogues">
+									<div id="catalogue" class="form-group">
+										<label class="control-label col-md-2">Name:</label>
+										<div class="col-md-2">
+											<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_-.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_-. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
+										</div>
+										<label class="control-label col-md-1">URL:</label>
+										<div class="col-md-5">
+											<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
+										</div>
+										<div class="form-group" align="right">
+											<button class="editorButtons delete" data-bind="click: $parent.deleteCatalogue">Delete</button>
+										</div>
+									</div>
+									<hr></hr>
+								</div>
+								<div class="form-group" align="right">
+									<button class="editorButtons add" data-bind="click: addCatalogue">Add catalogue</button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<div id="accordion">
-						<h3>Platforms</h3>
-						<div>
-							<div data-bind="foreach: platforms" id="platforms">
-								<div id="plattform" class="form-group">
-									<label class="control-label col-md-2">Name:</label>
-									<div class="col-md-2">
-										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
-									</div>
-									<label class="control-label col-md-1">URL:</label>
-									<div class="col-md-5">
-										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
-									</div>
-									<div class="form-group" align="right">
-										<button class="editorButtons delete" data-bind="click: $parent.deletePlatform">Delete</button>								
-									</div>
-								</div>
-								<hr></hr>
-							</div>
-							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addPlatform">Add plattform</button>	
-							</div>
+				<div id="schemas">
+					<div class="form-group" align="left">
+						<div class="col-md-1">
+							<label class="control-label">VNF Schema:</label>
 						</div>
-						<h3>Catalogues</h3>
-						<div>
-							<div data-bind="foreach: catalogues" id="catalogues">
-								<div id="catalogue" class="form-group">
-									<label class="control-label col-md-2">Name:</label>
-									<div class="col-md-2">
-										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[A-Za-z0-9\\-_-.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_-. are allowed." data-bind="value: name" type="text" class="form-control" placeholder=""></input>
-									</div>
-									<label class="control-label col-md-1">URL:</label>
-									<div class="col-md-5">
-										<input data-parsley-required="true" data-parsley-trigger="change" data-parsley-type="url" data-bind="value: url" type="text" class="form-control" placeholder=""></input>
-									</div>
-									<div class="form-group" align="right">
-										<button class="editorButtons delete" data-bind="click: $parent.deleteCatalogue">Delete</button>								
-									</div>
-								</div>
-								<hr></hr>
-							</div>
-							<div class="form-group" align="right">	
-								<button class="editorButtons add" data-bind="click: addCatalogue">Add catalogue</button>	
-							</div>
+						<div class="col-md-4">
+							<select  class="form-control" data-bind="foreach: vnf_schemas" id="selectVNFSchema">
+								<option data-bind="value: $index, text: description"></option>
+							</select>
 						</div>
-					</div>
-				</div>		
+						<div class="col-md-1">
+							<label class="control-label">NS Schema:</label>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control" data-bind="foreach: ns_schemas" id="selectNSSchema">
+								<option data-bind="value: $index, text: description"></option>
+							</select>
+						</div>
+
+				</div>
 			</form>
-			<div align="center"> 									
+			<div align="center">
 				<button class="btn btn-primary" onclick="saveConfiguration();">Save</button>
 				<button class="btn btn-default" onclick="goToWorkspaceView();">Close</button>
 			</div>
