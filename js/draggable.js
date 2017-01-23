@@ -979,19 +979,19 @@ function configureJsPlumb() {
 					}
 					if (data.hasClass('ns')) {
 						console.log("inside ns condition");
-						reconfigureNode(ui, data, "ns", this);
+						reconfigureNode(ui, data, "ns", this, current_zoom);
 						updateDescriptor("ns",
 								cur_ns.descriptor.network_services, data
 										.attr('id'));
 					}
 					if (data.hasClass('cp')) {
 						console.log("inside cp condition");
-						reconfigureNode(ui, data, 'cp', this);
+						reconfigureNode(ui, data, 'cp', this, current_zoom);
 						createNewConnectionPoint(data.attr('id'), true);
 					}
 					if (data.hasClass('e-lan')) {
 						console.log("inside e-lan condition");
-						reconfigureNode(ui, data, "e-lan", this);
+						reconfigureNode(ui, data, "e-lan", this, current_zoom);
 						createNewElan(data.attr('id'), true);
 					}
 					instance.draggable(data.attr('id'), {

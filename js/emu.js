@@ -122,7 +122,7 @@ var loadRepeat = setInterval(function(){
 			}
 		}
 	});*/
-}, 10000);
+}, 5000);
 
 function goToEmulatorView() {
 	window.location.href = "emuView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
