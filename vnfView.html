@@ -2,14 +2,15 @@
 <html lang="en">
 	<head>
 		<title>SONATA SDK Editor - VNF Editor</title>
-		<meta charset="utf-8"></meta>
-		<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
-		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"></link>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"/>
         <link rel="stylesheet" media="screen" href="css/commonStyle.css" />
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
         <script src="js/lib/bootstrap-filestyle.min.js"> </script>
@@ -28,13 +29,13 @@
 				<ul class="nav navbar-nav">
 					<li><a onclick="goToHomeView();">Home</a></li>
 					<li><a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a></li>
-					<li><a id="nav_project"onclick="goToProjectView();">Project</a></li>
+					<li><a id="nav_project" onclick="goToProjectView();">Project</a></li>
 					<li class="active"><a id="nav_vnf" onclick="history.go(0);">VNF</a></li>
 				</ul>
 				<ul class="userinfo nav navbar-nav">
 					<li>
 						<div id="userNameImg">
-							<img class="avatar" width="20" height="20">
+							<img src="" class="avatar" width="20" height="20">
 							<a id="target-username"></a>
 						</div>
 					</li>
@@ -45,12 +46,18 @@
 			</div>
 		</nav>
 		<!--jquery ui-->
-		<div class="container">
-			<div class="uploadYml" align="right">
-                <input type='file' class="filestyle" data-input="false" data-buttonText="Upload .yml file" accept='.yml' onchange='uploadFile(event)'/>
-            </div>
-			<div id="vnfForm" class="configurationForm"></div>
-			<div id="buttons" align="center">
+		<div class="container-fluid">
+			<div class="row uploadYml" >
+				<div style="margin-left: 5px; float: right;">
+					<input type='file' class="filestyle" data-input="false" data-buttonText="Upload .yml file" data-badge="false" accept='.yml' onchange='uploadFile(event)'/>
+				</div>
+				<div style="float: right;">
+					<input type='file' class="filestyle" data-input="false" data-buttonText="Upload vnf image" data-badge="false" onchange='uploadImage(event)'/>
+				</div>
+				<div class="btn btn-default" style="float: right" onclick="showImageFiles()">Show Image Files</div>
+			</div>
+			<div id="vnfForm" class="row configurationForm" ></div>
+			<div id="buttons"  class="row" align="center">
 				<button class="btn btn-primary" onclick="saveTables();">Save</button>
 				<button class="btn btn-default" onclick="goToProjectView();">Close</button>
 			</div>
@@ -62,6 +69,19 @@
 			<h4>VNF is updated!</h4>
 		</div>
 		<div id="errorDialog" title="Error" hidden>
+		</div>
+		<div id="uploadSuccess" title="Upload Successfull" hidden>
+		</div>
+		<div id="imageFilesDialog" title="Uploaded images" hidden>
+			<table data-bind="foreach: images" style="border-collapse: collapse;">
+				<tr data-bind="style: {borderBottom: $parent.last($index) ? '':'1px solid #ccc'}">
+					<td style="width: 100%" data-bind="text: $data"></td>
+					<td>
+						<button style="margin: 5px 0" class="btn btn-danger" data-bind="click: $parent.delete">Delete</button>
+					</td>
+				</tr>
+			</table>
+			<div id="deletedMessage"></div>
 		</div>
 		<div id="FailedValidationDialog" title="Failed" hidden>
 			<h4>Please refill the invalid fileds!</h4>
