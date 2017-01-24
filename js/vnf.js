@@ -183,4 +183,88 @@ $(document)
 							windowHeight - $('#vnfForm').offset().top - 2
 									* $('#buttons').height());
 
+					ko.applyBindings(imagesModel);
 				});
+
+
+//VNF Image Upload
+function ImagesModel() {
+	this.images = ko.observableArray([]);
+
+	var self = this;
+
+	this.last= function(index){
+		return index() == self.images().length-1;
+	};
+
+	this.delete= function(data){
+		$.ajax({
+			url: serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
+				+ queryString["ptId"] + "/functions/" + queryString["vnfId"]+ "/upload/"+data,
+			type: 'DELETE',
+			xhrFields : {
+				withCredentials : true
+			},
+			success: function (message) {
+				//on success: reload images list
+				showImageFiles();
+				$("#deletedMessage").text(message);
+				$("#deletedMessage").show();
+			}
+		});
+	}
+}
+
+var imagesModel = new ImagesModel();
+
+function uploadImage(event) {
+	var input = event.target;
+	var formData = new FormData();
+    formData.append("image", input.files[0]);
+	$.ajax({
+		url: serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
+			+ queryString["ptId"] + "/functions/" + queryString["vnfId"]+ "/upload",
+		type: 'POST',
+		data: formData,
+		xhrFields : {
+			withCredentials : true
+		},
+		processData: false,  // tell jQuery not to process the data
+		contentType: false,   // tell jQuery not to set contentType
+		success: function (message) {
+			$('#uploadSuccess').dialog({
+				modal: true,
+				draggable: false,
+				buttons: {
+					ok: function () {
+						$(this).dialog("close");
+					}
+				}
+			}).text(message);
+		}
+	});
+	$(input).filestyle('clear');
+}
+
+function showImageFiles(){
+	$("#deletedMessage").hide();
+	$.ajax({
+		url: serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
+			+ queryString["ptId"] + "/functions/" + queryString["vnfId"]+ "/upload",
+		xhrFields : {
+			withCredentials : true
+		},
+		success: function (image_files) {
+			imagesModel.images(image_files);
+			$('#imageFilesDialog').dialog({
+				modal: true,
+				draggable: false,
+				buttons: {
+					Close: function () {
+						$(this).dialog("close");
+					}
+				}
+			});
+		}
+	});
+}
