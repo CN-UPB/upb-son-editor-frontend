@@ -129,11 +129,11 @@ var ViewModel = function() {
 	self.rename = function() {
 		var dataId = this.id().replace(":", "\\:");
 		var node = $("#" + dataId);
-		var oldID = this.old_id();
-		var newID = this.id();
-		if (oldID != newID) {
-			renameNodeOnServer(oldID, newID, node.attr("class"));
-			this.old_id(newID);
+		var oldId = this.old_id();
+		var newId = this.id();
+		if (oldId != newId) {
+			renameNodeOnServer(oldId, newId, node.attr("class"));
+			this.old_id(newId);
 		}
 	};
 };
@@ -253,38 +253,7 @@ function updateService() {
 		}
 	});
 }
-// delete all links related to a node
-function updateRelatedLinks(oldId, newID) {
-	var cur_links = cur_ns.descriptor.virtual_links;
-	if (cur_links) {
-		for ( var i = 0; i < cur_links.length; i++) {
-			for ( var j = 0; j < cur_links[i].connection_points_reference.length; j++) {
-				if (cur_links[i].connection_points_reference[j]
-						.startsWith(oldId + ":")) {
-					var link = cur_links[i];
-					var newRef = link.connection_points_reference[j].replace(
-							oldId, newID);
-					// TODO change uuids of endpoints
-					// var connections = instance.getConnections("*",
-					// {target:oldId, source: oldId});
-					// for (var k=0; k<connections.length; k++){
-					// var uuids = connections[k].getUuids();
-					// if (uuids[0].startsWith(oldId + ":")){
-					// instance.detach(uuids);
-					// uuids[0] = newRef;
-					// instance.connect({uuids: uuids});
-					// } else if (uuids[1].startsWith(oldId + ":")){
-					// instance.detach(uuids);
-					// uuids[1] = newRef;
-					// instance.connect({uuids: uuids});
-					// }
-					// }
-					cur_links[i].connection_points_reference[j] = newRef;
-				}
-			}
-		}
-	}
-}
+
 // delete all links related to a node
 function deleteRelatedLinks(objectId) {
 	var cur_links = cur_ns.descriptor.virtual_links;
@@ -294,20 +263,21 @@ function deleteRelatedLinks(objectId) {
 		for ( var i = 0; i < cur_links.length; i++) {
 			var link = cur_links[i];
 			var cps = link["connection_points_reference"];
-			if (link["connectivity_type"] == "E-Line")//delete complete link 
+			if (link["connectivity_type"] == "E-Line")// delete complete link
 			{
 				for ( var j = 0; j < cps.length; j++) {
 					if (cps[j].startsWith(objectId)) {
 						{
 							toBeDeleted.push(link);
-							removed=removed.filter(function(e){return e!=link;});
+							removed = removed.filter(function(e) {
+								return e != link;
+							});
 							break;
 						}
 					}
 				}
-			}
-			else
-			if (link["connectivity_type"] == "E-LAN") //delete node in cpr list
+			} else if (link["connectivity_type"] == "E-LAN") // delete node
+																// in cpr list
 			{
 				link["connection_points_reference"] = cps.filter(function(e) {
 					return !e.startsWith(objectId);
@@ -411,49 +381,166 @@ function deleteNodeOnServer(id, className) {
 	}
 	updateService();
 }
-function renameNodeOnServer(oldId, newID, className) {
+function renameNodeOnServer(oldId, newId, className) {
+	// notify jsplumb id is changed
+	instance.setIdChanged(oldId, newId);
 	if (className.split("-")[0] == "vnf") {
 		var cur_vnfs = cur_ns.descriptor.network_functions;
 		for ( var i = 0; i < cur_vnfs.length; i++) {
 			if (cur_vnfs[i].vnf_id === oldId) {
-				cur_vnfs[i].vnf_id = newID;
+				cur_vnfs[i].vnf_id = newId;
+				cur_vnf = cur_vnfs[i];
+				var vnf_data = vnf_map[cur_vnf.vnf_vendor + ":"
+						+ cur_vnf.vnf_name + ":" + cur_vnf.vnf_version];
+				vnf_data.id = newId;
+				var connectionPoints = vnf_data.descriptor.connection_points;
+				var virtualLinks = [];
+				for ( var i = 0; i < connectionPoints.length; i++) {
+					var connectionPoint = connectionPoints[i];
+					var labels = connectionPoint.id.split(":");
+					var oldCpLabel = oldId + ":" + labels[1];
+					var ep = instance.getEndpoint(oldCpLabel);
+					var conns = ep.connections;
+					for ( var j = 0; j < conns.length; j++) {
+						var obj = conns[j].endpoints;
+						if (obj.length > 0) {
+							var src = obj[0].getUuid();
+							src = src.replace(oldId, newId);
+							var tgt = obj[1].getUuid();
+							tgt = tgt.replace(oldId, newId);
+							var cps = [];
+							cps.push(src);
+							cps.push(tgt);
+							var eIds = [];
+							eIds.push(obj[0].elementId);
+							eIds.push(obj[1].elementId);
+							var virtualLink = {
+								elemIds : eIds,
+								uuids : cps
+							};
+							// save connections of this node to virtualLinks
+							virtualLinks.push(virtualLink);
+						}
+						// delete connections
+						updateVirtualLinks(conns[j], true);
+					}
+					// delete old endpoints
+					instance.deleteEndpoint(ep);
+				}
+				removeFromVnfList(oldId);
+				drawVnfOrNs("vnf", newId, vnf_data.descriptor);
+				for ( var j = 0; j < virtualLinks.length; j++) {
+					var eIds = virtualLinks[j].elemIds;
+					var uuids = virtualLinks[j].uuids;
+					// redraw connections
+					instance.connect({
+						uuids : virtualLinks[j].uuids
+					});
+					var virtual_link = {
+						id : eIds[0] + "-2-" + eIds[1],
+						connectivity_type : "E-Line",
+						connection_points_reference : uuids
+					};
+					if (!cur_ns.descriptor["virtual_links"]) {
+						cur_ns.descriptor["virtual_links"] = [];
+					}
+					// add connection to descriptor and forwarding graph
+					cur_ns.descriptor["virtual_links"].push(virtual_link);
+					updateForwardingGraphs(uuids[0], uuids[1], false);
+				}
 				break;
 			}
 		}
-		updateRelatedLinks(oldId, newID);
 	}
 	if (className.split("-")[0] == "ns") {
 		var cur_nss = cur_ns.descriptor.network_services;
 		for ( var i = 0; i < cur_nss.length; i++) {
 			if (cur_nss[i].ns_id == oldId) {
-				cur_nss[i].ns_id = newID;
+				cur_nss[i].ns_id = newId;
+				cur_nss = cur_nss[i];
+				var ns_data = ns_map[cur_nss.ns_vendor + ":"
+						+ cur_nss.ns_name + ":" + cur_ns.ns_version];
+				ns_data.id = newId;
+				var connectionPoints = ns_data.descriptor.connection_points;
+				var virtualLinks = [];
+				for ( var i = 0; i < connectionPoints.length; i++) {
+					var connectionPoint = connectionPoints[i];
+					var labels = connectionPoint.id.split(":");
+					var oldCpLabel = oldId + ":" + labels[1];
+					var ep = instance.getEndpoint(oldCpLabel);
+					var conns = ep.connections;
+					for ( var j = 0; j < conns.length; j++) {
+						var obj = conns[j].endpoints;
+						if (obj.length > 0) {
+							var src = obj[0].getUuid();
+							src = src.replace(oldId, newId);
+							var tgt = obj[1].getUuid();
+							tgt = tgt.replace(oldId, newId);
+							var cps = [];
+							cps.push(src);
+							cps.push(tgt);
+							var eIds = [];
+							eIds.push(obj[0].elementId);
+							eIds.push(obj[1].elementId);
+							var virtualLink = {
+								elemIds : eIds,
+								uuids : cps
+							};
+							// save connections of this node to virtualLinks
+							virtualLinks.push(virtualLink);
+						}
+						// delete connections
+						updateVirtualLinks(conns[j], true);
+					}
+					// delete old endpoints
+					instance.deleteEndpoint(ep);
+				}
+				drawVnfOrNs("ns", newId, ns_data.descriptor);
+				for ( var j = 0; j < virtualLinks.length; j++) {
+					var eIds = virtualLinks[j].elemIds;
+					var uuids = virtualLinks[j].uuids;
+					// redraw connections
+					instance.connect({
+						uuids : virtualLinks[j].uuids
+					});
+					var virtual_link = {
+						id : eIds[0] + "-2-" + eIds[1],
+						connectivity_type : "E-Line",
+						connection_points_reference : uuids
+					};
+					if (!cur_ns.descriptor["virtual_links"]) {
+						cur_ns.descriptor["virtual_links"] = [];
+					}
+					// add connection to descriptor and forwarding graph
+					cur_ns.descriptor["virtual_links"].push(virtual_link);
+					updateForwardingGraphs(uuids[0], uuids[1], false);
+				}
 				break;
 			}
 		}
-		updateRelatedLinks(oldId, newID);
 	}
 	if (className.split("-")[0] == "cp") {
 		var cur_cp = cur_ns.descriptor.connection_points;
 		for ( var i = 0; i < cur_cp.length; i++) {
 			if (cur_cp[i].id == oldId) {
-				cur_cp[i].id = newID;
+				cur_cp[i].id = newId;
+				cur_obj = cur_cp[i];
 				break;
 			}
 		}
-		updateRelatedLinks(oldId, newID);
 	}
 	if (className.split("-")[0] == "e") {
 		var links = cur_ns.descriptor.virtual_links;
 		for ( var i = 0; i < links.length; i++) {
 			if (links[i].id == oldId) {
-				links[i].id = newID;
+				links[i].id = newId;
+				cur_obj = links[i];
 				break;
 			}
 		}
-		updateRelatedLinks(oldId, newID);
 	}
 	if (cur_ns.meta.positions[oldId]) {
-		cur_ns.meta.positions[newID] = cur_ns.meta.positions[oldId];
+		cur_ns.meta.positions[newId] = cur_ns.meta.positions[oldId];
 		delete cur_ns.meta.positions[oldId];
 	}
 	updateService();
@@ -608,7 +695,8 @@ function rewriteData(type, data) {
 		return vnf_data;
 	}
 	if (type == 'ns') {
-		var ns_data = ns_map[data.ns_vendor + ":" + data.ns_name + ":"
+		var ns_data = {};
+		ns_data = ns_map[data.ns_vendor + ":" + data.ns_name + ":"
 				+ data.ns_version];
 		ns_data['id'] = data.ns_id;
 		return ns_data;
@@ -765,8 +853,8 @@ function updateDescriptor(type, list, elemId) {
 		$y = cur_ns.meta.positions[vnf_data.id][1];
 		addNode(type, vnf_data, $x, $y);
 	}
+	// drawVnfOrNs(type, elemId, lastDraggedDescriptor["descriptor"]);
 	updateService();
-	drawVnfOrNs(type, elemId, lastDraggedDescriptor["descriptor"]);
 }
 function drawConnectionPoint(elemID) {
 	instance.addEndpoint(elemID, {
@@ -795,7 +883,6 @@ function createNewConnectionPoint(elemID, updateOnServer) {
 	if (!cur_ns.descriptor.connection_points) {
 		cur_ns.descriptor.connection_points = [];
 	}
-	drawConnectionPoint(elemID);
 	if (updateOnServer) {
 		cur_ns.descriptor.connection_points.push({
 			"id" : elemID,
@@ -828,9 +915,6 @@ function drawElan(data) {
 	}
 }
 function createNewElan(elemID, updateOnServer) {
-	var text = elemID;
-	// var txts = text.split("_");
-	// text = txts[1] + txts[2];
 	var elan = {
 		"id" : elemID,
 		"connectivity_type" : "E-LAN",
@@ -859,6 +943,8 @@ function updateVirtualLinks(conn, remove) {
 			elan = cp_target;
 			other = cp_source;
 		}
+		var ep = instance.getEndpoint(cp_target.getUuid());
+
 		if (elan) {
 			for ( var i = 0; i < cur_ns.descriptor.virtual_links.length; i++) {
 				if (cur_ns.descriptor.virtual_links[i].id == elan.getUuid()) {
@@ -890,17 +976,8 @@ function updateVirtualLinks(conn, remove) {
 		}
 		if (idx != -1)
 			connections.splice(idx, 1);
+		deleteLink(conn);
 	}
-	if (connections.length > 0) {
-		var s = "<span><strong>Connections</strong></span><br/><br/><table><tr><th>Scope</th><th>Source</th><th>Target</th></tr>";
-		for ( var j = 0; j < connections.length; j++) {
-			s = s + "<tr><td>" + connections[j].scope + "</td>" + "<td>"
-					+ connections[j].sourceId + "</td><td>"
-					+ connections[j].targetId + "</td></tr>";
-		}
-		// showConnectionInfo(s);
-	} else
-		hideConnectionInfo();
 }
 function showConnectionInfo(s) {
 	var listDiv = document.getElementById("connection-list");

@@ -14,6 +14,14 @@ function addToVnfList(vnf) {
 		vnfList.push(vnf);
 	}
 }
+function removeFromVnfList(vnf)
+{
+	var index=vnfList.indexOf(vnf);
+	if(index>-1)
+	{
+		vnfList.splice(index,1);
+	}
+}
 function containsOnlyCps(list) {
 	if (list) {
 		var id = list[0].split(":")[0];
