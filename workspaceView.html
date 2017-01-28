@@ -16,6 +16,7 @@
 
 		<script src="js/lib/parsley.js"></script>
 		<script src="js/constants.js"></script>
+		<script src="js/git.js"></script>
 		<script src="js/workspace.js"></script>
 		<script src="js/utils.js"></script>
 		<!--<script src="js/userInfo.js"></script>-->
@@ -72,7 +73,10 @@
 						</thead>
 						<tbody id="display_ptTable" data-bind="foreach: projects">
 							<tr>
-                    			<td data-bind="text: name"></td>
+								<td>
+									<span data-bind="text: name"></span>
+									<img data-bind="visible: isShared, click: show_diff" src="GitHub-Mark-32px.png" alt="Shared on Github" style="float: right; cursor: pointer" title="Shared on Github"/>
+								</td>
 								<td>
 									<button class="btn btn-primary btn-sm" style="margin-left: 10px; margin-right: 15px;" data-bind="click: edit">Edit</button>
 									<button class="btn btn-danger btn-sm" data-bind="click: delete_pj">Delete</button>
@@ -95,7 +99,14 @@
                     Github URL
 				    <input  data-parsley-required="false" data-parsley-trigger="change" type="url" data-parsley-pattern-message="Only valid urls are allowed"
 				        id ='ptUrlInput' placeholder="repository URL (optional)"/>
-                </label>
+				</label>
+				<label for="urlSelect">
+                    Choose from your repos:
+					<select  data-bind="foreach: repos" id="urlSelect" onchange="urlSelected(this)">
+						<option data-bind="value: clone_url, text: name"></option>
+					</select>
+				</label>
+
 			</form>
 		</div>
 		<div id="ConfirmDeletionDialog" title="Confirm deletion" hidden>
@@ -104,6 +115,16 @@
 		<div id="DeletePtDialog" title="Successfully deleted" hidden>
 			<h4>Project is deleted!</h4>
 		</div>
+		<div id="GitDialog" title="Project Status" hidden>
+		</div>
+		<div id="commitDialog" title="Set commit message" hidden>
+			<form id="commitForm">
+				<label for="commitInput">Commit message</label>
+				<input  data-parsley-required="true" data-parsley-trigger="change"
+						id ='commitInput' placeholder="Commit message"/>
+			</form>
+		</div>
+
 		<ul class="pager">
 			<li>
 				<a onclick="goToHomeView();">Previous</a>
