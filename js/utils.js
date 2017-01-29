@@ -125,7 +125,7 @@ $(document).ajaxError(function (event, response, request, thrownError) {
 	}
 });
 
-function showWaitAnimation(text, title) {
+function showWaitAnimation(text, title, progress) {
 	var titleText = title || "Loading";
 	if (!$("#wait").length) {
 		$(WAIT_DIALOG_STRING).dialog({
@@ -138,7 +138,11 @@ function showWaitAnimation(text, title) {
 			dialogClass: "no-close"
 		});
 	}
-	$('#progressbar').progressbar({value: false});
+	if (progress != null){
+		$('#progressbar').progressbar({value: progress});
+	} else {
+		$('#progressbar').progressbar({value: false});
+	}
 	$('#waitText').text(text);
 	$('#wait').dialog('option', 'title', title);
 
