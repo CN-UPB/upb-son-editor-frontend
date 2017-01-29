@@ -153,6 +153,7 @@ div .vnf-list {
 	float: left;
 	text-align: center;
 	vertical-align: middle;
+	z-index: 24;
 }
 
 div .vnf-after-drop{
@@ -192,6 +193,7 @@ div .vnf-after-drop>input{
 	float: left;
 	text-align: center;
 	vertical-align: middle;
+	z-index: 24;
 }
 
 div .ns-after-drop{
@@ -236,6 +238,7 @@ div .ns-after-drop>input{
 	float: left;
     vertical-align: middle;
 	text-align: center;
+	z-index: 24;
 }
 
 .cp > p {
@@ -282,6 +285,7 @@ div .cp-after-drop>input{
 	float: left;
 	text-align:center;
     vertical-align: middle;
+    z-index: 24;
 }
 
 div .e-lan-after-drop{

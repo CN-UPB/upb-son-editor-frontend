@@ -10,12 +10,13 @@ var vnfList = {};
 
 var Descriptor = function(data) {
 	this.name = ko.observable(data.name);
-    this.description = ko.observable(data.description);
-    this.type = ko.observable(data.type);
+    //this.description = ko.observable(data.description);
+    //this.type = ko.observable(data.type);
     this.id = ko.observable(data.id);
-    this.network_functions = ko.observable(data.network_functions);
-    this.forwarding_graphs = ko.observable(data.forwarding_graphs);
-    //this.vnfs = ko.observable(data.network_functions);
+    //this.network_functions = ko.observable(data.network_functions);
+    //this.forwarding_graphs = ko.observable(data.forwarding_graphs);
+    this.status = ko.observable(data.status);
+    this.template_name = ko.observable(data.template_name);
 	var self = this;
 };
 
@@ -56,13 +57,36 @@ var loadRepeat = setInterval(function(){
 	$("#service-table").find("tr:gt(0)").remove();
 
 	$.ajax({
-		url : "https://fg-cn-sandman1.cs.upb.de:8775/v2.1/fc394f2ab2df4114bde39905f800dc57/servers/",
+		url : "http://fg-cn-sandman1.cs.upb.de:8775/v2.1/fc394f2ab2df4114bde39905f800dc57/servers",
+		//url : "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
+		method : 'GET',
+		contentType : "application/json; charset=utf-8",
 		dataType : "json",
 		xhrFields : {
 			withCredentials : true
 		},
 		success : function (data) {
-			console.log(data);
+			//console.log(data);
+			services = data;
+			for (var i = 0; i < services.servers.length; i++) {
+				var serviceName = services.servers[i].name;	
+				//console.log(serviceName);
+				var serviceId = services.servers[i].id;
+				var serviceStatus = services.servers[i].status;
+				var serviceTemplateName = services.servers[i].template_name;
+
+				var nsData = {
+					name : serviceName,
+					//description : serviceInfo,
+					id: serviceId,
+					//type: "NS",
+					//network_functions: vnfs,
+					//forwarding_graphs: virtual_links_count
+					status: serviceStatus,
+					template_name: serviceTemplateName
+				};
+				viewModel.addDescriptor(nsData);
+			}
 		}
 	});
 /*

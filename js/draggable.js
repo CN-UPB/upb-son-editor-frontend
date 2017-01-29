@@ -971,7 +971,7 @@ function configureJsPlumb() {
 					var data = ui.draggable.clone();
 					if (data.hasClass('vnf')) {
 						console.log("inside vnf condition");
-						console.log("current zoom: " + current_zoom);
+						console.log("current zoom at the time of drop: " + current_zoom);
 						reconfigureNode(ui, data, "vnf", this, current_zoom);
 						updateDescriptor("vnf",
 								cur_ns.descriptor.network_functions, data
