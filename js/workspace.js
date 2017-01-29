@@ -6,6 +6,8 @@ var tableViewModel;
 var Project = function(data) {
 	this.name = ko.observable(data.name);
     this.id = ko.observable(data.id);
+    this.isShared = ko.observable(data.repo_url != null);
+    this.repo_url = data.repo_url;
 	var self = this;
 	this.delete_pj = function() {
 		deletePt(self.id());
@@ -14,10 +16,14 @@ var Project = function(data) {
     this.edit = function() {
         goToProjectView(wsId, self.id());
     };
+    this.show_diff = function() {
+    	showStatus(wsId, self.id(), self.repo_url);
+	};
 };
 
 var TableViewModel = function (){
 	this.projects = ko.observableArray([]);
+	this.repos = ko.observableArray([]);
 	var self = this;
 	this.addProject = function(data){
 		self.projects.push(new Project(data));
@@ -29,17 +35,22 @@ $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];
 	setWorkspaceInNav(wsId);
-	var availableProjects = ["Create new project"];
-	var ptDictionary = {};
 	tableViewModel = new TableViewModel();
 	ko.applyBindings(tableViewModel);
+	loadProjects(wsId);
+	loadRepos(wsId);
+});
+
+function loadProjects(wsId){
+	var availableProjects = ["Create new project"];
+	var ptDictionary = {};
 	$.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/",
-		dataType : "json",
-		xhrFields : {
-			withCredentials : true
+		url: serverURL + "workspaces/" + wsId + "/projects/",
+		dataType: "json",
+		xhrFields: {
+			withCredentials: true
 		},
-		success : function (data) {
+		success: function (data) {
 			//display available projects and their onclick event.
 			projects = data;
 			for (var i = 0; i < projects.length; i++) {
@@ -51,8 +62,8 @@ $(document).ready(function () {
 
 			//search bar(uses jquery ui Autocomplete)
 			$("#search_pt").autocomplete({
-				source : availableProjects,
-				select : function (event, ui) {
+				source: availableProjects,
+				select: function (event, ui) {
 					if (ui.item.label == "Create new project") {
 						showCreateDialog();
 					} else {
@@ -62,8 +73,17 @@ $(document).ready(function () {
 				}
 			});
 		}
-	})
-});
+	});
+}
+
+
+
+function urlSelected(item){
+	$('#ptUrlInput').val(item.value);
+	$('#ptNameInput').val(item.options[item.selectedIndex].text);
+}
+
+
 
 //create new project dialog (uses jquery ui Dialog)
 function showCreateDialog() {
