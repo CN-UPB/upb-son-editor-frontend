@@ -405,9 +405,15 @@ function renameNodeOnServer(oldId, newId, className) {
 						var obj = conns[j].endpoints;
 						if (obj.length > 0) {
 							var src = obj[0].getUuid();
-							src = src.replace(oldId, newId);
+							if(obj[0].elementId==newId)
+							{
+								src = src.replace(oldId, newId);
+							}
 							var tgt = obj[1].getUuid();
-							tgt = tgt.replace(oldId, newId);
+							if(obj[1].elementId==newId)
+							{
+								tgt = tgt.replace(oldId, newId);
+							}
 							var cps = [];
 							cps.push(src);
 							cps.push(tgt);
@@ -422,7 +428,7 @@ function renameNodeOnServer(oldId, newId, className) {
 							virtualLinks.push(virtualLink);
 						}
 						// delete connections
-						updateVirtualLinks(conns[j], true);
+						instance.detach(conns[j]);
 					}
 					// delete old endpoints
 					instance.deleteEndpoint(ep);
@@ -432,10 +438,6 @@ function renameNodeOnServer(oldId, newId, className) {
 				for ( var j = 0; j < virtualLinks.length; j++) {
 					var eIds = virtualLinks[j].elemIds;
 					var uuids = virtualLinks[j].uuids;
-					// redraw connections
-					instance.connect({
-						uuids : virtualLinks[j].uuids
-					});
 					var virtual_link = {
 						id : eIds[0] + "-2-" + eIds[1],
 						connectivity_type : "E-Line",
@@ -446,7 +448,7 @@ function renameNodeOnServer(oldId, newId, className) {
 					}
 					// add connection to descriptor and forwarding graph
 					cur_ns.descriptor["virtual_links"].push(virtual_link);
-					updateForwardingGraphs(uuids[0], uuids[1], false);
+					drawLink(virtual_link);
 				}
 				break;
 			}
@@ -473,9 +475,15 @@ function renameNodeOnServer(oldId, newId, className) {
 						var obj = conns[j].endpoints;
 						if (obj.length > 0) {
 							var src = obj[0].getUuid();
-							src = src.replace(oldId, newId);
+							if(obj[0].elementId==newId)
+							{
+								src = src.replace(oldId, newId);
+							}
 							var tgt = obj[1].getUuid();
-							tgt = tgt.replace(oldId, newId);
+							if(obj[1].elementId==newId)
+							{
+								tgt = tgt.replace(oldId, newId);
+							}
 							var cps = [];
 							cps.push(src);
 							cps.push(tgt);
@@ -490,7 +498,7 @@ function renameNodeOnServer(oldId, newId, className) {
 							virtualLinks.push(virtualLink);
 						}
 						// delete connections
-						updateVirtualLinks(conns[j], true);
+						instance.detach(conns[j]);
 					}
 					// delete old endpoints
 					instance.deleteEndpoint(ep);
@@ -499,10 +507,6 @@ function renameNodeOnServer(oldId, newId, className) {
 				for ( var j = 0; j < virtualLinks.length; j++) {
 					var eIds = virtualLinks[j].elemIds;
 					var uuids = virtualLinks[j].uuids;
-					// redraw connections
-					instance.connect({
-						uuids : virtualLinks[j].uuids
-					});
 					var virtual_link = {
 						id : eIds[0] + "-2-" + eIds[1],
 						connectivity_type : "E-Line",
@@ -513,7 +517,7 @@ function renameNodeOnServer(oldId, newId, className) {
 					}
 					// add connection to descriptor and forwarding graph
 					cur_ns.descriptor["virtual_links"].push(virtual_link);
-					updateForwardingGraphs(uuids[0], uuids[1], false);
+					drawLink(virtual_link);
 				}
 				break;
 			}
@@ -521,6 +525,7 @@ function renameNodeOnServer(oldId, newId, className) {
 	}
 	if (className.split("-")[0] == "cp") {
 		var cur_cp = cur_ns.descriptor.connection_points;
+		var virtualLinks=[];
 		for ( var i = 0; i < cur_cp.length; i++) {
 			if (cur_cp[i].id == oldId) {
 				cur_cp[i].id = newId;
@@ -530,9 +535,15 @@ function renameNodeOnServer(oldId, newId, className) {
 					var obj = conns[j].endpoints;
 					if (obj.length > 0) {
 						var src = obj[0].getUuid();
-						src = src.replace(oldId, newId);
+						if(obj[0].elementId==newId)
+						{
+							src = src.replace(oldId, newId);
+						}
 						var tgt = obj[1].getUuid();
-						tgt = tgt.replace(oldId, newId);
+						if(obj[1].elementId==newId)
+						{
+							tgt = tgt.replace(oldId, newId);
+						}
 						var cps = [];
 						cps.push(src);
 						cps.push(tgt);
@@ -547,7 +558,7 @@ function renameNodeOnServer(oldId, newId, className) {
 						virtualLinks.push(virtualLink);
 					}
 					// delete connections
-					updateVirtualLinks(conns[j], true);
+					instance.detach(conns[j]);
 				}
 				// delete old endpoints
 				instance.deleteEndpoint(ep);
@@ -555,10 +566,6 @@ function renameNodeOnServer(oldId, newId, className) {
 				for ( var j = 0; j < virtualLinks.length; j++) {
 					var eIds = virtualLinks[j].elemIds;
 					var uuids = virtualLinks[j].uuids;
-					// redraw connections
-					instance.connect({
-						uuids : virtualLinks[j].uuids
-					});
 					var virtual_link = {
 						id : eIds[0] + "-2-" + eIds[1],
 						connectivity_type : "E-Line",
@@ -569,7 +576,7 @@ function renameNodeOnServer(oldId, newId, className) {
 					}
 					// add connection to descriptor and forwarding graph
 					cur_ns.descriptor["virtual_links"].push(virtual_link);
-					updateForwardingGraphs(uuids[0], uuids[1], false);
+					drawLink(virtual_link);
 				}
 				break;
 			}
@@ -589,7 +596,20 @@ function renameNodeOnServer(oldId, newId, className) {
 		cur_ns.meta.positions[newId] = cur_ns.meta.positions[oldId];
 		delete cur_ns.meta.positions[oldId];
 	}
+	displayDeleteButton(newId);
 }
+function displayDeleteButton(id)
+{
+	var dataId = id.replace(":", "\\:");
+	var node = "#" + dataId;
+	$(node).bind("mouseover", function() {
+		$(node).children("a").css("display", "inline");
+	});
+	$(node).bind("mouseout", function() {
+		$(node).children("a").css("display", "none");
+	});
+}
+
 // add a node of a network service to editor using ko
 function addNode(type, data, x, y) {
 	viewModel.addToEditor(data);
@@ -615,15 +635,7 @@ function addNode(type, data, x, y) {
 		drag : activateDragging,
 		stop : savePositionForNode,
 	});
-
-	var dataId = data.id.replace(":", "\\:");
-	var node = "#" + dataId;
-	$(node).bind("mouseover", function() {
-		$(node).children("a").css("display", "inline");
-	});
-	$(node).bind("mouseout", function() {
-		$(node).children("a").css("display", "none");
-	});
+	displayDeleteButton(data.id);
 }
 function doDeploy(id) {
 	showWaitAnimation("Deploying...");
@@ -971,9 +983,7 @@ function createNewElan(elemID, updateOnServer) {
 	addNode("e-lan", elan, $x, $y);
 }
 
-function updateVirtualLinks(conn, remove) {
-	if (!remove) {
-		connections.push(conn);
+function createLink(conn) {
 		var cp_source = conn.endpoints[0];
 		var cp_target = conn.endpoints[1];
 		var elan, other;
@@ -1003,36 +1013,16 @@ function updateVirtualLinks(conn, remove) {
 			}
 			cur_ns.descriptor["virtual_links"].push(virtual_link);
 			updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(),
-					remove);
+					false);
 		}
-	} else {
-		var idx = -1;
-		for ( var i = 0; i < connections.length; i++) {
-			if (connections[i] == conn) {
-				idx = i;
-				break;
-			}
-		}
-		if (idx != -1)
-			connections.splice(idx, 1);
-		deleteLink(conn);
-	}
 }
-function showConnectionInfo(s) {
-	var listDiv = document.getElementById("connection-list");
-	listDiv.innerHTML = s;
-	listDiv.style.display = "block";
-}
-function hideConnectionInfo() {
-	var listDiv = document.getElementById("connection-list");
-	listDiv.style.display = "none";
-}
+
 function animateConnections(conn) {
 	var arrow = conn.getOverlay("arrow");
 	var src = conn.source.className;
 	var tgt = conn.target.className;
 	if (!src.startsWith("e-lan") && !tgt.startsWith("e-lan")) {
-		interval = window.setInterval(function() {
+		var interval = window.setInterval(function() {
 			arrow.loc += 0.05;
 			if (arrow.loc > 1) {
 				arrow.loc = 0;
@@ -1050,6 +1040,7 @@ function animateConnections(conn) {
 		arrow.hide();
 	}
 }
+
 function savePositionForNode(event) {
 	var position = event.pos;
 	var node = event.selection[0][0];
@@ -1113,12 +1104,7 @@ function configureJsPlumb() {
 						stop : savePositionForNode,
 						containment : "parent"
 					});
-					$(data).bind("mouseover", function() {
-						$(data).children("a").css("display", "inline");
-					});
-					$(data).bind("mouseout", function() {
-						$(data).children("a").css("display", "none");
-					});
+					displayDeleteButton(data.attr('id'));
 				}
 			});
 	// suspend drawing and initialise.
@@ -1127,29 +1113,18 @@ function configureJsPlumb() {
 	instance.bind("connection", function(info, originalEvent) {
 		new animateConnections(info.connection);
 		if (originalEvent) {
-			updateVirtualLinks(info.connection, false);
+			createLink(info.connection);
 			updateServiceOnServer();
 		}
 	});
 	instance.bind("connectionDetached", function(info, originalEvent) {
-		new animateConnections(info.connection);
-		updateVirtualLinks(info.connection, true);
-		updateServiceOnServer();
-	});
-	instance.bind("connectionMoved", function(info, originalEvent) {
-		// only remove here, because a 'connection' event is also fired.
-		// in a future release of jsplumb this extra connection event will not
-		// be fired.
-		new animateConnections(info.connection);
-		updateVirtualLinks(info.connection, true);
-		updateServiceOnServer();
+		deleteLink(info.connection);
 	});
 	instance.bind("dblclick", function(connection, originalEvent) {
 		$("#deleteDialog").dialog({
 			modal : true,
 			buttons : {
 				Delete : function() {
-					deleteLink(connection);
 					instance.detach(connection);
 					updateServiceOnServer();
 					$(this).dialog("close");
