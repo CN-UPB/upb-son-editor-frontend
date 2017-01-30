@@ -94,8 +94,9 @@ var Node = function(node_data) {
 					$(this).dialog("close");
 					instance.detachAllConnections($(node));
 					instance.removeAllEndpoints($(node));
-					deleteNodeOnServer(self.id(), $(node).attr("class"));
+					deleteNode(self.id(), $(node).attr("class"));
 					viewModel.editor_nodes.remove(self);
+					updateServiceOnServer();
 				},
 				Cancel : function() {
 					$(this).dialog("close");
@@ -134,6 +135,7 @@ var ViewModel = function() {
 		if (oldId != newId) {
 			renameNodeOnServer(oldId, newId, node.attr("class"));
 			this.old_id(newId);
+			updateServiceOnServer();
 		}
 	};
 };
@@ -233,7 +235,7 @@ function drawVnfOrNs(type, id, descriptor) {
 		addNodeToMatrix(cpLabels);
 	}
 }
-function updateService() {
+function updateServiceOnServer() {
 	cur_ns.meta.counter = countDropped;
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
@@ -277,7 +279,7 @@ function deleteRelatedLinks(objectId) {
 					}
 				}
 			} else if (link["connectivity_type"] == "E-LAN") // delete node
-																// in cpr list
+			// in cpr list
 			{
 				link["connection_points_reference"] = cps.filter(function(e) {
 					return !e.startsWith(objectId);
@@ -331,9 +333,8 @@ function deleteLink(connection) {
 		}
 		updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(), true);
 	}
-	updateService();
 }
-function deleteNodeOnServer(id, className) {
+function deleteNode(id, className) {
 	if (className.startsWith("vnf")) {
 		var cur_vnfs = cur_ns.descriptor.network_functions;
 		var removed = cur_vnfs.filter(function(el) {
@@ -379,7 +380,6 @@ function deleteNodeOnServer(id, className) {
 	if (cur_ns.meta.positions[id]) {
 		delete cur_ns.meta.positions[id];
 	}
-	updateService();
 }
 function renameNodeOnServer(oldId, newId, className) {
 	// notify jsplumb id is changed
@@ -458,8 +458,8 @@ function renameNodeOnServer(oldId, newId, className) {
 			if (cur_nss[i].ns_id == oldId) {
 				cur_nss[i].ns_id = newId;
 				cur_nss = cur_nss[i];
-				var ns_data = ns_map[cur_nss.ns_vendor + ":"
-						+ cur_nss.ns_name + ":" + cur_ns.ns_version];
+				var ns_data = ns_map[cur_nss.ns_vendor + ":" + cur_nss.ns_name
+						+ ":" + cur_nss.ns_version];
 				ns_data.id = newId;
 				var connectionPoints = ns_data.descriptor.connection_points;
 				var virtualLinks = [];
@@ -524,7 +524,53 @@ function renameNodeOnServer(oldId, newId, className) {
 		for ( var i = 0; i < cur_cp.length; i++) {
 			if (cur_cp[i].id == oldId) {
 				cur_cp[i].id = newId;
-				cur_obj = cur_cp[i];
+				var ep = instance.getEndpoint(oldId);
+				var conns = ep.connections;
+				for ( var j = 0; j < conns.length; j++) {
+					var obj = conns[j].endpoints;
+					if (obj.length > 0) {
+						var src = obj[0].getUuid();
+						src = src.replace(oldId, newId);
+						var tgt = obj[1].getUuid();
+						tgt = tgt.replace(oldId, newId);
+						var cps = [];
+						cps.push(src);
+						cps.push(tgt);
+						var eIds = [];
+						eIds.push(obj[0].elementId);
+						eIds.push(obj[1].elementId);
+						var virtualLink = {
+							elemIds : eIds,
+							uuids : cps
+						};
+						// save connections of this node to virtualLinks
+						virtualLinks.push(virtualLink);
+					}
+					// delete connections
+					updateVirtualLinks(conns[j], true);
+				}
+				// delete old endpoints
+				instance.deleteEndpoint(ep);
+				drawCp(newId);
+				for ( var j = 0; j < virtualLinks.length; j++) {
+					var eIds = virtualLinks[j].elemIds;
+					var uuids = virtualLinks[j].uuids;
+					// redraw connections
+					instance.connect({
+						uuids : virtualLinks[j].uuids
+					});
+					var virtual_link = {
+						id : eIds[0] + "-2-" + eIds[1],
+						connectivity_type : "E-Line",
+						connection_points_reference : uuids
+					};
+					if (!cur_ns.descriptor["virtual_links"]) {
+						cur_ns.descriptor["virtual_links"] = [];
+					}
+					// add connection to descriptor and forwarding graph
+					cur_ns.descriptor["virtual_links"].push(virtual_link);
+					updateForwardingGraphs(uuids[0], uuids[1], false);
+				}
 				break;
 			}
 		}
@@ -543,7 +589,6 @@ function renameNodeOnServer(oldId, newId, className) {
 		cur_ns.meta.positions[newId] = cur_ns.meta.positions[oldId];
 		delete cur_ns.meta.positions[oldId];
 	}
-	updateService();
 }
 // add a node of a network service to editor using ko
 function addNode(type, data, x, y) {
@@ -560,7 +605,7 @@ function addNode(type, data, x, y) {
 	var nameBox = elem.children("input")[0];
 	nameBox.style.width = ((nameBox.value.length + 2) * 8) + 'px';
 	if (type == "cp") {
-		drawConnectionPoint(data.id);
+		drawCp(data.id);
 	} else if (type == "e-lan") {
 		drawElan(data);
 	} else {
@@ -780,12 +825,12 @@ function displayNS() {
 				addNode("e-lan", elan, $x, $y);
 				countDropped++;
 			} else {
-				drawVirtualLink(virtual_link);
+				drawLink(virtual_link);
 			}
 		}
 	}
 }
-function drawVirtualLink(virtual_link) {
+function drawLink(virtual_link) {
 	instance.connect({
 		uuids : virtual_link["connection_points_reference"]
 	});
@@ -853,10 +898,8 @@ function updateDescriptor(type, list, elemId) {
 		$y = cur_ns.meta.positions[vnf_data.id][1];
 		addNode(type, vnf_data, $x, $y);
 	}
-	// drawVnfOrNs(type, elemId, lastDraggedDescriptor["descriptor"]);
-	updateService();
 }
-function drawConnectionPoint(elemID) {
+function drawCp(elemID) {
 	instance.addEndpoint(elemID, {
 		uuid : elemID,
 		anchor : [ "Perimeter", {
@@ -888,7 +931,6 @@ function createNewConnectionPoint(elemID, updateOnServer) {
 			"id" : elemID,
 			"type" : "interface"
 		});
-		updateService();
 	}
 }
 function drawElan(data) {
@@ -927,7 +969,6 @@ function createNewElan(elemID, updateOnServer) {
 	$x = cur_ns.meta.positions[elan.id][0];
 	$y = cur_ns.meta.positions[elan.id][1];
 	addNode("e-lan", elan, $x, $y);
-	updateService();
 }
 
 function updateVirtualLinks(conn, remove) {
@@ -944,7 +985,6 @@ function updateVirtualLinks(conn, remove) {
 			other = cp_source;
 		}
 		var ep = instance.getEndpoint(cp_target.getUuid());
-
 		if (elan) {
 			for ( var i = 0; i < cur_ns.descriptor.virtual_links.length; i++) {
 				if (cur_ns.descriptor.virtual_links[i].id == elan.getUuid()) {
@@ -965,7 +1005,6 @@ function updateVirtualLinks(conn, remove) {
 			updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(),
 					remove);
 		}
-		updateService();
 	} else {
 		var idx = -1;
 		for ( var i = 0; i < connections.length; i++) {
@@ -1023,7 +1062,6 @@ function savePositionForNode(event) {
 	}
 	cur_ns.meta.positions[nodeId] = position;
 	dragCount = 0;
-	updateService();
 }
 
 // helper to check if nodes where dragged or jus clicked
@@ -1048,6 +1086,7 @@ function configureJsPlumb() {
 						updateDescriptor("vnf",
 								cur_ns.descriptor.network_functions, data
 										.attr('id'));
+						updateServiceOnServer();
 					}
 					if (data.hasClass('ns')) {
 						console.log("inside ns condition");
@@ -1055,16 +1094,19 @@ function configureJsPlumb() {
 						updateDescriptor("ns",
 								cur_ns.descriptor.network_services, data
 										.attr('id'));
+						updateServiceOnServer();
 					}
 					if (data.hasClass('cp')) {
 						console.log("inside cp condition");
 						reconfigureNode(ui, data, 'cp', this);
 						createNewConnectionPoint(data.attr('id'), true);
+						updateServiceOnServer();
 					}
 					if (data.hasClass('e-lan')) {
 						console.log("inside e-lan condition");
 						reconfigureNode(ui, data, "e-lan", this);
 						createNewElan(data.attr('id'), true);
+						updateServiceOnServer();
 					}
 					instance.draggable(data.attr('id'), {
 						drag : activateDragging,
@@ -1086,11 +1128,13 @@ function configureJsPlumb() {
 		new animateConnections(info.connection);
 		if (originalEvent) {
 			updateVirtualLinks(info.connection, false);
+			updateServiceOnServer();
 		}
 	});
 	instance.bind("connectionDetached", function(info, originalEvent) {
 		new animateConnections(info.connection);
 		updateVirtualLinks(info.connection, true);
+		updateServiceOnServer();
 	});
 	instance.bind("connectionMoved", function(info, originalEvent) {
 		// only remove here, because a 'connection' event is also fired.
@@ -1098,6 +1142,7 @@ function configureJsPlumb() {
 		// be fired.
 		new animateConnections(info.connection);
 		updateVirtualLinks(info.connection, true);
+		updateServiceOnServer();
 	});
 	instance.bind("dblclick", function(connection, originalEvent) {
 		$("#deleteDialog").dialog({
@@ -1106,6 +1151,7 @@ function configureJsPlumb() {
 				Delete : function() {
 					deleteLink(connection);
 					instance.detach(connection);
+					updateServiceOnServer();
 					$(this).dialog("close");
 				},
 				Cancel : function() {
@@ -1146,6 +1192,7 @@ function loadCurrentNS() {
 					cur_ns = data;
 					displayNS();
 					computeForwardingPaths();
+					updateServiceOnServer();
 				},
 			});
 }
