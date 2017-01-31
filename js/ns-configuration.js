@@ -42,7 +42,7 @@ function uploadFile(event){
 function saveNsConfiguration() {
     if (validate()) {
 	cur_ns.descriptor = editor.getValue();
-	updateService();
+	updateServiceOnServer();
 	$("#successDescriptorDialogUpdated").dialog();
     }
 }
@@ -50,7 +50,7 @@ function saveNsConfiguration() {
 function closeNsConfiguration() {
     if (validate()) {
 	cur_ns.descriptor = editor.getValue();
-	updateService();
+	updateServiceOnServer();
 	$("#nsConfigurationContainer").hide();
 	location.reload();
 	$("#editorContainer").show();
