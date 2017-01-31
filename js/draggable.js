@@ -626,7 +626,7 @@ function addNode(type, data, x, y) {
 	});
 }
 function doDeploy(id) {
-	showWaitAnimation("Deploying...");
+	showWaitAnimation("Deploying");
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/platforms/"
 				+ id + "/services/",
