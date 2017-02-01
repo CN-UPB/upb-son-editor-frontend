@@ -78,14 +78,14 @@
 .panzoom{
 	/*border: 2px solid black;*/
 	border: 1px ridge;
-	background-color: white;
+	background-color: #cdcdcd;
 	/*z-index: -5;*/
 }
 .editor-area{
 	/*margin: 10px;*/
-	border: 1px ridge white;
+	border: 1px ridge black;
 	/*z-index: -5;*/
-	/*background-color: #cdcdcd;*/
+	background-color: white;
 }
 
 .scrollbar{
