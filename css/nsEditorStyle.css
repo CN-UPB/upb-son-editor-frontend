@@ -75,15 +75,23 @@
 	border-width: 1px;
 }
 
-.editor-area{
-
+.panzoom{
+	/*border: 2px solid black;*/
 	border: 1px ridge;
+	background-color: #cdcdcd;
+	/*z-index: -5;*/
+}
+.editor-area{
+	/*margin: 10px;*/
+	border: 1px ridge black;
+	/*z-index: -5;*/
+	background-color: white;
 }
 
 .scrollbar{
 	position: relative;
 	height: 495px;
-	overflow: scroll; /*for horizontal and vertical scroll bars */
+	overflow: auto; /*for horizontal and vertical scroll bars */
 }
 
 .menu{
@@ -145,6 +153,7 @@ div .vnf-list {
 	float: left;
 	text-align: center;
 	vertical-align: middle;
+	z-index: 24;
 }
 
 div .vnf-after-drop{
@@ -184,6 +193,7 @@ div .vnf-after-drop>input{
 	float: left;
 	text-align: center;
 	vertical-align: middle;
+	z-index: 24;
 }
 
 div .ns-after-drop{
@@ -228,6 +238,7 @@ div .ns-after-drop>input{
 	float: left;
     vertical-align: middle;
 	text-align: center;
+	z-index: 24;
 }
 
 .cp > p {
@@ -274,6 +285,7 @@ div .cp-after-drop>input{
 	float: left;
 	text-align:center;
     vertical-align: middle;
+    z-index: 24;
 }
 
 div .e-lan-after-drop{
@@ -369,9 +381,9 @@ input, labelClass {
     cursor:pointer;
 	opacity: 0.5;
 }
-.editor-area {
+/*.editor-area {
 	margin-left: 355px;
-}
+}*/
 .node-button{
 	display:none;
 	top:20%;
