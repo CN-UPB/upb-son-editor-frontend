@@ -1,0 +1,65 @@
+.container {
+  background-color: white;
+  border: 1px solid #004c66;
+  color: #00BFFF;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.panzoom {
+  position: absolute;
+  width: 500px;
+  height: 350px;
+  background-color: rgba(0, 0, 255, 0.1);
+  overflow: visible;
+  border: 5px dotted rgba(204, 204, 204, 0.1);
+}
+
+.diagram {
+  position: absolute;
+}
+
+.item {
+  cursor: pointer;
+  position: absolute;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 1px solid #004c66;
+  padding: 8px;
+  border-radius: 3px;
+  background-color: rgba(0, 191, 255, 0.2);
+}
+.item:hover {
+  border: 1px solid #00BFFF;
+}
+
+.jsplumb-connector path {
+  stroke: #00BFFF;
+}
+
+.hint {
+  position: absolute;
+  color: grey;
+  left: 100%;
+  top: -24px;
+  white-space: nowrap;
+  font-size: 14px;
+}
+.hint h4 {
+  margin-left: 15px;
+}
+.hint a {
+  margin-left: 25px;
+  color: red;
+  text-decoration: none;
+}
+.hint a:hover {
+  text-decoration: underline;
+}
+.hint li a {
+  margin-left: 0;
+  color: #00BFFF;
+}

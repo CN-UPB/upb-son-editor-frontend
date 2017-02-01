@@ -8,17 +8,24 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"/>
   <link rel="stylesheet" media="screen" href="css/commonStyle.css" />
+  <link rel="stylesheet" rel="stylesheet" href="css/emuStyle.css" />
 	
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+  	<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.12.0/lodash.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.0.7/jsPlumb.min.js'></script>
+	<script src='http://yurigor.com/js/dagre.min.js'></script>
+	<script src='http://yurigor.com/js/jquery.panzoom.min.js'></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    <!--<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>-->
   
   <script src="js/constants.js"></script>
   <!--<script src="js/project.js"></script>-->
   <script src="js/utils.js"></script>
-  <script src="js/emu.js"></script>
-  <!--<script src="js/userInfo.js"></script>-->
+  <!--<script src="js/emu.js"></script>-->
+  <script src="js/emuDrawGraph.js"></script>
 </head>
 <body>
 
@@ -47,33 +54,45 @@
 </nav>
   
 <div class="container">
-<div class="row top-buffer" style="margin-top:50px;">
-	<div class="col-md-8">
-		<table class="table table-bordered" id="service-table">
-			<thead>
-			  <tr>
-				<th width=10%>Name of The Server</th>
-				<th width=30%>Id</th>
-				<!--<th width=20%>network_functions</th>
-				<th width=10%>Type</th>
-				<th width=50%>Options</th>-->
-				<th width=30%>Status</th>
-				<th width=10%>Template Name</th>
-			  </tr>
-			</thead>
-			<tbody id="display_NS_VNFS" data-bind="foreach: descriptors">
-                <tr>
-                    <td data-bind="text: name"></td>
-                    <td data-bind="text: id"></td>
-                    <!--<td data-bind="text: network_functions"></td>
-                    <td data-bind="text: type"></td>-->
-                    <td data-bind="text: status"></td>
-                    <td data-bind="text: template_name"></td>
-                </tr>
-			</tbody>
-		</table>
+		<div class="panzoom">
+				<div class="diagram">
+					<div id="i0"  class="item">Root!</div>
+					<div id="i1" class="item">Child 1</div>
+					<div  id="i11" class="item">Child 1.1</div>
+					<div  id="i12" class="item">Child 1.2</div>
+					<div id="i2" class="item">Child 2</div>
+					<div id="i21" class="item">Child 2.1</div>
+					<div id="i3" class="item">Child 3</div>
+				</div>
+		</div>
+	<div class="row top-buffer" style="margin-top:50px;">
+		<div class="col-md-6">
+			<table class="table table-bordered" id="service-table">
+				<thead>
+				  <tr>
+					<th width=10%>Name of The Server</th>
+					<th width=20%>Id</th>
+					<!--<th width=20%>network_functions</th>
+					<th width=10%>Type</th>
+					<th width=50%>Options</th>-->
+					<th width=10%>Status</th>
+					<th width=10%>Template Name</th>
+				  </tr>
+				</thead>
+				<tbody id="display_NS_VNFS" data-bind="foreach: descriptors">
+	                <tr>
+	                    <td data-bind="text: name"></td>
+	                    <td data-bind="text: id"></td>
+	                    <!--<td data-bind="text: network_functions"></td>
+	                    <td data-bind="text: type"></td>-->
+	                    <td data-bind="text: status"></td>
+	                    <td data-bind="text: template_name"></td>
+	                </tr>
+				</tbody>
+			</table>
+		</div>
+
 	</div>
-</div>
 
 </div>
 

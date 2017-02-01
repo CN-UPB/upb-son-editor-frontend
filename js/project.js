@@ -374,7 +374,7 @@ function goToConfigurationView() {
 
 // open emulator view
 function goToEmulatorView() {
-	window.location.href = "emuView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
+	window.location.href = "emuIndex.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
 }
 
 // create new networkservice dialog (uses jquery ui Dialog)
