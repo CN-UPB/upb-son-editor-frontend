@@ -990,12 +990,12 @@ function savePositionForNode(event) {
     var nodeId = node.id;
     if (position[0] < 0) {
 	position[0] = 0;
-	$("#" + nodeId).css("left", 20);
+	$(node).css("left", 20);
 	instance.repaintEverything();
     }
     if (position[1]< 0) {
 	position[1]= 0;
-	$("#" + nodeId).css("top",20);
+	$(node).css("top",20);
 	instance.repaintEverything();
     }
     if (!cur_ns.meta.positions[nodeId]) {
