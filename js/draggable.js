@@ -830,7 +830,7 @@ function displayNS() {
 	}
     }
     if (cur_ns.descriptor.virtual_links != null) {
-	for ( var i = 0; i < (cur_ns.descriptor.virtual_links).length; i++) {
+	for ( var i = 0; i < cur_ns.descriptor.virtual_links.length; i++) {
 	    var virtual_link = cur_ns.descriptor.virtual_links[i];
 	    if (virtual_link.connectivity_type == "E-LAN") {
 		var elan = virtual_link;
@@ -842,9 +842,9 @@ function displayNS() {
 		$y = cur_ns.meta.positions[elan.id][1];
 		drawNode("e-lan", elan, $x, $y);
 		var connections = elan.connection_points_reference;
-		for ( var i = 0; i < connections.length; i++) {
+		for ( var j= 0; j < connections.length; j++) {
 		    instance.connect({
-			'uuids' : [ elan.id, connections[i] ]
+			'uuids' : [ elan.id, connections[j] ]
 		    });
 		}
 		countDropped++;
