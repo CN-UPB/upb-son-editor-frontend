@@ -141,7 +141,7 @@ var ViewModel = function() {
 	    error = "The name of a connection point should contain at least one symbol!";
 	} else {
 	    newId = this.id();
-	    if ($.inArray(newId, usedIDs)>= 0) {
+	    if ($.inArray(newId, usedIDs) >= 0) {
 		this.id(oldId);
 		renameOk = false;
 		error = "This name already exists!"
@@ -152,7 +152,7 @@ var ViewModel = function() {
 		    var className = node.attr("class");
 
 		    if (className.split("-")[0] == "cp")// the name of
-							// connection
+		    // connection
 		    // point
 		    // muss begin with "ns:"
 		    {
@@ -165,7 +165,7 @@ var ViewModel = function() {
 	    }
 	}
 	if (renameOk) {
-	    usedIDs[$.inArray(oldId,usedIDs)]=newId;
+	    usedIDs[$.inArray(oldId, usedIDs)] = newId;
 	    renameNodeOnServer(oldId, newId, node.attr("class"));
 	    this.old_id(newId);
 	} else {
@@ -988,6 +988,16 @@ function savePositionForNode(event) {
     var position = event.pos;
     var node = event.selection[0][0];
     var nodeId = node.id;
+    if (position[0] < 0) {
+	position[0] = 0;
+	$("#" + nodeId).css("left", 20);
+	instance.repaintEverything();
+    }
+    if (position[1]< 0) {
+	position[1]= 0;
+	$("#" + nodeId).css("top",20);
+	instance.repaintEverything();
+    }
     if (!cur_ns.meta.positions[nodeId]) {
 	cur_ns.meta.positions[nodeId] = {
 	    "x" : 0,
