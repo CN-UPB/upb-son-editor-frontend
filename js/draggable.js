@@ -128,13 +128,55 @@ var ViewModel = function() {
 	ko.utils.arrayPushAll(self.platforms, platforms);
     };
     self.rename = function() {
-	var dataId = this.id().replace(":", "\\:");
-	var node = $("#" + dataId);
 	var oldId = this.old_id();
-	var newId = this.id();
-	if (oldId != newId) {
+	var newId = "";
+	var error = "";
+	var renameOk = true;
+	var dataId;
+	var node = null;
+	if (this.id().length == 0) {
+	    this.id(oldId);
+	    renameOk = false;
+	    error = "The name of a connection point should contain at least one symbol!";
+	} else {
+	    newId = this.id();
+	    dataId = this.id().replace(":", "\\:");
+	    node = $("#" + dataId);
+	    if (oldId != newId) {
+		var className = node.attr("class");
+
+		if (className.split("-")[0] == "cp")// the name of connection
+		// point
+		// muss begin with "ns:"
+		{
+		    if (!/^ns\:([a-z0-9_]+)$/.test(newId)) {
+			renameOk = false;
+			error = "The name of a connection point should fulfil pattern 'ns:([a-z0-9_]+' !";
+		    }
+		}
+	    }
+	}
+	if (renameOk) {
 	    renameNodeOnServer(oldId, newId, node.attr("class"));
 	    this.old_id(newId);
+	} else {
+	    dataId = this.id().replace(":", "\\:");
+	    node = $("#" + dataId);
+	    $("#errorDialog").dialog({
+		modal : true,
+		buttons : {
+		    Confirm : function() {
+			var inputBox = node.children("input")[0];
+			inputBox.value = oldId;
+			$("#errorDialog").dialog("close");
+		    },
+		}
+	    }).text(error);
+	    this.id(oldId);
+	}
+	if (node) {
+	    node.children("input")[0].style.width = ((node.children("input")[0].value.length + 2) * 8)
+		    + 'px';
 	}
     };
 };
@@ -597,7 +639,7 @@ function drawLink(virtual_link) {
 	uuids : virtual_link["connection_points_reference"]
     });
     updateForwardingGraphs(virtual_link["connection_points_reference"][0],
-	    virtual_link["connection_points_reference"][1]);
+	    virtual_link["connection_points_reference"][1], false);
     return conn;
 }
 
