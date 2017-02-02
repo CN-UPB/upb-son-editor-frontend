@@ -291,7 +291,10 @@ function addLinkToDpt(conn) {
 	    cur_ns.descriptor["virtual_links"] = [];
 	}
 	cur_ns.descriptor["virtual_links"].push(virtual_link);
-	updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(), false);
+	if (cp_source.getUuid() != cp_target.getUuid()) {
+	    updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(),
+		    false);
+	}
     }
 }
 
@@ -324,14 +327,19 @@ function deleteLinkFromDpt(connection) {
 	    }
 	}
     } else {
-	var removed = cur_links
-		.filter(function(el) {
-		    return !(el.connection_points_reference[0] == cp_source
-			    .getUuid() && el.connection_points_reference[1] == cp_target
-			    .getUuid());
-		});
-	cur_ns.descriptor.virtual_links = removed;
-	updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(), true);
+	if (cur_links) {
+	    var removed = cur_links
+		    .filter(function(el) {
+			return !(el.connection_points_reference[0] == cp_source
+				.getUuid() && el.connection_points_reference[1] == cp_target
+				.getUuid());
+		    });
+	    cur_ns.descriptor.virtual_links = removed;
+	    if (cp_source.getUuid() != cp_target.getUuid()) {
+		updateForwardingGraphs(cp_source.getUuid(),
+			cp_target.getUuid(), true);
+	    }
+	}
     }
 }
 
@@ -638,8 +646,10 @@ function drawLink(virtual_link) {
     var conn = instance.connect({
 	uuids : virtual_link["connection_points_reference"]
     });
-    updateForwardingGraphs(virtual_link["connection_points_reference"][0],
-	    virtual_link["connection_points_reference"][1], false);
+    if (virtual_link["connection_points_reference"][0] != virtual_link["connection_points_reference"][1]) {
+	updateForwardingGraphs(virtual_link["connection_points_reference"][0],
+		virtual_link["connection_points_reference"][1], false);
+    }
     return conn;
 }
 
@@ -993,7 +1003,7 @@ function configureJsPlumb() {
 		drop : function(event, ui) {
 		    var data = ui.draggable.clone();
 		    if (data.hasClass('vnf')) {
-			console.log("inside vnf condition");
+			// console.log("inside vnf condition");
 			reconfigureNode(ui, data, "vnf", this);
 			dropNewVnfOrNs("vnf",
 				cur_ns.descriptor.network_functions, data
@@ -1001,7 +1011,7 @@ function configureJsPlumb() {
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('ns')) {
-			console.log("inside ns condition");
+			// console.log("inside ns condition");
 			reconfigureNode(ui, data, "ns", this);
 			dropNewVnfOrNs("ns",
 				cur_ns.descriptor.network_services, data
@@ -1009,13 +1019,13 @@ function configureJsPlumb() {
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('cp')) {
-			console.log("inside cp condition");
+			// console.log("inside cp condition");
 			reconfigureNode(ui, data, 'cp', this);
 			dropNewCp(data.attr('id'), true);
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('e-lan')) {
-			console.log("inside e-lan condition");
+			// console.log("inside e-lan condition");
 			reconfigureNode(ui, data, "e-lan", this);
 			dropNewElan(data.attr('id'), true);
 			updateServiceOnServer();
@@ -1039,23 +1049,27 @@ function configureJsPlumb() {
 			if (originalEvent) {
 			    var cp_source = info.connection.endpoints[0];
 			    var cp_target = info.connection.endpoints[1];
+			    var errorMsg = "";
+			    var hasError = false;
 			    if (cp_source.getParameters().isElan
 				    && cp_target.getParameters().isElan) {
-				$("#deleteDialog")
-					.dialog(
-						{
-						    modal : true,
-						    buttons : {
-							Confirm : function() {
-							    instance
-								    .detach(info.connection);
-							    $(this).dialog(
-								    "close");
-							},
-						    }
-						})
-					.text(
-						"Connecting two E-LAN nodes is not allowed! Please confirm to delete it.");
+				errorMsg = "Connecting two E-LAN nodes is not allowed! Please confirm to delete it.";
+				hasError = true;
+			    }
+			    if (cp_source.getUuid() == cp_target.getUuid()) {
+				errorMsg = "Circle connection is not allowed! Please confirm to delete it.";
+				hasError = true;
+			    }
+			    if (hasError) {
+				$("#deleteDialog").dialog({
+				    modal : true,
+				    buttons : {
+					Confirm : function() {
+					    instance.detach(info.connection);
+					    $(this).dialog("close");
+					},
+				    }
+				}).text(errorMsg);
 			    } else {
 				addLinkToDpt(info.connection);
 				updateServiceOnServer();
