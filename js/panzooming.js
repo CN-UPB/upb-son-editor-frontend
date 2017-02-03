@@ -71,7 +71,7 @@ var $setTop;
             });
             console.log(e.offsetX, e.offsetY);
             //$("#editor").offset({ top: 150, left: 300 });
-            $("#editor").offset({ top: $setTop, left: $setLeft });
+            //$("#editor").offset({ top: $setTop, left: $setLeft });
             zoomMatrix = ($panzoom.panzoom("getMatrix"));
             current_zoom = zoomMatrix[0];
             current_zoom = parseFloat(current_zoom).toFixed(1);
