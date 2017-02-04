@@ -17,6 +17,7 @@ var color = "#d39963";
 var interval = null;
 var isDragAction = false;
 var dragCount = 0;
+var usedIDs = [];
 var endPointOptions = {
     endpoint : "Dot",
     paintStyle : {
@@ -128,13 +129,63 @@ var ViewModel = function() {
 	ko.utils.arrayPushAll(self.platforms, platforms);
     };
     self.rename = function() {
-	var dataId = this.id().replace(":", "\\:");
-	var node = $("#" + dataId);
 	var oldId = this.old_id();
-	var newId = this.id();
-	if (oldId != newId) {
+	var newId = "";
+	var error = "";
+	var renameOk = true;
+	var dataId;
+	var node = null;
+	if (this.id().length == 0) {
+	    this.id(oldId);
+	    renameOk = false;
+	    error = "The name of a connection point should contain at least one symbol!";
+	} else {
+	    newId = this.id();
+	    if ($.inArray(newId, usedIDs) >= 0) {
+		this.id(oldId);
+		renameOk = false;
+		error = "This name already exists!"
+	    } else {
+		dataId = this.id().replace(":", "\\:");
+		node = $("#" + dataId);
+		if (oldId != newId) {
+		    var className = node.attr("class");
+
+		    if (className.split("-")[0] == "cp")// the name of
+		    // connection
+		    // point
+		    // muss begin with "ns:"
+		    {
+			if (!/^ns\:([a-z0-9_]+)$/.test(newId)) {
+			    renameOk = false;
+			    error = "The name of a connection point should fulfil pattern 'ns:([a-z0-9_]+' !";
+			}
+		    }
+		}
+	    }
+	}
+	if (renameOk) {
+	    usedIDs[$.inArray(oldId, usedIDs)] = newId;
 	    renameNodeOnServer(oldId, newId, node.attr("class"));
 	    this.old_id(newId);
+	} else {
+	    dataId = this.id().replace(":", "\\:");
+	    node = $("#" + dataId);
+	    $("#errorDialog").dialog({
+		modal : true,
+		buttons : {
+		    Confirm : function() {
+			var inputBox = node.children("input")[0];
+			inputBox.value = oldId;
+			$("#errorDialog").dialog("close");
+		    },
+		}
+	    }).text(error);
+	    this.id(oldId);
+	}
+	if (node) {
+	    node.children("input")[0].style.width = ((node.children("input")[0].value.length + 2) * 8)
+		    + 'px';
 	}
     };
 };
@@ -249,7 +300,10 @@ function addLinkToDpt(conn) {
 	    cur_ns.descriptor["virtual_links"] = [];
 	}
 	cur_ns.descriptor["virtual_links"].push(virtual_link);
-	updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(), false);
+	if (cp_source.getUuid() != cp_target.getUuid()) {
+	    updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(),
+		    false);
+	}
     }
 }
 
@@ -282,14 +336,19 @@ function deleteLinkFromDpt(connection) {
 	    }
 	}
     } else {
-	var removed = cur_links
-		.filter(function(el) {
-		    return !(el.connection_points_reference[0] == cp_source
-			    .getUuid() && el.connection_points_reference[1] == cp_target
-			    .getUuid());
-		});
-	cur_ns.descriptor.virtual_links = removed;
-	updateForwardingGraphs(cp_source.getUuid(), cp_target.getUuid(), true);
+	if (cur_links) {
+	    var removed = cur_links
+		    .filter(function(el) {
+			return !(el.connection_points_reference[0] == cp_source
+				.getUuid() && el.connection_points_reference[1] == cp_target
+				.getUuid());
+		    });
+	    cur_ns.descriptor.virtual_links = removed;
+	    if (cp_source.getUuid() != cp_target.getUuid()) {
+		updateForwardingGraphs(cp_source.getUuid(),
+			cp_target.getUuid(), true);
+	    }
+	}
     }
 }
 
@@ -566,6 +625,7 @@ function drawElan(dataId) {
 
 // draw a node in editor
 function drawNode(type, data, x, y) {
+    usedIDs.push(data.id);
     viewModel.addToEditor(data);
     var dataId = data.id.replace(":", "\\:");
     var elem = $("#" + dataId);
@@ -596,8 +656,10 @@ function drawLink(virtual_link) {
     var conn = instance.connect({
 	uuids : virtual_link["connection_points_reference"]
     });
-    updateForwardingGraphs(virtual_link["connection_points_reference"][0],
-	    virtual_link["connection_points_reference"][1]);
+    if (virtual_link["connection_points_reference"][0] != virtual_link["connection_points_reference"][1]) {
+	updateForwardingGraphs(virtual_link["connection_points_reference"][0],
+		virtual_link["connection_points_reference"][1], false);
+    }
     return conn;
 }
 
@@ -778,7 +840,7 @@ function displayNS() {
 	}
     }
     if (cur_ns.descriptor.virtual_links != null) {
-	for ( var i = 0; i < (cur_ns.descriptor.virtual_links).length; i++) {
+	for ( var i = 0; i < cur_ns.descriptor.virtual_links.length; i++) {
 	    var virtual_link = cur_ns.descriptor.virtual_links[i];
 	    if (virtual_link.connectivity_type == "E-LAN") {
 		var elan = virtual_link;
@@ -790,9 +852,9 @@ function displayNS() {
 		$y = cur_ns.meta.positions[elan.id][1];
 		drawNode("e-lan", elan, $x, $y);
 		var connections = elan.connection_points_reference;
-		for ( var i = 0; i < connections.length; i++) {
+		for ( var j = 0; j < connections.length; j++) {
 		    instance.connect({
-			'uuids' : [ elan.id, connections[i] ]
+			'uuids' : [ elan.id, connections[j] ]
 		    });
 		}
 		countDropped++;
@@ -810,13 +872,15 @@ function setSize() {
     minWidth = windowWidth * 0.1;
     $('.left-navigation-bar').css('min-height', windowHeight);
     $('.left-navigation-bar').css('min-width', minWidth);
-    $('#editor').css('min-height', windowHeight);
-    $('#editor').css('marginLeft', minWidth);
+    $('#editor-parent').css('min-height', windowHeight);
+    $('#editor-parent').css('marginLeft', $('.left-navigation-bar').width());
+    $('#editor').css('min-height', windowHeight * 2);
+    $('#editor').css('min-width', windowWidth * 2);
     $('.vnf').css('width', $('.left-navigation-bar').width() - 10);
     $('.ns').css('width', $('.left-navigation-bar').width() - 10);
 }
 // replace old_class from the source element with new class 'xxx-after-drop'
-function reconfigureNode(ui, data, old_class, editor) {
+function reconfigureNode(ui, data, old_class, editor, current_zoom) {
     var newId = old_class + "_" + data.attr('id') + "_" + countDropped;
     if (old_class == "cp") {
 	newId = "ns:" + data.attr('id') + "_" + countDropped;
@@ -826,8 +890,8 @@ function reconfigureNode(ui, data, old_class, editor) {
     data.removeClass(old_class);
     data.addClass(old_class + '-after-drop');
     data.removeClass('ui-draggable');
-    var $newPosX = ui.offset.left - $(editor).offset().left;
-    var $newPosY = ui.offset.top - $(editor).offset().top;
+    var $newPosX = (ui.offset.left - $(editor).offset().left) / current_zoom;
+    var $newPosY = (ui.offset.top - $(editor).offset().top) / current_zoom;
     data.css({
 	position : 'absolute',
 	left : $newPosX,
@@ -924,6 +988,16 @@ function savePositionForNode(event) {
     var position = event.pos;
     var node = event.selection[0][0];
     var nodeId = node.id;
+    if (position[0] < 0) {
+	position[0] = 0;
+	$(node).css("left", 20);
+	instance.repaintEverything();
+    }
+    if (position[1]< 0) {
+	position[1]= 0;
+	$(node).css("top",20);
+	instance.repaintEverything();
+    }
     if (!cur_ns.meta.positions[nodeId]) {
 	cur_ns.meta.positions[nodeId] = {
 	    "x" : 0,
@@ -951,34 +1025,39 @@ function configureJsPlumb() {
 		drop : function(event, ui) {
 		    var data = ui.draggable.clone();
 		    if (data.hasClass('vnf')) {
-			console.log("inside vnf condition");
-			reconfigureNode(ui, data, "vnf", this);
+			// console.log("inside vnf condition");
+			console.log("current zoom at the time of drop: "
+				+ current_zoom);
+			reconfigureNode(ui, data, "vnf", this, current_zoom);
 			dropNewVnfOrNs("vnf",
 				cur_ns.descriptor.network_functions, data
 					.attr('id'));
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('ns')) {
-			console.log("inside ns condition");
-			reconfigureNode(ui, data, "ns", this);
+			// console.log("inside ns condition");
+			reconfigureNode(ui, data, "ns", this, current_zoom);
 			dropNewVnfOrNs("ns",
 				cur_ns.descriptor.network_services, data
 					.attr('id'));
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('cp')) {
-			console.log("inside cp condition");
-			reconfigureNode(ui, data, 'cp', this);
+			// console.log("inside cp condition");
+			reconfigureNode(ui, data, 'cp', this, current_zoom);
 			dropNewCp(data.attr('id'), true);
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('e-lan')) {
-			console.log("inside e-lan condition");
-			reconfigureNode(ui, data, "e-lan", this);
+			// console.log("inside e-lan condition");
+			reconfigureNode(ui, data, "e-lan", this, current_zoom);
 			dropNewElan(data.attr('id'), true);
 			updateServiceOnServer();
 		    }
 		    instance.draggable(data.attr('id'), {
+			start : function(eStart) {
+			    $("#editor").panzoom("disable");
+			},
 			drag : activateDragging,
 			stop : savePositionForNode,
 			containment : "parent"
@@ -997,23 +1076,27 @@ function configureJsPlumb() {
 			if (originalEvent) {
 			    var cp_source = info.connection.endpoints[0];
 			    var cp_target = info.connection.endpoints[1];
+			    var errorMsg = "";
+			    var hasError = false;
 			    if (cp_source.getParameters().isElan
 				    && cp_target.getParameters().isElan) {
-				$("#deleteDialog")
-					.dialog(
-						{
-						    modal : true,
-						    buttons : {
-							Confirm : function() {
-							    instance
-								    .detach(info.connection);
-							    $(this).dialog(
-								    "close");
-							},
-						    }
-						})
-					.text(
-						"Connecting two E-LAN nodes is not allowed! Please confirm to delete it.");
+				errorMsg = "Connecting two E-LAN nodes is not allowed! Please confirm to delete it.";
+				hasError = true;
+			    }
+			    if (cp_source.getUuid() == cp_target.getUuid()) {
+				errorMsg = "Circle connection is not allowed! Please confirm to delete it.";
+				hasError = true;
+			    }
+			    if (hasError) {
+				$("#deleteDialog").dialog({
+				    modal : true,
+				    buttons : {
+					Confirm : function() {
+					    instance.detach(info.connection);
+					    $(this).dialog("close");
+					},
+				    }
+				}).text(errorMsg);
 			    } else {
 				addLinkToDpt(info.connection);
 				updateServiceOnServer();
