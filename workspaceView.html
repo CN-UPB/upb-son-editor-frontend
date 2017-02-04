@@ -138,6 +138,12 @@
 		</div>
 
 		<div id="unshareDialog" class="no-close" title="Delete Remote Repository?" hidden>
+			Please put in your Repo name to make sure to delete your repository:
+			<form id="unShareForm">
+				<label for="delRepoNameInput">Repository Name</label>
+				<input  data-parsley-required="true" data-parsley-trigger="change"
+						id ='delRepoNameInput' placeholder="repository Name"/>
+			</form>
 		</div>
 
 		<ul class="pager">

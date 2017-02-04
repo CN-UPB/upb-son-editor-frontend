@@ -664,7 +664,7 @@ function drawLink(virtual_link) {
 }
 
 function doDeploy(id) {
-    showWaitAnimation("Deploying...");
+    showWaitAnimation("Deploying");
     $.ajax({
 	url : serverURL + "workspaces/" + queryString["wsId"] + "/platforms/"
 		+ id + "/services/",
@@ -687,7 +687,7 @@ function doDeploy(id) {
 		}
 	    });
 	    $("#success").text(
-		    "Service " + cur_ns.name + " deployed successfully!");
+		    "Service " + cur_ns.descriptor.name + " deployed successfully!");
 	},
 	error : function(err) {
 	    closeWaitAnimation();

@@ -45,7 +45,7 @@ function commit(pt_id) {
 				$("#commitForm").parsley().validate();
 				if ($("#commitForm").parsley().isValid()) {
 					var commit_message = $('#commitInput').val();
-					showWaitAnimation("Committing project...", "Committing");
+					showWaitAnimation("Committing", "Committing project...");
 					$.ajax({
 						method: "POST",
 						url: serverURL + "workspaces/" + wsId + "/git/commit",
@@ -102,6 +102,7 @@ function diff(pt_id) {
 
 
 function showStatus(wsId, pt_id, url) {
+	showWaitAnimation();
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/git/status",
 		method: 'POST',
@@ -112,6 +113,7 @@ function showStatus(wsId, pt_id, url) {
 		},
 		data: JSON.stringify({'project_id': pt_id}),
 		success: function (data) {
+			closeWaitAnimation();
 			diffDialog = $("#GitDialog").dialog({
 				modal: true,
 				draggable: true,
@@ -165,7 +167,7 @@ function share(model) {
 }
 
 function init(model, repo_name) {
-	showWaitAnimation("Initializing","Sharing project on Github",  0);
+	showWaitAnimation("Sharing project on Github", "Initializing", 0);
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/git/init",
 		method: 'POST',
@@ -187,7 +189,7 @@ function init(model, repo_name) {
 }
 
 function create(model, repo_name) {
-	showWaitAnimation("Uploading","Sharing project on Github",  50);
+	showWaitAnimation("Sharing project on Github", "Uploading", 50);
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/git/create",
 		method: 'POST',
@@ -214,8 +216,12 @@ function unshare(model) {
 		modal: true,
 		buttons: {
 			"Delete from Github": function () {
-				deletePJ(model);
-				$(this).dialog("close");
+				$('#unShareForm').parsley().validate();
+				if ($('#unShareForm').parsley().isValid()) {
+					var repo_name = $('#delRepoNameInput').val();
+					deletePJ(model, repo_name);
+					$(this).dialog("close");
+				}
 			},
 			Cancel: function () {
 				$(this).dialog("close");
@@ -225,16 +231,17 @@ function unshare(model) {
 	});
 }
 
-function deletePJ(model) {
+function deletePJ(model, repo_name) {
+	showWaitAnimation("Deleting", "Deleting project from Github");
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/git/delete",
-		method: 'POST',
+		method: 'DELETE',
 		dataType: "json",
 		contentType: "application/json; charset=utf-8",
 		xhrFields: {
 			withCredentials: true
 		},
-		data: JSON.stringify({'project_id': model.id()}),
+		data: JSON.stringify({'project_id': model.id(), "repo_name": repo_name}),
 		success: function (data) {
 			if (data.success) {
 				closeWaitAnimation();

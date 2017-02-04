@@ -125,8 +125,9 @@ $(document).ajaxError(function (event, response, request, thrownError) {
 	}
 });
 
-function showWaitAnimation(text, title, progress) {
+function showWaitAnimation(title, text, progress) {
 	var titleText = title || "Loading";
+	var waitText = text;
 	if (!$("#wait").length) {
 		$(WAIT_DIALOG_STRING).dialog({
 			modal: true,
@@ -143,8 +144,11 @@ function showWaitAnimation(text, title, progress) {
 	} else {
 		$('#progressbar').progressbar({value: false});
 	}
-	$('#waitText').text(text);
-	$('#wait').dialog('option', 'title', title);
+	if (waitText)
+		$('#waitText').text(waitText);
+	else
+		$('#waitText').html("<br/>");
+	$('#wait').dialog('option', 'title', titleText);
 
 }
 
