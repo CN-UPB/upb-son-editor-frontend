@@ -107,8 +107,11 @@
 				</label>
 				<label for="urlSelect">
                     Choose from your repos:
-					<select  data-bind="foreach: repos" id="urlSelect" onchange="urlSelected(this)">
+					<select id="urlSelect" onchange="urlSelected(this)">
+					    <option selected value="">select repo</option>
+						<!-- ko foreach: repos-->
 						<option data-bind="value: clone_url, text: name"></option>
+						<!-- /ko-->
 					</select>
 				</label>
 

@@ -48,7 +48,7 @@ $(document).ready(
 		$zoomOut : $menu_actions.find(".zoom-out"),
 		$reset : $menu_actions.find(".reset"),
 		transition : true,
-		which : 3,// Set whether you'd like to pan on left (1), middle
+		which : 2,// Set whether you'd like to pan on left (1), middle
 		// (2), or right click (3)
 		maxScale : 1.5,
 		increment : 0.1,

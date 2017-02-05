@@ -144,17 +144,17 @@ var ViewModel = function() {
 	    if ($.inArray(newId, usedIDs) >= 0) {
 		this.id(oldId);
 		renameOk = false;
-		error = "This name already exists!"
+		error = "This name already exists!";
 	    } else {
 		dataId = this.id().replace(":", "\\:");
 		node = $("#" + dataId);
+		var className = node.attr("class");
+		if (className.indexOf("-after-drop") == -1) {
+		    renameOk=false;
+		    error="The name should not be a class name!"
+		}
 		if (oldId != newId) {
-		    var className = node.attr("class");
-
-		    if (className.split("-")[0] == "cp")// the name of
-		    // connection
-		    // point
-		    // muss begin with "ns:"
+		    if (className.split("-")[0] == "cp")
 		    {
 			if (!/^ns\:([a-z0-9_]+)$/.test(newId)) {
 			    renameOk = false;
@@ -166,11 +166,28 @@ var ViewModel = function() {
 	}
 	if (renameOk) {
 	    usedIDs[$.inArray(oldId, usedIDs)] = newId;
-	    renameNodeOnServer(oldId, newId, node.attr("class"));
+	    renameNodeOnServer(oldId, newId, className);
 	    this.old_id(newId);
 	} else {
 	    dataId = this.id().replace(":", "\\:");
 	    node = $("#" + dataId);
+	    var className = node.attr("class");	    
+	    if (className.indexOf("-after-drop") == -1) {
+		if (className.indexOf("vnf") != -1) {
+		    className = "vnf-after-drop";
+		}
+		if (className.indexOf("ns") != -1) {
+		    className = "ns-after-drop";
+		}
+		if (className.indexOf("cp") != -1) {
+		    className = "cp-after-drop";
+		}
+		if (className.indexOf("e-lan") != -1) {
+
+		    className = "e-lan-after-drop";
+		}
+		node = $("." + className).find("#" + dataId).prevObject;
+	    }
 	    $("#errorDialog").dialog({
 		modal : true,
 		buttons : {
@@ -183,8 +200,8 @@ var ViewModel = function() {
 	    }).text(error);
 	    this.id(oldId);
 	}
-	if (node) {
-	    node.children("input")[0].style.width = ((node.children("input")[0].value.length + 2) * 8)
+	if (node&&renameOk) {
+	   node.children("input")[0].style.width = ((node.children("input")[0].value.length + 2) * 8)
 		    + 'px';
 	}
     };
@@ -687,7 +704,8 @@ function doDeploy(id) {
 		}
 	    });
 	    $("#success").text(
-		    "Service " + cur_ns.descriptor.name + " deployed successfully!");
+		    "Service " + cur_ns.descriptor.name
+			    + " deployed successfully!");
 	},
 	error : function(err) {
 	    closeWaitAnimation();
@@ -867,16 +885,16 @@ function displayNS() {
 
 // function to set the editor height dynamically fitting to the browser window
 function setSize() {
-    windowHeight = $(window).innerHeight() - $('.left-navigation-bar').offset().top;
+    windowHeight = $(window).innerHeight()
+	    - $('.left-navigation-bar').offset().top;
     windowWidth = $(window).innerWidth();
     minWidth = 255;
     $('.left-navigation-bar').css('height', windowHeight);
     $('.left-navigation-bar').css('min-width', minWidth);
     $('#editor-parent').css('height', windowHeight);
-    //$('#editor-parent').css('width', windowWidth);
     $('#editor-parent').css('marginLeft', $('.left-navigation-bar').width());
-    $('#editor').css('height', windowHeight*2);
-    $('#editor').css('width', windowWidth*2);
+    $('#editor').css('height', windowHeight * 2);
+    $('#editor').css('width', windowWidth * 2);
     $('.vnf').css('width', $('.left-navigation-bar').width() - 10);
     $('.ns').css('width', $('.left-navigation-bar').width() - 10);
 }
@@ -904,7 +922,7 @@ function reconfigureNode(ui, data, old_class, editor, current_zoom) {
     evt.selection = [ [ {
 	"id" : newId
     } ] ];
-    savePositionForNode(evt);
+    savePositionForNode(evt,true);
 }
 
 function dropNewVnfOrNs(type, list, elemId) {
@@ -985,7 +1003,7 @@ function animateConnections(conn) {
     }
 }
 
-function savePositionForNode(event) {
+function savePositionForNode(event, noUpdate) {
     var position = event.pos;
     var node = event.selection[0][0];
     var nodeId = node.id;
@@ -994,9 +1012,9 @@ function savePositionForNode(event) {
 	$(node).css("left", 20);
 	instance.repaintEverything();
     }
-    if (position[1]< 0) {
-	position[1]= 0;
-	$(node).css("top",20);
+    if (position[1] < 0) {
+	position[1] = 0;
+	$(node).css("top", 20);
 	instance.repaintEverything();
     }
     if (!cur_ns.meta.positions[nodeId]) {
@@ -1007,6 +1025,10 @@ function savePositionForNode(event) {
     }
     cur_ns.meta.positions[nodeId] = position;
     dragCount = 0;
+    if(!noUpdate)
+    {
+	updateServiceOnServer();
+    }
 }
 
 // helper to check if nodes where dragged or jus clicked
@@ -1026,9 +1048,6 @@ function configureJsPlumb() {
 		drop : function(event, ui) {
 		    var data = ui.draggable.clone();
 		    if (data.hasClass('vnf')) {
-			// console.log("inside vnf condition");
-			console.log("current zoom at the time of drop: "
-				+ current_zoom);
 			reconfigureNode(ui, data, "vnf", this, current_zoom);
 			dropNewVnfOrNs("vnf",
 				cur_ns.descriptor.network_functions, data
@@ -1036,7 +1055,6 @@ function configureJsPlumb() {
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('ns')) {
-			// console.log("inside ns condition");
 			reconfigureNode(ui, data, "ns", this, current_zoom);
 			dropNewVnfOrNs("ns",
 				cur_ns.descriptor.network_services, data
@@ -1044,13 +1062,11 @@ function configureJsPlumb() {
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('cp')) {
-			// console.log("inside cp condition");
 			reconfigureNode(ui, data, 'cp', this, current_zoom);
 			dropNewCp(data.attr('id'), true);
 			updateServiceOnServer();
 		    }
 		    if (data.hasClass('e-lan')) {
-			// console.log("inside e-lan condition");
 			reconfigureNode(ui, data, "e-lan", this, current_zoom);
 			dropNewElan(data.attr('id'), true);
 			updateServiceOnServer();

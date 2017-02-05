@@ -91,8 +91,14 @@ function loadProjects(wsId){
 
 
 function urlSelected(item){
-	$('#ptUrlInput').val(item.value);
-	$('#ptNameInput').val(item.options[item.selectedIndex].text);
+	
+	if (item.selectedIndex >0){
+		$('#ptUrlInput').val(item.value);
+		$('#ptNameInput').val(item.options[item.selectedIndex].text);
+	} else {
+		$('#ptUrlInput').val("");
+		$('#ptNameInput').val("");
+	}
 }
 
 
