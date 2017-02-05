@@ -273,9 +273,10 @@ function writeGraphToDescriptor(forwardingPaths) {
     forwardingGraphs = [];
     numOfCps = [];
     countedLinks = [];
+    var num=0;
     if (forwardingPaths.length > 0) {
 	graphs.push([]);
-	var num = 1;
+	num = 1;
 	var firstPath = forwardingPaths[0];
 	writePathToGraph(firstPath, 0);
     }

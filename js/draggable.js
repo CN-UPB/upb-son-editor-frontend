@@ -150,12 +150,11 @@ var ViewModel = function() {
 		node = $("#" + dataId);
 		var className = node.attr("class");
 		if (className.indexOf("-after-drop") == -1) {
-		    renameOk=false;
-		    error="The name should not be a class name!"
+		    renameOk = false;
+		    error = "The name should not be a class name!"
 		}
 		if (oldId != newId) {
-		    if (className.split("-")[0] == "cp")
-		    {
+		    if (className.split("-")[0] == "cp") {
 			if (!/^ns\:([a-z0-9_]+)$/.test(newId)) {
 			    renameOk = false;
 			    error = "The name of a connection point should fulfil pattern 'ns:([a-z0-9_]+' !";
@@ -171,7 +170,7 @@ var ViewModel = function() {
 	} else {
 	    dataId = this.id().replace(":", "\\:");
 	    node = $("#" + dataId);
-	    var className = node.attr("class");	    
+	    var className = node.attr("class");
 	    if (className.indexOf("-after-drop") == -1) {
 		if (className.indexOf("vnf") != -1) {
 		    className = "vnf-after-drop";
@@ -200,8 +199,8 @@ var ViewModel = function() {
 	    }).text(error);
 	    this.id(oldId);
 	}
-	if (node&&renameOk) {
-	   node.children("input")[0].style.width = ((node.children("input")[0].value.length + 2) * 8)
+	if (node && renameOk) {
+	    node.children("input")[0].style.width = ((node.children("input")[0].value.length + 2) * 8)
 		    + 'px';
 	}
     };
@@ -263,7 +262,11 @@ function calcLabelPos(anchor) {
     return [ labelX, labelY ];
 }
 
-function updateServiceOnServer() {
+function updateServiceOnServer(action) {
+    if(!action)
+    {
+	addAction();
+    }
     cur_ns.meta.counter = countDropped;
     $.ajax({
 	url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
@@ -813,8 +816,17 @@ function getGridPosition(index) {
     var $y = min + dist * Math.floor((index * dist) / max);
     return [ $x, $y ];
 }
+function clean() {
+    for ( var i = 0; i < viewModel.editor_nodes().length; i++) {
+	var node = viewModel.editor_nodes()[i];
+	instance.detachAllConnections(node.id());
+	instance.removeAllEndpoints(node.id());
+    }
+    viewModel.editor_nodes([]);
+}
 // display loaded network service in the editor
 function displayNS() {
+    clean();
     var index = 0;
     if (cur_ns.descriptor.network_functions != null) {
 	for ( var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
@@ -922,7 +934,7 @@ function reconfigureNode(ui, data, old_class, editor, current_zoom) {
     evt.selection = [ [ {
 	"id" : newId
     } ] ];
-    savePositionForNode(evt,true);
+    savePositionForNode(evt, true);
 }
 
 function dropNewVnfOrNs(type, list, elemId) {
@@ -1025,8 +1037,7 @@ function savePositionForNode(event, noUpdate) {
     }
     cur_ns.meta.positions[nodeId] = position;
     dragCount = 0;
-    if(!noUpdate)
-    {
+    if (!noUpdate) {
 	updateServiceOnServer();
     }
 }
