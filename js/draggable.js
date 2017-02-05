@@ -867,15 +867,16 @@ function displayNS() {
 
 // function to set the editor height dynamically fitting to the browser window
 function setSize() {
-    windowHeight = $(window).innerHeight();
+    windowHeight = $(window).innerHeight() - $('.left-navigation-bar').offset().top;
     windowWidth = $(window).innerWidth();
-    minWidth = windowWidth * 0.1;
-    $('.left-navigation-bar').css('min-height', windowHeight);
+    minWidth = 255;
+    $('.left-navigation-bar').css('height', windowHeight);
     $('.left-navigation-bar').css('min-width', minWidth);
-    $('#editor-parent').css('min-height', windowHeight);
+    $('#editor-parent').css('height', windowHeight);
+    //$('#editor-parent').css('width', windowWidth);
     $('#editor-parent').css('marginLeft', $('.left-navigation-bar').width());
-    $('#editor').css('min-height', windowHeight * 2);
-    $('#editor').css('min-width', windowWidth * 2);
+    $('#editor').css('height', windowHeight*2);
+    $('#editor').css('width', windowWidth*2);
     $('.vnf').css('width', $('.left-navigation-bar').width() - 10);
     $('.ns').css('width', $('.left-navigation-bar').width() - 10);
 }

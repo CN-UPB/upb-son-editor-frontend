@@ -1,145 +1,151 @@
 var zoomMatrix = [];
 var current_zoom = 1;
-var $setLeft;
+var $setLeft;// the origin of editor
 var $setTop;
+var $panzoom;
 
-      function changeZoomTo(){
-            var x = document.getElementById("percent").value;
-            console.log("you selected: " + x);
-            current_zoom = x / 100;
-            console.log("current zoom: " + current_zoom);
-            $("#editor").panzoom("zoom", current_zoom, { 
-              animate: true, 
-              silent: true
-            });
-            console.log("inside changeZoomTo function, the original offset of Editor is: " + $setTop, $setLeft);
-            
-            console.log("inside changeZoomTo function, updated offset of Editor is: " + $('#editor').offset().top,$('#editor').offset().left);
-            $('#editor').panzoom("pan", -130, -60, {relative: true, animation: true});
-            $("#editor").offset({ top: $setTop, left: $setLeft });  
+function changeZoomTo() {
+    var x = document.getElementById("percent").value;
+    current_zoom = x / 100;
+    $panzoom.panzoom("zoom", current_zoom, {
+	animate : true,
+	silent : true
+    });
+    instance.setZoom(current_zoom);
+    $panzoom.panzoom("pan", -130, -60, {
+	relative : true,
+	animation : true
+    });
+    $("#editor").offset({
+	top : $setTop,
+	left : $setLeft
+    });
+}
 
-      }
+// inform jsplumb the current zoom
+function onZoomChanged(e, Panzoom, zoom) {
+    instance.setZoom(zoom);
+    $panzoom.panzoom("pan", -130, -60, {
+	relative : true,
+	animation : true
+    });
+    $("#editor").offset({
+	top : $setTop,
+	left : $setLeft
+    });
+}
 
-	    $(function() {
+$(document).ready(
+	function() {
+	    $setLeft = $('#editor').offset().left;
+	    $setTop = $('#editor').offset().top;
 
-          $setLeft = $('#editor').offset().left;
-          $setTop = $('#editor').offset().top;
-          console.log($setTop, $setLeft);
-          var original_matrix = [];
-          var $section = $('#editor-parent');
-          //$section.find('#editor').panzoom("setMatrix", [ 1, 0, 0, 1, 0, 0 ]);
-          //original_matrix = ($section.find('#editor').panzoom("getMatrix"));
-          //console.log("original zoom: " + original_matrix);
-          //var $in_section = $('#editor');
-          //var current_zoom = $('#editor').css('transform');
-          //console.log("original zoom: " + current_zoom);
-          var $menu_actions = $('#menu-actions');
-          var $panzoom = $section.find('#editor').panzoom({
-            //disablePan: true,
-            $zoomIn: $menu_actions.find(".zoom-in"),
-            $zoomOut: $menu_actions.find(".zoom-out"),
-            //$zoomRange: $menu_actions.find(".zoom-range"),
-            $reset: $menu_actions.find(".reset"),
-            //startTrnasform: 'scale(0.9)',
-            transition: true,
-            which: 3,
-            maxScale: 1.5,
-            increment: 0.1,
-            //disableYAxis: true,
-            //panOnlyWhenZoomed: true,
-            minScale: 0.5,
-            easing: "ease-in-out"
-            //contain: "invert"
-          });
-/*
-          function decideWhich(){
-            console.log("inside decideWhich Function..!!!");
-            $panzoom = $section.find('#editor').panzoom({
-              which: 3
-            });
-          }*/
-        $(".editor-area").css("cursor","default");
- 
-        $panzoom.parent().on('mousewheel.focal', function( e ) {
-            e.preventDefault();
-            var delta = e.delta || e.originalEvent.wheelDelta;
-            var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
-            //console.log(e.delta);
-            $panzoom.panzoom('zoom', zoomOut, {
-              animate: false,
-              focal: e
-            });
-            console.log(e.offsetX, e.offsetY);
-            //$("#editor").offset({ top: 150, left: 300 });
-            //$("#editor").offset({ top: $setTop, left: $setLeft });
-            zoomMatrix = ($panzoom.panzoom("getMatrix"));
-            current_zoom = zoomMatrix[0];
-            current_zoom = parseFloat(current_zoom).toFixed(1);
-            console.log("current zoom: " + current_zoom);
-            document.getElementById('percent').value = Math.round(parseFloat(current_zoom) * 100);
+	    // initialize panzoom
+	    var $section = $('#editor-parent');
+	    var $menu_actions = $('#menu-actions');
+	    $panzoom = $section.find('#editor').panzoom({
+		$zoomIn : $menu_actions.find(".zoom-in"),
+		$zoomOut : $menu_actions.find(".zoom-out"),
+		$reset : $menu_actions.find(".reset"),
+		transition : true,
+		which : 3,// Set whether you'd like to pan on left (1), middle
+		// (2), or right click (3)
+		maxScale : 1.5,
+		increment : 0.1,
+		minScale : 0.5,
+		easing : "ease-in-out",
+		onZoom : onZoomChanged,
+		cursor : "default",
+		panOnlyWhenZoomed : true,
+	    });
+	    $panzoom.parent().on(
+		    'mousewheel.focal',
+		    function(e) {
+			e.preventDefault();
+			var delta = e.delta || e.originalEvent.wheelDelta;
+			var zoomOut = delta ? delta < 0
+				: e.originalEvent.deltaY > 0;
+			$panzoom.panzoom('zoom', zoomOut, {
+			    animate : false,
+			    focal : e
+			});
+			zoomMatrix = ($panzoom.panzoom("getMatrix"));
+			current_zoom = zoomMatrix[0];
+			current_zoom = parseFloat(current_zoom).toFixed(1);
+			document.getElementById('percent').value = Math
+				.round(parseFloat(current_zoom) * 100);
+		    });
 
-            if (current_zoom < 1){
-              console.log("Your zoom is running lower than 1. Check your left border..!!");
-            }
-        });
-        $panzoom.on('panzoomreset', function(e){
-            current_zoom = 1;
-            console.log("inside panzoomreset. current zoom: " + current_zoom);
-            document.getElementById('percent').value = current_zoom * 100;
-            //$('#editor').css('left', '0%');
-            //$('#editor').css('top', '0%');
-            setSize();
-            $(window).resize(function() {
-              setSize();
-            });
-            $('#editor').panzoom("pan", -130, -60, {relative: true, animation: true});
-            $("#editor").offset({ top: $setTop, left: $setLeft });
-            //console.log("editor offset is: " + $('#editor').offset().left);
-        });
-        $panzoom.on('panzoomend', function(e){
-            console.log("inside panzoomend. Zoom has ended. Current zoom is: " + current_zoom);
-            console.log("After zoom has ended, updated offset of Editor is: " + $('#editor').offset().top,$('#editor').offset().left);
-            //$('#left-col').css('min-width', $('#editor').offset().left);
-            //$("#editor").offset({ top: $setTop, left: $setLeft });
-        });
-        /*
-        $panzoom.on('panzoomchange', function(e){
-            console.log("Something has changed...");
-            console.log("After the change, updated offset of Editor is: " + $('#editor').offset().top,$('#editor').offset().left);
-            $("#editor").offset({ top: $setTop, left: $setLeft });
-        }); */
-        $menu_actions.find(".zoom-in").on("click", function(e) {
-          //$("#editor").offset({ top: $setTop, left: $setLeft });
-          if(current_zoom < 1.5){
-            //e.preventDefault();
-            //$panzoom.panzoom("zoom");
-            current_zoom = parseFloat(current_zoom) + 0.1;
-            console.log("current zoom: " + current_zoom);
-            document.getElementById('percent').value = Math.round(parseFloat(current_zoom) * 100);
-            //$('#percent').val(current_zoom * 100).change();
-          }
-          $('#editor').panzoom("pan", -130, -60, {relative: true, animation: true});
-          $("#editor").offset({ top: $setTop, left: $setLeft });
-          
-        });
-        $menu_actions.find(".zoom-out").on("click", function(e) {
-            //$("#editor").offset({ top: $setTop, left: $setLeft });
-            if (current_zoom > 0.6) {
-              //e.preventDefault();
-              //$panzoom.panzoom("zoom");
-              //current_zoom -= 0.1;
-              current_zoom = current_zoom - 0.1;
-              console.log("current zoom: " + current_zoom);
-              document.getElementById('percent').value = Math.round(parseFloat(current_zoom) * 100);
-              //$('#percent').val(current_zoom * 100).change();
-              if (current_zoom < 1){
-                console.log("Your zoom is running lower than 1. Check your left border..!!");
-              }
-              //$("#editor").offset({ top: $setTop, left: $setLeft });
-            }
-            $('#editor').panzoom("pan", -130, -60, {relative: true, animation: true});
-            $("#editor").offset({ top: $setTop, left: $setLeft });
-            //$('#editor').css('left', '0%');
-            //$('#editor').css('top', '0%');
-        });
-      });
+	    $panzoom.on('panzoomreset', function(e) {
+		current_zoom = 1;
+		document.getElementById('percent').value = 100;
+		instance.setZoom(current_zoom);
+		$panzoom.panzoom("pan", -130, -60, {
+		    relative : true,
+		    animation : true
+		});
+		$("#editor").offset({
+		    top : $setTop,
+		    left : $setLeft
+		});
+
+	    });
+	    
+	    //limit the pan translation so that the background will not be seen.
+	    $panzoom.on('panzoomend',
+		    function(e, panzoom, matrix, changed) {
+			var offset = $(panzoom.elem).offset();
+			var top = offset.top;
+			var left = offset.left;
+			var editorAreaHeight = $(panzoom.elem).height()
+				* panzoom.scale;
+			var editorAreaWidth = $(panzoom.elem).width()
+				* panzoom.scale;
+			var windowHeight = $('#editor-parent').height();
+			var windowWidth = $('#editor-parent').width();
+			var minTop = $setTop
+				- (editorAreaHeight - windowHeight);
+			var minLeft = $setLeft
+				- (editorAreaWidth - windowWidth);
+			if (top > $setTop) {
+			    $(panzoom.elem).offset({
+				top : $setTop
+			    });
+			}
+			if (top < minTop) {
+			    $(panzoom.elem).offset({
+				top : minTop
+			    });
+			}
+			if (left > $setLeft) {
+			    $(panzoom.elem).offset({
+				left : $setLeft
+			    });
+			}
+			if (left < minLeft) {
+			    $(panzoom.elem).offset({
+				left : minLeft
+			    });
+			}
+		    });
+
+	    $menu_actions.find(".zoom-in").on(
+		    "click",
+		    function(e) {
+			if (current_zoom < 1.5) {
+			    current_zoom = parseFloat(current_zoom) + 0.1;
+			    document.getElementById('percent').value = Math
+				    .round(parseFloat(current_zoom) * 100);
+			}
+		    });
+
+	    $menu_actions.find(".zoom-out").on(
+		    "click",
+		    function(e) {
+			if (current_zoom > 0.5) {
+			    current_zoom = current_zoom - 0.1;
+			    document.getElementById('percent').value = Math
+				    .round(parseFloat(current_zoom) * 100);
+			}
+		    });
+	});

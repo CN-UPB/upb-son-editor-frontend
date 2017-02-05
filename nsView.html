@@ -104,10 +104,6 @@
 						<div class="col-md-3">
 							<select id="percent" class="zoom-values form-control"
 								onchange="changeZoomTo()">
-								<option value="10" disabled="disabled">10 %</option>
-								<option value="20" disabled="disabled">20 %</option>
-								<option value="30" disabled="disabled">30 %</option>
-								<option value="40" disabled="disabled">40 %</option>
 								<option value="50">50 %</option>
 								<option value="60">60 %</option>
 								<option value="70">70 %</option>
@@ -180,7 +176,7 @@
 				</div>
 			</div>
 			<div class="pan-parent panzoom" id="editor-parent">
-				<div class="editor-area scrollbar" data-bind="foreach: editor_nodes"
+				<div class="editor-area" data-bind="foreach: editor_nodes"
 					id="editor">
 					<div data-bind="attr: {'id': id}">
 						<input type="text"

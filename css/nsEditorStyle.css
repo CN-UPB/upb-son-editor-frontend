@@ -84,16 +84,9 @@
 .editor-area{
 	/*margin: 10px;*/
 	border: 1px ridge black;
-	/*z-index: -5;*/
 	background-color: white;
-}
-
-.scrollbar{
 	position: relative;
-	height: 495px;
-	overflow: auto; /*for horizontal and vertical scroll bars */
 }
-
 .menu{
 	margin-left: 40px;
 	/*padding: 2px 2px 2px 2px;*/
@@ -130,11 +123,11 @@ body{
 }
 .panel {
 	background: #f8f8f8;
-    background-size:90% 90%;
-    height:300px;
+	background-size:90% 90%;
+	height:300px;
 	display:none;
-    font-family:garamond,times-new-roman,serif;
-	overflow:auto;
+	font-family:garamond,times-new-roman,serif;
+	overflow-y: auto;
 }
 
 div .vnf-list {
