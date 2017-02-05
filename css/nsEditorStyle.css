@@ -76,24 +76,15 @@
 }
 
 .panzoom{
-	/*border: 2px solid black;*/
-	border: 1px ridge;
 	background-color: #cdcdcd;
-	/*z-index: -5;*/
 }
 .editor-area{
-	/*margin: 10px;*/
-	border: 1px ridge black;
 	background-color: white;
 	position: relative;
 }
 .menu{
 	margin-left: 40px;
 	/*padding: 2px 2px 2px 2px;*/
-}
-
-.top-navigation-menu {
-	/* border: 1px solid black; */
 }
 
 .action-section{

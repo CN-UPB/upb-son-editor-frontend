@@ -55,8 +55,7 @@ $(document).ready(
 		minScale : 0.5,
 		easing : "ease-in-out",
 		onZoom : onZoomChanged,
-		cursor : "default",
-		panOnlyWhenZoomed : true,
+		cursor : "default",	
 	    });
 	    $panzoom.parent().on(
 		    'mousewheel.focal',
