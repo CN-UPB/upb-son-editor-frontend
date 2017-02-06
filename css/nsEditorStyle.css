@@ -75,24 +75,16 @@
 	border-width: 1px;
 }
 
+.panzoom{
+	background-color: #cdcdcd;
+}
 .editor-area{
-
-	border: 1px ridge;
-}
-
-.scrollbar{
+	background-color: white;
 	position: relative;
-	height: 495px;
-	overflow: scroll; /*for horizontal and vertical scroll bars */
 }
-
 .menu{
 	margin-left: 40px;
 	/*padding: 2px 2px 2px 2px;*/
-}
-
-.top-navigation-menu {
-	/* border: 1px solid black; */
 }
 
 .action-section{
@@ -122,11 +114,11 @@ body{
 }
 .panel {
 	background: #f8f8f8;
-    background-size:90% 90%;
-    height:300px;
+	background-size:90% 90%;
+	height:300px;
 	display:none;
-    font-family:garamond,times-new-roman,serif;
-	overflow:auto;
+	font-family:garamond,times-new-roman,serif;
+	overflow-y: auto;
 }
 
 div .vnf-list {
@@ -145,6 +137,7 @@ div .vnf-list {
 	float: left;
 	text-align: center;
 	vertical-align: middle;
+	z-index: 24;
 }
 
 div .vnf-after-drop{
@@ -184,6 +177,7 @@ div .vnf-after-drop>input{
 	float: left;
 	text-align: center;
 	vertical-align: middle;
+	z-index: 24;
 }
 
 div .ns-after-drop{
@@ -228,6 +222,7 @@ div .ns-after-drop>input{
 	float: left;
     vertical-align: middle;
 	text-align: center;
+	z-index: 24;
 }
 
 .cp > p {
@@ -274,6 +269,7 @@ div .cp-after-drop>input{
 	float: left;
 	text-align:center;
     vertical-align: middle;
+    z-index: 24;
 }
 
 div .e-lan-after-drop{
@@ -369,9 +365,9 @@ input, labelClass {
     cursor:pointer;
 	opacity: 0.5;
 }
-.editor-area {
+/*.editor-area {
 	margin-left: 355px;
-}
+}*/
 .node-button{
 	display:none;
 	top:20%;

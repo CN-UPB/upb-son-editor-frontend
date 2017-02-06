@@ -45,7 +45,7 @@ function commit(pt_id) {
 				$("#commitForm").parsley().validate();
 				if ($("#commitForm").parsley().isValid()) {
 					var commit_message = $('#commitInput').val();
-					showWaitAnimation("Committing project...", "Committing");
+					showWaitAnimation("Committing", "Committing project...");
 					$.ajax({
 						method: "POST",
 						url: serverURL + "workspaces/" + wsId + "/git/commit",
@@ -102,6 +102,7 @@ function diff(pt_id) {
 
 
 function showStatus(wsId, pt_id, url) {
+	showWaitAnimation();
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/git/status",
 		method: 'POST',
@@ -112,12 +113,13 @@ function showStatus(wsId, pt_id, url) {
 		},
 		data: JSON.stringify({'project_id': pt_id}),
 		success: function (data) {
+			closeWaitAnimation();
 			diffDialog = $("#GitDialog").dialog({
 				modal: true,
 				draggable: true,
 				buttons: {
-					"View on Github":function(){
-						window.open(url,'_blank');
+					"View on Github": function () {
+						window.open(url, '_blank');
 					},
 					Diff: function () {
 						diff(pt_id);
@@ -130,7 +132,6 @@ function showStatus(wsId, pt_id, url) {
 					},
 					Ok: function () {
 						$(this).dialog("close");
-						window.location.reload();
 					}
 				}
 			});
@@ -140,6 +141,114 @@ function showStatus(wsId, pt_id, url) {
 				diffDialog.text("No differences!");
 			}
 
+		}
+	});
+}
+
+function share(model) {
+	$('#shareDialog').dialog({
+		modal: true,
+		buttons: {
+			Share: function () {
+				$('#shareForm').parsley().validate();
+				if ($('#shareForm').parsley().isValid()) {
+					var repo_name = $('#repoNameInput').val();
+					//call share method on server
+					init(model, repo_name);
+					$(this).dialog("close");
+				}
+			},
+			Cancel: function () {
+				$(this).dialog("close");
+				model.isShared(false);
+			}
+		}
+	});
+}
+
+function init(model, repo_name) {
+	showWaitAnimation("Sharing project on Github", "Initializing", 0);
+	$.ajax({
+		url: serverURL + "workspaces/" + wsId + "/git/init",
+		method: 'POST',
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		xhrFields: {
+			withCredentials: true
+		},
+		data: JSON.stringify({'project_id': model.id()}),
+		success: function (data) {
+			if (data.success) {
+				create(model, repo_name);
+			}
+		},
+		error: function () {
+			model.isShared(false);
+		}
+	});
+}
+
+function create(model, repo_name) {
+	showWaitAnimation("Sharing project on Github", "Uploading", 50);
+	$.ajax({
+		url: serverURL + "workspaces/" + wsId + "/git/create",
+		method: 'POST',
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		xhrFields: {
+			withCredentials: true
+		},
+		data: JSON.stringify({'project_id': model.id(), 'repo_name': repo_name}),
+		success: function (data) {
+			if (data.success) {
+				loadProjects(wsId);
+			}
+			closeWaitAnimation();
+		},
+		error: function () {
+			model.isShared(false);
+		}
+	});
+}
+
+function unshare(model) {
+	$('#unshareDialog').dialog({
+		modal: true,
+		buttons: {
+			"Delete from Github": function () {
+				$('#unShareForm').parsley().validate();
+				if ($('#unShareForm').parsley().isValid()) {
+					var repo_name = $('#delRepoNameInput').val();
+					deletePJ(model, repo_name);
+					$(this).dialog("close");
+				}
+			},
+			Cancel: function () {
+				$(this).dialog("close");
+				model.isShared(true);
+			}
+		}
+	});
+}
+
+function deletePJ(model, repo_name) {
+	showWaitAnimation("Deleting", "Deleting project from Github");
+	$.ajax({
+		url: serverURL + "workspaces/" + wsId + "/git/delete",
+		method: 'DELETE',
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		xhrFields: {
+			withCredentials: true
+		},
+		data: JSON.stringify({'project_id': model.id(), "repo_name": repo_name}),
+		success: function (data) {
+			if (data.success) {
+				closeWaitAnimation();
+			}
+		},
+		error: function () {
+			model.isShared(true);
 		}
 	});
 }

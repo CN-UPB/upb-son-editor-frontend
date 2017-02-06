@@ -74,7 +74,7 @@ function saveConfiguration() {
 		var configurationJson = ko.toJSON(workspaceModel);
 		console.log("New configuration:");
 		console.log(configurationJson);
-		configurationJson = JSON.load(configurationJson);
+		configurationJson = JSON.parse(configurationJson);
 		configurationJson.vnf_schema_index = $('#selectVNFSchema').val();
 		configurationJson.ns_schema_index = $('#selectNSchema').val();
 		$.ajax({
@@ -85,7 +85,7 @@ function saveConfiguration() {
 			xhrFields: {
 				withCredentials: true
 			},
-			data: configurationJson,
+			data: JSON.stringify(configurationJson),
 			success: function (data) {
 				$("#successSaveConfiDialog").dialog({
 					modal: true,

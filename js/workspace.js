@@ -19,6 +19,15 @@ var Project = function(data) {
     this.show_diff = function() {
     	showStatus(wsId, self.id(), self.repo_url);
 	};
+
+    this.toggleShared = function() {
+    	if (!self.isShared()){
+    		unshare(self);
+		} else {
+    		share(self);
+		}
+		return true;
+	}
 };
 
 var TableViewModel = function (){
@@ -51,6 +60,9 @@ function loadProjects(wsId){
 			withCredentials: true
 		},
 		success: function (data) {
+			//clean arrays
+			availableProjects = [];
+			tableViewModel.projects().splice(0,tableViewModel.projects().length);
 			//display available projects and their onclick event.
 			projects = data;
 			for (var i = 0; i < projects.length; i++) {
@@ -79,8 +91,14 @@ function loadProjects(wsId){
 
 
 function urlSelected(item){
-	$('#ptUrlInput').val(item.value);
-	$('#ptNameInput').val(item.options[item.selectedIndex].text);
+	
+	if (item.selectedIndex >0){
+		$('#ptUrlInput').val(item.value);
+		$('#ptNameInput').val(item.options[item.selectedIndex].text);
+	} else {
+		$('#ptUrlInput').val("");
+		$('#ptNameInput').val("");
+	}
 }
 
 
@@ -95,8 +113,8 @@ function showCreateDialog() {
 				$(this).dialog("close");
 			},
 			Create : function () {
-				$('form').parsley().validate();
-				if($('form').parsley().isValid())
+				$('#createForm').parsley().validate();
+				if($('#createForm').parsley().isValid())
 				{
 					createNewProject(wsId, $('#ptNameInput').val(), $('#ptUrlInput').val());
 					$(this).dialog("close");
