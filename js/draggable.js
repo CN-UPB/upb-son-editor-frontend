@@ -171,7 +171,7 @@ var ViewModel = function() {
 	} else {
 	    dataId = this.id().replace(":", "\\:");
 	    node = $("#" + dataId);
-	    var className = node.attr("class");	    
+	    var className = node.attr("class");
 	    if (className.indexOf("-after-drop") == -1) {
 		if (className.indexOf("vnf") != -1) {
 		    className = "vnf-after-drop";
@@ -1101,15 +1101,22 @@ function configureJsPlumb() {
 				hasError = true;
 			    }
 			    if (cp_source.getUuid() == cp_target.getUuid()) {
-				errorMsg = "Circle connection is not allowed! Please confirm to delete it.";
+				errorMsg = "Circle connection is not allowed!";
 				hasError = true;
+				instance.detach(info.connection);
+			    }
+			    else
+			    if(cp_source.elementId==cp_target.elementId)
+			    {
+			    	errorMsg="Connection inside a node is not allowed!";
+			    	hasError=true;
+			    	instance.detach(info.connection);
 			    }
 			    if (hasError) {
 				$("#deleteDialog").dialog({
 				    modal : true,
 				    buttons : {
 					Confirm : function() {
-					    instance.detach(info.connection);
 					    $(this).dialog("close");
 					},
 				    }
