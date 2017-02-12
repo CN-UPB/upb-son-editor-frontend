@@ -5,6 +5,11 @@ var plumb = null;
 var $container = $(".container");
 $diagram = $container.find(".diagram");
 var $panzoom = null;
+//var links = [];
+/*var links = [
+  {from: "dc1_TestStack_iperf1", to: "dc1_TestStack_firewall1"},
+  {from: "dc1_TestStack_firewall1", to: "dc1_TestStack_tcpdump1" },
+];
 var links = [
   { from: "i0", to: "i1" },
   { from: "i1", to: "i11" },
@@ -12,8 +17,11 @@ var links = [
   { from: "i0", to: "i2" },
   { from: "i2", to: "i21" },
   { from: "i0", to: "i3" },
-];
-
+];*/
+//$(document).ready(function () {
+  function configureJsPlumb() {
+  //location.reload();
+  //sleep(3000);
 jsPlumb.ready(function() {
   plumb = jsPlumb.getInstance({
     PaintStyle: { strokeWidth: 1 },
@@ -34,11 +42,13 @@ jsPlumb.ready(function() {
        endpoints:["Blank","Blank"],
        overlays:[["Arrow",{location:1,width:10, length:10}]],
      });
-  }); 
+  });
+  //sleep(3000); 
   var dg = new dagre.graphlib.Graph();
   dg.setGraph({nodesep:30,ranksep:30,marginx:50,marginy:50});
   dg.setDefaultEdgeLabel(function() { return {}; });
   console.log("before in items loop...");
+  //sleep(3000);
   $container.find(".item").each(
     function(idx, node) {
       var $n = $(node);
@@ -47,15 +57,18 @@ jsPlumb.ready(function() {
         width  : Math.round($n.outerWidth()),
         height : Math.round($n.outerHeight())
       };
-      dg.setNode($n.attr('id'), box);      
+      dg.setNode($n.attr('id'), box);   
+      console.log(dg.node(node));
+
     }
+
   ); 
   console.log("after in items loop...");
   plumb.getAllConnections()
     .forEach(function(edge) {dg.setEdge(edge.source.id,edge.target.id);});
   dagre.layout(dg);
   var graphInfo = dg.graph();
-  //console.log(dg);
+  console.log(dg);
   
   dg.nodes().forEach(function(n) {
       //console.log("Node " + n + ": " + JSON.stringify(dg.node(n)));
@@ -63,6 +76,7 @@ jsPlumb.ready(function() {
       console.log(dg.node(n));
       var top = Math.round(node.y-node.height/2)+'px';
       var left = Math.round(node.x-node.width/2)+'px';
+      console.log("left: " + left + ", top: " + top);
       $('#' + n).css({left:left,top:top});
     });
     /*var all_nodes = []; 
@@ -137,7 +151,7 @@ jsPlumb.ready(function() {
   });
   
   var currentScale = 1;
-  $container.find(".diagram .item").draggable({
+  $container.find(".item").draggable({
     start: function(e){
       var pz = $container.find(".panzoom");
       currentScale = pz.panzoom("getMatrix")[0];
@@ -163,4 +177,6 @@ jsPlumb.ready(function() {
       $container.find(".panzoom").panzoom("enable");
     }
   });
-});
+ });
+//});
+}
