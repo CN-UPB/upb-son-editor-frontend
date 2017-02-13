@@ -6,10 +6,10 @@ function addAction() {
 		stackRedo=[];
 	}
 	if (lastState != null) {
-			stackUndo.push(lastState);
+		stackUndo.push(lastState);
 	}
 	lastState = JSON.stringify(cur_ns);
-	if (stackUndo.length > 5) {
+	if (stackUndo.length > 10) {
 		stackUndo.splice(0, 1);
 	}
 }
