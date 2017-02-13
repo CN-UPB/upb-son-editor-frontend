@@ -813,6 +813,7 @@ function clean() {
 		var node = viewModel.editor_nodes()[i];
 		instance.detachAllConnections(node.id());
 		instance.removeAllEndpoints(node.id());
+		instance.remove(node.id());
 	}
 	viewModel.editor_nodes([]);
 }
