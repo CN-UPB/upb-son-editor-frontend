@@ -818,7 +818,6 @@ function clean() {
 }
 // display loaded network service in the editor
 function displayNS() {
-	clean();
 	var index = 0;
 	if (cur_ns.descriptor.network_functions != null) {
 		for ( var i = 0; i < (cur_ns.descriptor.network_functions).length; i++) {
@@ -1025,11 +1024,11 @@ function savePositionForNode(event, noUpdate) {
 		cur_ns.meta.positions[nodeId] = {
 			"x" : 0,
 			"y" : 0
-		}
+		};
 	}
 	cur_ns.meta.positions[nodeId] = position;
 	dragCount = 0;
-	if (!noUpdate) {
+	if (!noUpdate&&isDragAction) {
 		updateServiceOnServer();
 	}
 }

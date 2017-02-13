@@ -1,34 +1,39 @@
 var stackUndo = [];
 var stackRedo = [];
-var lastAction=null;
+var lastState = null;
 function addAction() {
-	if(lastAction!=null)
-	{
-		stackUndo.push(JSON.stringify(lastAction));
-	}		
-	lastAction=cur_ns;
-		stackRedo.slice(0, stackRedo.length);
-		if (stackUndo.length > 5) {
-		stackUndo.slice(0, 1);
-		}
+	if (stackRedo.length > 0) {
+		stackRedo=[];
+	}
+	if (lastState != null) {
+			stackUndo.push(lastState);
+	}
+	lastState = JSON.stringify(cur_ns);
+	if (stackUndo.length > 5) {
+		stackUndo.splice(0, 1);
+	}
 }
 
 function redo() {
-    if (stackRedo.length > 0) {
-	stackUndo.push(JSON.stringify(cur_ns));
-	cur_ns = JSON.parse(stackRedo.pop());
-	displayNS();
-	updateServiceOnServer("redo");
-    }
+	if (stackRedo.length > 0) {
+		var doAction = stackRedo.pop();
+		stackUndo.push(JSON.stringify(cur_ns));
+		clean();
+		cur_ns = JSON.parse(doAction);
+		displayNS();
+		updateServiceOnServer("redo");
+		lastState = JSON.stringify(cur_ns);
+	}
 }
 
 function undo() {
-    if (stackUndo.length > 0) {
-
-	lastAction=JSON.parse(stackUndo.pop());
-	stackRedo.push(JSON.stringify(cur_ns));
-	cur_ns=JSON.parse(stackUndo.pop());
-	displayNS();
-	updateServiceOnServer("undo");
-    }
+	if (stackUndo.length > 0) {
+		var doAction = stackUndo.pop();
+		stackRedo.push(JSON.stringify(cur_ns));
+		clean();
+		cur_ns = JSON.parse(doAction);
+		displayNS();
+		updateServiceOnServer("undo");
+		lastState = JSON.stringify(cur_ns);
+	}
 }
