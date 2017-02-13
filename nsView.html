@@ -36,6 +36,7 @@
 <script src="js/utils.js"></script>
 <script src="js/ns-configuration.js"></script>
 <script src="js/panzooming.js"></script>
+<script src="js/redoUndo.js"></script>
 
 </head>
 <body>
@@ -84,11 +85,11 @@
 				<div class="action-section">
 					<div class="row">
 						<div class="col-md-6">
-							<a href=""><i class="fa fa-undo fa-2x"></i><br>Undo</br></a>
+							<a onclick="undo()"><i class="fa fa-undo fa-2x"></i><br>Undo</br></a>
 						</div>
 
 						<div class="col-md-6">
-							<a href=""><i class="fa fa-repeat fa-2x"></i><br>Redo</br></a>
+							<a onclick="redo()"><i class="fa fa-repeat fa-2x"></i><br>Redo</br></a>
 						</div>
 					</div>
 				</div>
