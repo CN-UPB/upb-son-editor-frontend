@@ -97,8 +97,10 @@ var Node = function(node_data) {
 					$(this).dialog("close");
 					instance.detachAllConnections($(node));
 					instance.removeAllEndpoints($(node));
-					deleteNodeFromDpt(self.id(), $(node).attr("class"));
+					var deleteId=self.id();
+					deleteNodeFromDpt(deleteId, $(node).attr("class"));
 					viewModel.editor_nodes.remove(self);
+					usedIDs.splice($.inArray(deleteId, usedIDs), 1);
 					updateServiceOnServer();
 				},
 				Cancel : function() {
@@ -173,6 +175,7 @@ var ViewModel = function() {
 				usedIDs[$.inArray(oldId, usedIDs)] = newId;
 				renameNodeOnServer(oldId, newId, className);
 				this.old_id(newId);
+				instance.repaintEverything();
 			} else {
 				dataId = this.id().replace(":", "\\:");
 				node = $("#" + dataId);
