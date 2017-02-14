@@ -199,3 +199,8 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+ 
+ ==========================================================================
+All files located in the js/lib directory are externally maintained libraries
+used by this software which have their own licenses; we recommend you read them,
+as their terms may differ from the terms above.
