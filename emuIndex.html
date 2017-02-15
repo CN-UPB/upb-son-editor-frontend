@@ -42,7 +42,7 @@
 				  <tr>
 					<th width=10%>Name of The Server</th>
 					<th width=10%>Status</th>
-					<th width=10%>Options</th>
+					<th width=20%>Options</th>
 				  </tr>
 				</thead>
 				<tbody id="display_NS_VNFS" data-bind="foreach: stacks">
@@ -51,6 +51,7 @@
 	                    <td data-bind="text: status"></td>
 	                    <td>
 	                    	<button class="btn btn-primary btn-sm" data-bind="click: showGraph">Show Graph</button>
+	                    	<button class="btn btn-primary btn-sm" data-bind="click: clear">Clear</button>
 	                    </td>
 	                </tr>
 				</tbody>

@@ -8,6 +8,7 @@ var availableItems = [];
 var itemDictionary = {};
 var vnfList = {};
 var links = [];
+var clickedStack = "";
 
 var Descriptor = function(data) {
 	this.name = ko.observable(data.name);
@@ -28,8 +29,13 @@ var Stack = function(data){
 	this.status = ko.observable(data.status);
 	var self = this;
 	this.showGraph = function() {
-        showServiceGraph(self.name());
+		clickedStack = self.name();
+        showServiceGraph();
     };
+
+    this.clear = function(){
+    	clearGraph(self.name());
+    }
 };
 
 var Connection = function(data){
@@ -100,42 +106,47 @@ var viewModel = new ViewModel();
 	if (viewModel.stacks.length != 0){
 		viewModel.stacks = [];
 	}*/
-	function loadEmuServers(){
+	function loadEmuServers(clickedStack){
 	return $.ajax({
 		url : "http://fg-cn-sandman1.cs.upb.de:8775/v2.1/fc394f2ab2df4114bde39905f800dc57/servers",
 		//url : "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
 		method : 'GET',
-		contentType : "application/json; charset=utf-8",
+		//contentType : "application/json; charset=utf-8",
 		dataType : "json",
 		xhrFields : {
-			withCredentials : true
+			withCredentials : false
 		},
 		success : function (data) {
-			//console.log(data);
+			console.log(clickedStack);
 			
 			
 			services = data;
 			for (var i = 0; i < services.servers.length; i++) {
-				var serviceName = services.servers[i].name;	
-				//console.log(serviceName);
-				//var serviceId = services.servers[i].id;
-				var serviceId = services.servers[i].full_name;
-				var serviceStatus = services.servers[i].status;
-				var serviceTemplateName = services.servers[i].template_name;
+				if(services.servers[i].name.search(clickedStack) == -1){
+					console.log("The vnf: " + services.servers[i].name + " is not part of the stack: " + clickedStack);
+				}
+				else{
+					var serviceName = services.servers[i].name;	
+					//console.log(serviceName);
+					//var serviceId = services.servers[i].id;
+					var serviceId = services.servers[i].full_name;
+					var serviceStatus = services.servers[i].status;
+					var serviceTemplateName = services.servers[i].template_name;
 
-				var nsData = {
-					name : serviceName,
-					//description : serviceInfo,
-					id: serviceId,
-					//type: "NS",
-					//network_functions: vnfs,
-					//forwarding_graphs: virtual_links_count
-					status: serviceStatus,
-					template_name: serviceTemplateName
-				};
-				console.log(nsData);
-				viewModel.addDescriptor(nsData);
-				//sleep(1000);
+					var nsData = {
+						name : serviceName,
+						//description : serviceInfo,
+						id: serviceId,
+						//type: "NS",
+						//network_functions: vnfs,
+						//forwarding_graphs: virtual_links_count
+						status: serviceStatus,
+						template_name: serviceTemplateName
+					};
+					console.log(nsData);
+					viewModel.addDescriptor(nsData);
+					//sleep(1000);
+				}
 			}
 
 			//console.log(viewModel.descriptors.length);
@@ -143,32 +154,39 @@ var viewModel = new ViewModel();
 	});
 }
 
-function loadEmuConnections(){
+function loadEmuConnections(clickedStack){
 	return $.ajax({
 		url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/chain/list",
 		method : 'GET',
-		contentType : "application/json; charset=utf-8",
+		//contentType : "application/json; charset=utf-8",
 		dataType : "json",
 		xhrFields : {
-			withCredentials : true
+			withCredentials : false
 		},
 		success : function(data){
 			
 			//console.log(viewModel.connections);
 			connectionlist = data;
 			for (var i = 0; i < connectionlist.chains.length; i++) {
-				var from = connectionlist.chains[i].src_vnf;
-				var to = connectionlist.chains[i].dst_vnf;
+				if(connectionlist.chains[i].src_vnf.search(clickedStack) == -1 || connectionlist.chains[i].dst_vnf.search(clickedStack) == -1){
+					console.log("The connection from: " + connectionlist.chains[i].src_vnf + " to: " + connectionlist.chains[i].dst_vnf + " is not part of the stack: " + clickedStack);
+				}
+				else{
+						var from = connectionlist.chains[i].src_vnf;
+						var to = connectionlist.chains[i].dst_vnf;
 
-				var connectionData = {
-					from : from,
-					to : to
-				};
-				//console.log(connectionData);
-				links[i] = connectionData;
-				//console.log(links);
-			viewModel.addConnection(connectionData);
+						var source_interface = connectionlist.chains[i].src_intf;
+						var destination_interface = connectionlist.chains[i].dst_intf;
 
+						var connectionData = {
+							from : from,
+							to : to
+						};
+						//console.log(connectionData);
+						links[i] = connectionData;
+						//console.log(links);
+					viewModel.addConnection(connectionData);
+				}
 			}
 			
 		}
@@ -179,10 +197,10 @@ function loadEmuStacks(){
 	return $.ajax({
 		url: "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
 		method : 'GET',
-		contentType : "application/json; charset=utf-8",
+		//contentType : "application/json; charset=utf-8",
 		dataType : "json",
 		xhrFields : {
-			withCredentials : true
+			withCredentials : false
 		},
 		success : function (data){
 			
@@ -293,11 +311,20 @@ function loadEmuStacks(){
 
 }); // end of document.ready
 
-	function showServiceGraph(stackName){
+	function showServiceGraph(){
 		console.log("inside showServiceGraph function....");
-		$.when(loadEmuServers(), loadEmuConnections()).done(function(r1, r2) {
+		//clickedStack = emuStackName;
+		clearGraph(clickedStack);
+
+		$.when(loadEmuServers(clickedStack), loadEmuConnections(clickedStack)).done(function(r1, r2) {
 			configureJsPlumb();
 		});
+
+		setTimeout(showServiceGraph, 3000);
+	}
+
+	function clearGraph(clickedStack){
+		$(".diagram").empty();
 	}
 
 function listStacks() {
