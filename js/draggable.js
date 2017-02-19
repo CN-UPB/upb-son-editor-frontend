@@ -254,12 +254,38 @@ function calcLabelPos(anchor) {
 	}
 	return [ labelX, labelY ];
 }
+function writeDependencies()
+{
+	vnf_deps=[];
+	for(var i=0;i<cur_ns.descriptor.network_functions.length;i++)
+	{
+		var vnf=cur_ns.descriptor.network_functions[i];
+		var vnf_dep=vnf.vnf_vendor+":"+vnf.vnf_name+":"+vnf.vnf_version;
+		if($.inArray(vnf_dep,vnf_deps)<0)
+		{
+			vnf_deps.push(vnf_dep);
+		}
+	}
+	ns_deps=[];
+	for(var i=0;i<cur_ns.descriptor.network_services.length;i++)
+	{
+		var ns=cur_ns.descriptor.network_services[i];
+		var ns_dep=ns.ns_vendor+":"+ns.ns_name+":"+ns.ns_version;
+		if($.inArray(ns_dep,ns_deps)<0)
+		{
+			ns_deps.push(ns_dep);
+		}
+	}
+	cur_ns.descriptor["vnf_dependencies"]=vnf_deps;
+	cur_ns.descriptor["service_dependencies"]=ns_deps;
+}
 
 function updateServiceOnServer(action) {
 	if (!action) {
 		addAction();
 	}
-	cur_ns.meta.counter = countDropped;
+	cur_ns.meta.counter = countDropped;	
+	writeDependencies();
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
 				+ queryString["ptId"] + "/services/" + nsId,
