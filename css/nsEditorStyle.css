@@ -4,6 +4,12 @@
     background-color:grey;
     opacity:0.2;
 }
+.selectedNode
+{
+	border-style: dashed;
+	border-width: 3px;
+    border-color: red;
+}
 #welcome-section {
 	padding-top: 60px;
 }
