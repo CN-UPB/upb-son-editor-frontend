@@ -92,9 +92,9 @@ $(document).ready(function() {
                                 var deleteId = selectedNodes[i];
                                 deleteNodeFromDpt(deleteId, node.attr("class"));
                                 node.remove();
-                                usedIDs.splice($.inArray(deleteId, usedIDs), 1);
-                                updateServiceOnServer();
+                                usedIDs.splice($.inArray(deleteId, usedIDs), 1);   
                             }
+                            updateServiceOnServer();
                         },
                         Cancel: function() {
                             $(this).dialog("close");
