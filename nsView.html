@@ -67,21 +67,25 @@
 
 	<div class="container-fluid" id="editorContainer">
 		<div class="row" id="menu-actions">
-			<div class="col-md-3 no-padding">
+			<div class="col-md-4 no-padding">
 				<div class="action-section">
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-md-4">
 							<a onclick="showNsConfiguration()"><i class="fa fa-cog fa-2x"></i><br>Configure</br></a>
 						</div>
-						<div class="col-md-6">
-							<a onclick="showDeployDialog()"><i
+						<div class="col-md-4">
+							<a onclick=""><i
 								class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</br></a>
+						</div>
+						<div class="col-md-4">
+							<a onclick="showUploadDialog()"><i
+								class="fa fa-upload fa-2x"></i><br>Upload</br></a>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="col-md-3 no-padding">
+			<div class="col-md-2 no-padding">
 				<div class="action-section">
 					<div class="row">
 						<div class="col-md-6">
@@ -97,10 +101,14 @@
 
 			<div class="col-md-6 no-padding">
 				<div class="action-section">
-					<div class="row">
-						<div class="reset col-md-3">
-							<a href=""><i class="fa fa-circle-o fa-2x"></i><br>Reset
-								Zoom</br></a>
+					<div class="row">			
+						<div class="zoom-in col-md-3">
+							<a href=""><i class="fa fa-search-plus fa-2x"></i><br>Zoom
+								In</br></a>
+						</div>
+						<div class="zoom-out col-md-3">
+							<a href=""><i class="fa fa-search-minus fa-2x"></i><br>Zoom
+								Out</br></a>
 						</div>
 						<div class="col-md-3">
 							<select id="percent" class="zoom-values form-control"
@@ -118,15 +126,9 @@
 								<option value="150">150 %</option>
 							</select>
 						</div>
-
-						<div class="zoom-in col-md-3">
-							<a href=""><i class="fa fa-search-plus fa-2x"></i><br>Zoom
-								In</br></a>
-						</div>
-
-						<div class="zoom-out col-md-3">
-							<a href=""><i class="fa fa-search-minus fa-2x"></i><br>Zoom
-								Out</br></a>
+						<div class="reset col-md-3">
+							<a href=""><i class="fa fa-circle-o fa-2x"></i><br>Reset
+								Zoom</br></a>
 						</div>
 					</div>
 				</div>
@@ -206,7 +208,7 @@
 		</div>
 	</div>
 
-	<div id="deployDialog" title="Deploy Service" hidden>
+	<div id="uploadDialog" title="Upload Service" hidden>
 		<select data-bind="foreach: platforms" id="selectPlatform">
 			<option data-bind="value: id, text: name"></option>
 		</select>
