@@ -770,43 +770,46 @@ function loadCatalogues() {
 }
 
 function loadVNFsNSsFromCatalogues() {
-    $.when(loadCatalogues()).done(function(r1, r2) {
-	for ( var i = 0; i < catalogues.length; i++) {
-	    var catalogue=catalogues[i];
-	    $.ajax({
-		url : serverURL + "workspaces/" + wsId + "/catalogues/"+catalogue.id+"/functions/",
-		dataType : "json",
-		xhrFields : {
-		    withCredentials : true
-		},
-		success : function(data) {
-		    vnfs=data;
-		    for ( var i = 0; i < vnfs.length; i++) {
-			viewModel.addVnf(vnfs[i]);
-		    }
-		}
-	    });
-	    $.ajax({
-		url : serverURL + "workspaces/" + wsId + "/projects/" + +catalogue.id+"/services/",
-		dataType : "json",
-		xhrFields : {
-		    withCredentials : true
-		},
-		success : function(data) {
-		    nss =data;
-		    for ( var i = 0; i < nss.length; i++) {
-			if (nss[i].id != nsId) {
-			    viewModel.addNs(nss[i]);
+    $.when(loadCatalogues()).done(
+	    function(r1, r2) {
+		for ( var i = 0; i < catalogues.length; i++) {
+		    var catalogue = catalogues[i];
+		    $.ajax({
+			url : serverURL + "workspaces/" + wsId + "/catalogues/"
+				+ catalogue.id + "/functions/",
+			dataType : "json",
+			xhrFields : {
+			    withCredentials : true
+			},
+			success : function(data) {
+			    vnfs = data;
+			    for ( var i = 0; i < vnfs.length; i++) {
+				viewModel.addVnf(vnfs[i]);
+			    }
 			}
-		    }
-		    $(".ns").draggable({
-			helper : "clone",
-			revert : "invalid"
+		    });
+		    $.ajax({
+			url : serverURL + "workspaces/" + wsId + "/projects/"
+				+ +catalogue.id + "/services/",
+			dataType : "json",
+			xhrFields : {
+			    withCredentials : true
+			},
+			success : function(data) {
+			    nss = data;
+			    for ( var i = 0; i < nss.length; i++) {
+				if (nss[i].id != nsId) {
+				    viewModel.addNs(nss[i]);
+				}
+			    }
+			    $(".ns").draggable({
+				helper : "clone",
+				revert : "invalid"
+			    });
+			}
 		    });
 		}
 	    });
-	}
-    });
 }
 
 // load VNFs for the sidebar
@@ -1110,6 +1113,13 @@ function savePositionForNode(event, noUpdate) {
 	};
     }
     cur_ns.meta.positions[nodeId] = position;
+    for ( var i = 0; i < selectedNodes.length; i++) {
+	var dataId = selectedNodes[i].replace(":", "\\:");
+	var node = $("#" + dataId);
+	var x = node.css("left");
+	var y = node.css("top");
+	cur_ns.meta.positions[selectedNodes[i]] = [ x, y ];
+    }
     dragCount = 0;
     if (!noUpdate && isDragAction) {
 	updateServiceOnServer();
@@ -1269,37 +1279,35 @@ function loadCurrentNS() {
 		},
 	    });
 }
-$(document).ready(
-	function() {
-	    queryString = getQueryString();
-	    wsId = queryString["wsId"];
-	    ptId = queryString["ptId"];
-	    nsId = queryString["nsId"];
-	    setWorkspaceInNav(wsId);
-	    setProjectInNav(wsId, ptId);
-	    loadPlatforms();
-	    setSize();
-	    $(window).resize(function() {
-		setSize();
-	    });
-	    $(".cp").draggable({
-		helper : "clone",
-		revert : "invalid",
-	    });
-	    $(".e-lan").draggable({
-		helper : "clone",
-		revert : "invalid",
-	    });
-	    // delay loading the current network service until the sidebar has
-	    // loaded
-	    // completely
-	   // , loadVNFsNSsFromCatalogues()
-	    $.when(loadAllVNFs(), loadAllNSs()).done(
-		    function(r1, r2) {
-			loadCurrentNS();
-		    });
-	    ko.applyBindings(viewModel);
-	    jsPlumb.ready(function() {
-		configureJsPlumb();
-	    });
-	});
+$(document).ready(function() {
+    queryString = getQueryString();
+    wsId = queryString["wsId"];
+    ptId = queryString["ptId"];
+    nsId = queryString["nsId"];
+    setWorkspaceInNav(wsId);
+    setProjectInNav(wsId, ptId);
+    loadPlatforms();
+    setSize();
+    $(window).resize(function() {
+	setSize();
+    });
+    $(".cp").draggable({
+	helper : "clone",
+	revert : "invalid",
+    });
+    $(".e-lan").draggable({
+	helper : "clone",
+	revert : "invalid",
+    });
+    // delay loading the current network service until the sidebar has
+    // loaded
+    // completely
+    // , loadVNFsNSsFromCatalogues()
+    $.when(loadAllVNFs(), loadAllNSs()).done(function(r1, r2) {
+	loadCurrentNS();
+    });
+    ko.applyBindings(viewModel);
+    jsPlumb.ready(function() {
+	configureJsPlumb();
+    });
+});
