@@ -94,7 +94,7 @@ var Node = function(node_data) {
 	$("#deleteDialog").dialog({
 	    modal : true,
 	    buttons : {
-		"Ok" : function() {
+		Yes : function() {
 		    $(this).dialog("close");
 		    instance.detachAllConnections($(node));
 		    instance.removeAllEndpoints($(node));
