@@ -80,37 +80,13 @@ var jsPlumbOptions = {
     Endpoint : "Dot",
     Container : "editor"
 };
+
 var Node = function(node_data) {
     var self = this;
     self.old_id = ko.observable(node_data.id);
     self.id = ko.observable(node_data.id);
-    self.deleteNode = function() {
-	if (isDragAction) {
-	    // do not trigger delete from dragging
-	    return;
-	}
-	var dataId = self.id().replace(":", "\\:");
-	var node = "#" + dataId;
-	$("#deleteDialog").dialog({
-	    modal : true,
-	    buttons : {
-		Yes : function() {
-		    $(this).dialog("close");
-		    instance.detachAllConnections($(node));
-		    instance.removeAllEndpoints($(node));
-		    var deleteId = self.id();
-		    deleteNodeFromDpt(deleteId, $(node).attr("class"));
-		    viewModel.editor_nodes.remove(self);
-		    usedIDs.splice($.inArray(deleteId, usedIDs), 1);
-		    updateServiceOnServer();
-		},
-		Cancel : function() {
-		    $(this).dialog("close");
-		}
-	    }
-	}).text("Do you want to delete this node?");
-    };
 };
+
 var ViewModel = function() {
     this.vnfs = ko.observableArray([]);
     this.addVnf = function(vnf) {

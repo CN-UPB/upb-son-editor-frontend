@@ -380,13 +380,7 @@ input, labelClass {
     cursor:pointer;
 	opacity: 0.5;
 }
-/*.editor-area {
-	margin-left: 355px;
-}*/
-.node-button{
-	display:none;
-	top:20%;
-}
+
 .glyphicon{
 		 font-size: 25px;
 		 text-shadow: 0 0 5px grey;

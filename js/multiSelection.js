@@ -1,13 +1,6 @@
 var area;
-var x1 = 0
-  , y1 = 0
-  , x2 = 0
-  , y2 = 0
-  , x3 = 0
-  , x4 = 0
-  , y3 = 0
-  , y4 = 0;
-var select = true;
+var x1 = 0, y1 = 0, x2 = 0, y2 = 0, x3 = 0, x4 = 0, y3 = 0, y4 = 0;
+var select = false;
 var inputSelect = false;
 var selectedNodes = [];
 function reCalc() {
@@ -29,29 +22,29 @@ function reCalc() {
 function calSelectedNodes() {
     selectedNodes = [];
     var nodes = $('#editor>.jsplumb-draggable').not('.jsplumb-endpoint');
-    for (var i = 0; i < nodes.length; i++) {
-        var node = $(nodes[i]);
-        var x = node.offset().left;
-        var y = node.offset().top;
-        if (x3 <= x && x <= x4 && y3 <= y && y <= y4) {
-            selectedNodes.push(nodes[i].id);
-        }
+    for ( var i = 0; i < nodes.length; i++) {
+	var node = $(nodes[i]);
+	var x = node.offset().left;
+	var y = node.offset().top;
+	if (x3 <= x && x <= x4 && y3 <= y && y <= y4) {
+	    selectedNodes.push(nodes[i].id);
+	}
     }
 
-    for (var i = 0; i < selectedNodes.length; i++) {
-        var dataId = selectedNodes[i].replace(":", "\\:");
-        var node = $("#" + dataId);
-        node.addClass("selectedNode");
-        instance.addToDragSelection(node);
+    for ( var i = 0; i < selectedNodes.length; i++) {
+	var dataId = selectedNodes[i].replace(":", "\\:");
+	var node = $("#" + dataId);
+	node.addClass("selectedNode");
+	instance.addToDragSelection(node);
     }
     select = false;
 }
 
 function pauseEvent(e) {
     if (e.stopPropagation)
-        e.stopPropagation();
+	e.stopPropagation();
     if (e.preventDefault)
-        e.preventDefault();
+	e.preventDefault();
     e.cancelBubble = true;
     e.returnValue = false;
     return false;
@@ -59,107 +52,118 @@ function pauseEvent(e) {
 
 function setMousedownForDraggable(elem) {
     elem.mousedown(function(e) {
-        if (!$(this).hasClass("selectedNode")) {
-            cancelSelection();
-        }
+	if (!$(this).hasClass("selectedNode")) {
+	    cancelSelection();
+	}
     });
 }
 
 function cancelSelection() {
-    for (var i = 0; i < selectedNodes.length; i++) {
-        var dataId = selectedNodes[i].replace(":", "\\:");
-        var node = $("#" + dataId);
-        node.removeClass("selectedNode");
+    for ( var i = 0; i < selectedNodes.length; i++) {
+	var dataId = selectedNodes[i].replace(":", "\\:");
+	var node = $("#" + dataId);
+	node.removeClass("selectedNode");
     }
     instance.clearDragSelection();
 }
 
+function deleteSelectedNodes() {
+    if (selectedNodes.length > 0) {
+	var errorMsg="Do you really want to delete all selected nodes?";
+	if(selectedNodes.length==1)
+	{
+	    errorMsg="Do you really want to delete the selected node?";
+	}
+	$("#deleteDialog").dialog({
+	    modal : true,
+	    buttons : {
+		Yes : function() {
+		    $(this).dialog("close");
+		    for ( var i = 0; i < selectedNodes.length; i++) {
+			var dataId = selectedNodes[i].replace(":", "\\:");
+			var node = $("#" + dataId);
+			instance.detachAllConnections(node);
+			instance.removeAllEndpoints(node);
+			var deleteId = selectedNodes[i];
+			deleteNodeFromDpt(deleteId, node.attr("class"));
+			node.remove();
+			usedIDs.splice($.inArray(deleteId, usedIDs), 1);
+		    }
+		    updateServiceOnServer();
+		},
+		Cancel : function() {
+		    $(this).dialog("close");
+		}
+	    }
+	}).text(errorMsg);
+    }
+}
 $(document).ready(function() {
     area = document.getElementById('selectArea');
     $('html').keyup(function(e) {
-        if (e.keyCode == 46) {
-            if (selectedNodes.length > 0) {
-                $("#deleteDialog").dialog({
-                    modal: true,
-                    buttons: {
-                        Yes: function() {
-                            $(this).dialog("close");
-                            for (var i = 0; i < selectedNodes.length; i++) {
-                                var dataId = selectedNodes[i].replace(":", "\\:");
-                                var node = $("#" + dataId);
-                                instance.detachAllConnections(node);
-                                instance.removeAllEndpoints(node);
-                                var deleteId = selectedNodes[i];
-                                deleteNodeFromDpt(deleteId, node.attr("class"));
-                                node.remove();
-                                usedIDs.splice($.inArray(deleteId, usedIDs), 1);   
-                            }
-                            updateServiceOnServer();
-                        },
-                        Cancel: function() {
-                            $(this).dialog("close");
-                        }
-                    }
-                }).text("Do you really want to delete all selected nodes?");
-            }
-        }
+	if (e.keyCode == 46) {
+	    deleteSelectedNodes();
+	}
     });
     $("#editor").mousedown(function(e) {
-        if (!select) {
-            cancelSelection();
-            select = true;
-        }
-        var target = $(e.target);
-        if (!target.is("input")) {
-            // normal selection
-            if (!inputSelect) // last section was not input
-            {
-                pauseEvent(e);
-                // pause select texts
-                inputSelect = false;
-            }
-            area.hidden = 0;
-        } else {
-            inputSelect = true;
-            area.hidden = 1;
-        }
-        // Unhide the area
-        x1 = e.clientX;
-        // Set the initial X
-        y1 = e.clientY;
-        // Set the initial Y
-        reCalc();
+	var target = $(e.target);
+	if (!(target.is("input")||target.is("path"))) {
+	    // normal selection
+	    if (!inputSelect) // last section was not input
+	    {
+		pauseEvent(e);
+		// pause select texts
+		inputSelect = false;
+	    }
+	    area.hidden = 0;
+	} else {
+	    if(target.is("input"))
+		{
+	    inputSelect = true;
+	    area.hidden = 1;
+		}
+	}
+	// Unhide the area
+	x1 = e.clientX;
+	// Set the initial X
+	y1 = e.clientY;
+	// Set the initial Y
+	reCalc();
+	if (!select) {
+	    cancelSelection();
+	    select = true;
+	}
     });
 
     $("#editor").mousemove(function(e) {
-        x2 = e.clientX;
-        // Update the current position X
-        y2 = e.clientY;
-        // Update the current position Y
-        reCalc();
+	x2 = e.clientX;
+	// Update the current position X
+	y2 = e.clientY;
+	// Update the current position Y
+	reCalc();
     });
 
     $("#selectArea").mousemove(function(e) {
-        x2 = e.clientX;
-        // Update the current position X
-        y2 = e.clientY;
-        // Update the current position Y
-        reCalc();
+	x2 = e.clientX;
+	// Update the current position X
+	y2 = e.clientY;
+	// Update the current position Y
+	reCalc();
     });
     $("#editor").mouseup(function(e) {
-        if (select) {
-            calSelectedNodes();
-        }
-        // Hide the area
-        area.hidden = 1;
+	if (select) {
+	    calSelectedNodes();
+	}
+	// Hide the area
+	area.hidden = 1;
     });
     $("#selectArea").mouseup(function(e) {
-        if (inputSelect) {
-            inputSelect = false;
-        } else if (select) {
-            calSelectedNodes();
-        }
-        area.hidden = 1;
-        // Hide the div
+	if (inputSelect) {
+	    inputSelect = false;
+	} else if (select) {
+	    calSelectedNodes();
+	}
+	area.hidden = 1;
+	// Hide the div
     });
 });

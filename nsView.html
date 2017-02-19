@@ -68,17 +68,13 @@
 
 	<div class="container-fluid" id="editorContainer">
 		<div class="row" id="menu-actions">
-			<div class="col-md-4 no-padding">
+			<div class="col-md-3 no-padding">
 				<div class="action-section">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-6">
 							<a onclick="showNsConfiguration()"><i class="fa fa-cog fa-2x"></i><br>Configure</br></a>
 						</div>
-						<div class="col-md-4">
-							<a onclick=""><i
-								class="fa fa-caret-square-o-right fa-2x"></i><br>Deploy</br></a>
-						</div>
-						<div class="col-md-4">
+						<div class="col-md-6">
 							<a onclick="showUploadDialog()"><i
 								class="fa fa-upload fa-2x"></i><br>Upload</br></a>
 						</div>
@@ -86,21 +82,25 @@
 				</div>
 			</div>
 
-			<div class="col-md-2 no-padding">
+			<div class="col-md-4 no-padding">
 				<div class="action-section">
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-md-4">
+							<a onclick="deleteSelectedNodes()"><i
+								class="fa fa-trash fa-2x"></i><br>Delete</br></a>
+						</div>
+						<div class="col-md-4">
 							<a onclick="undo()"><i class="fa fa-undo fa-2x"></i><br>Undo</br></a>
 						</div>
 
-						<div class="col-md-6">
+						<div class="col-md-4">
 							<a onclick="redo()"><i class="fa fa-repeat fa-2x"></i><br>Redo</br></a>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="col-md-6 no-padding">
+			<div class="col-md-5 no-padding">
 				<div class="action-section">
 					<div class="row">			
 						<div class="zoom-in col-md-3">
@@ -185,9 +185,7 @@
 					<div data-bind="attr: {'id': id}">
 						<input type="text"
 							onkeypress="this.style.width = ((this.value.length + 2) * 8) + 'px';"
-							data-bind="textInput: id, event: {blur:  $parent.rename}" /> <a
-							id="delete" data-bind="click: deleteNode" class="node-button"><span
-							class="glyphicon glyphicon-trash"></span></a>
+							data-bind="textInput: id, event: {blur:  $parent.rename}" /> 
 					</div>
 				</div>
 
