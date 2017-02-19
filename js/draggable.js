@@ -689,6 +689,7 @@ function drawNode(type, data, x, y) {
 	stop : savePositionForNode,
     });
     displayDeleteButton(data.id);
+    setMousedownForDraggable(elem);
 }
 
 function drawLink(virtual_link) {

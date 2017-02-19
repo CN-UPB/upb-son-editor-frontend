@@ -15,30 +15,18 @@ function reCalc() {
     area.style.height = y4 - y3 + 'px';
 }
 
-function calSelectedNodes(shiftX, shiftY) {
+function calSelectedNodes() {
     selectedNodes = [];
-    if (cur_ns.descriptor.network_functions != null) {
-	for ( var i = 0; i < cur_ns.descriptor.network_functions.length; i++) {
-	    var vnf = cur_ns.descriptor.network_functions[i];
-	    var position = cur_ns.meta.positions[vnf.vnf_id];
-	    if (position[0] >= x3 - shiftX && position[0] <= x4 - shiftX
-		    && position[1] >= y3 - shiftY && position[1] <= y4 - shiftY) {
-		if ($.inArray(vnf, selectedNodes))
-		    selectedNodes.push(vnf.vnf_id);
-	    }
+    var nodes = $('#editor>.jsplumb-draggable').not('.jsplumb-endpoint');
+    for ( var i = 0; i < nodes.length; i++) {
+	var node = $(nodes[i]);
+	var x = node.offset().left;
+	var y = node.offset().top;
+	if (x3 <= x && x <= x4 && y3 <= y && y <= y4) {
+	    selectedNodes.push(nodes[i].id);
 	}
     }
-    if (cur_ns.descriptor.network_services != null) {
-	for ( var i = 0; i < cur_ns.descriptor.network_services.length; i++) {
-	    var ns = cur_ns.descriptor.network_services[i];
-	    var position = cur_ns.meta.positions[ns.ns_id];
-	    if (position[0] >= x3 - shiftX && position[0] <= x4 - shiftX
-		    && position[1] >= y3 - shiftY && position[1] <= y4 - shiftY) {
-		if ($.inArray(ns, selectedNodes))
-		    selectedNodes.push(ns.ns_id);
-	    }
-	}
-    }
+
     for ( var i = 0; i < selectedNodes.length; i++) {
 	var dataId = selectedNodes[i].replace(":", "\\:");
 	var node = $("#" + dataId);
@@ -58,13 +46,38 @@ function pauseEvent(e) {
     return false;
 }
 
+function setMousedownForDraggable(elem) {
+    elem.mousedown(function(e) {
+	if (!$(this).hasClass("selectedNode")) {
+	    for ( var i = 0; i < selectedNodes.length; i++) {
+		var dataId = selectedNodes[i].replace(":", "\\:");
+		var node = $("#" + dataId);
+		node.removeClass("selectedNode");
+	    }
+	    instance.clearDragSelection();
+	}
+    });
+}
+
 $(document).ready(function() {
     area = document.getElementById('selectArea');
     $("#editor").mousedown(function(e) {
+	if (!select) {
+	    for ( var i = 0; i < selectedNodes.length; i++) {
+		var dataId = selectedNodes[i].replace(":", "\\:");
+		var node = $("#" + dataId);
+		node.removeClass("selectedNode");
+	    }
+	    instance.clearDragSelection();
+	    select = true;
+	}
 	var target = $(e.target);
 	if (!target.is("input")) {
-	    if (!inputSelect) {
-		pauseEvent(e);//pause select texts
+	    // normal selection
+	    if (!inputSelect) // last section was not input
+	    {
+		pauseEvent(e);// pause select texts
+		inputSelect = false;
 	    }
 	    area.hidden = 0;
 	} else {
@@ -76,15 +89,6 @@ $(document).ready(function() {
 	// Set the initial X
 	y1 = e.clientY;
 	// Set the initial Y
-	if (!select) {
-	    for ( var i = 0; i < selectedNodes.length; i++) {
-		var dataId = selectedNodes[i].replace(":", "\\:");
-		var node = $("#" + dataId);
-		node.removeClass("selectedNode");
-	    }
-	    instance.clearDragSelection();
-	    select = true;
-	}
 	reCalc();
     });
 
@@ -95,10 +99,17 @@ $(document).ready(function() {
 	// Update the current position Y
 	reCalc();
     });
+
+    $("#selectArea").mousemove(function(e) {
+	x2 = e.clientX;
+	// Update the current position X
+	y2 = e.clientY;
+	// Update the current position Y
+	reCalc();
+    });
     $("#editor").mouseup(function(e) {
 	if (select) {
-	    var offset = $(this).offset();
-	    calSelectedNodes(offset.left, offset.top);
+	    calSelectedNodes();
 	}
 	// Hide the area
 	area.hidden = 1;
@@ -106,6 +117,8 @@ $(document).ready(function() {
     $("#selectArea").mouseup(function(e) {
 	if (inputSelect) {
 	    inputSelect = false;
+	} else if (select) {
+	    calSelectedNodes();
 	}
 	area.hidden = 1;
 	// Hide the div

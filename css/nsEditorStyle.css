@@ -4,12 +4,7 @@
     background-color:grey;
     opacity:0.2;
 }
-.selectedNode
-{
-	border-style: dashed;
-	border-width: 3px;
-    border-color: red;
-}
+
 #welcome-section {
 	padding-top: 60px;
 }
@@ -285,7 +280,7 @@ div .cp-after-drop>input{
     z-index: 24;
 }
 
-div .e-lan-after-drop{
+.e-lan-after-drop{
 		font-family: Arial;
 	font-weight: bold;
 	font-size:16px;
@@ -313,6 +308,13 @@ div .e-lan-after-drop>input{
 
 .ui-draggable{
 	background-position: center center;
+}
+
+.selectedNode
+{
+	border-style: dashed;
+	border-width: 3px;
+    border-color: red;
 }
 
 
