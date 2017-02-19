@@ -1,3 +1,9 @@
+#selectArea{
+	border: 2px dashed red;
+    position: absolute;
+    background-color:grey;
+    opacity:0.2;
+}
 #welcome-section {
 	padding-top: 60px;
 }
@@ -82,6 +88,7 @@
 	background-color: white;
 	position: relative;
 }
+
 .menu{
 	margin-left: 40px;
 	/*padding: 2px 2px 2px 2px;*/
