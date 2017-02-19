@@ -1072,29 +1072,43 @@ function savePositionForNode(event, noUpdate) {
     var position = event.pos;
     var node = event.selection[0][0];
     var nodeId = node.id;
+    var repaint = false;
     if (position[0] < 0) {
-	position[0] = 0;
-	$(node).css("left", 20);
-	instance.repaintEverything();
+	position[0] = 20;
+	$(node).css("left", position[0]);
+	repaint = true;
     }
     if (position[1] < 0) {
-	position[1] = 0;
-	$(node).css("top", 20);
-	instance.repaintEverything();
+	position[1] = 20;
+	$(node).css("top", position[1]);
+	repaint = true;
     }
     if (!cur_ns.meta.positions[nodeId]) {
 	cur_ns.meta.positions[nodeId] = {
-	    "x" : 0,
-	    "y" : 0
+	    "x" : 20,
+	    "y" : 20
 	};
     }
     cur_ns.meta.positions[nodeId] = position;
     for ( var i = 0; i < selectedNodes.length; i++) {
 	var dataId = selectedNodes[i].replace(":", "\\:");
-	var node = $("#" + dataId);
-	var x = node.css("left");
-	var y = node.css("top");
+	var selectedNode = $("#" + dataId);
+	var x = selectedNode.position().left;
+	var y = selectedNode.position().top;
+	if (x < 0) {
+	    x = 20 + i * 10;
+	    selectedNode.css("left", x);
+	    repaint = true;
+	}
+	if (y < 0) {
+	    y = 20 + i * 10;
+	    selectedNode.css("top", y);
+	    repaint = true;
+	}
 	cur_ns.meta.positions[selectedNodes[i]] = [ x, y ];
+    }
+    if (repaint) {
+	instance.repaintEverything();
     }
     dragCount = 0;
     if (!noUpdate && isDragAction) {
