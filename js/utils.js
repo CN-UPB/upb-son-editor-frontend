@@ -64,7 +64,7 @@ function setProjectInNav(wsId, ptId) {
 	});
 }
 var requests = [];
-var LOGIN_DIALOG_STRING = "<div title='Login'><h3>{0}</h3></div>";
+var LOGIN_DIALOG_STRING = "<div title='Login'><img src='http://www.sonata-nfv.eu/sites/sonata-nfv.eu/themes/zen/sonatina/images/sonata_logo.svg' alt='SONATA SDK Editor' width='180' height='50' align='middle' style='margin-left: 40px'><h3 style='margin-left: 60px'>{0}</h3></div>";
 var ERROR_DIALOG_STRING = "<div id='errorDialog' title='Error'></div>";
 var WAIT_DIALOG_STRING = "<div id='wait'><div id='waitText'></div><div id='progressbar'></div></div>";
 
@@ -91,6 +91,7 @@ $(document).ajaxError(function (event, response, request, thrownError) {
 				buttons: [
 					{
 						text: "Login with Github",
+						style: "float:left; margin-left:70px",
 						click: function () {
 							//open github login in new window
 							window.open(authUrl);
