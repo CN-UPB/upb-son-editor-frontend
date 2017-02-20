@@ -18,7 +18,10 @@ var Descriptor = function(data) {
             modal: true,
             draggable: false,
             buttons: {
-                Ok: function() {
+            	Cancel: function() {
+                    $(this).dialog("close");
+                },
+                Publish: function() {
                     var catalogueID = $("#selectCatalogue").val();
                     var myurl = "";
                     if (self.type() == "VNF") {

@@ -58,6 +58,7 @@ textarea.parsley-error {
 
 a.navbar-brand {
     cursor: pointer;
+    padding: 0px 0px;
 }
 
 .userinfo{
@@ -156,4 +157,13 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float: none;
+    align-items: center;
+}
+
+.ui-dialog .ui-dialog-buttonpane { 
+    text-align: center;
 }
