@@ -1,160 +1,174 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="https://www.w3.org/1999/xhtml">
-	<head>
-		<title>SONATA SDK Editor - Workspace</title>
-		<meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1"/>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"/>
+<head>
+<title>SONATA SDK Editor - Workspace</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css" />
 
-		<link rel="stylesheet" href="css/commonStyle.css"></link>
+<link rel="stylesheet" href="css/commonStyle.css"></link>
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
-		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
-		<script src="js/lib/parsley.js"></script>
-		<script src="js/constants.js"></script>
-		<script src="js/git.js"></script>
-		<script src="js/workspace.js"></script>
-		<script src="js/utils.js"></script>
-		<!--<script src="js/userInfo.js"></script>-->
-	</head>
-	<body>
-		<nav class="navbar navbar-default">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<a class="navbar-brand" onclick="goToHomeView();">SONATA SDK Editor</a>
-				</div>
-				<ul class="nav navbar-nav">
-					<li>
-						<a onclick="goToHomeView();">Home</a>
-					</li>
-					<li class = "active" >
-						<a id = "nav_workspace" onclick="history.go(0);" > Workspace </a>
-					</li >
-				</ul>
-				<ul class="userinfo nav navbar-nav">
-					<li>
-						<div id="userNameImg">
-							<img class="avatar" width="20" height="20">
-							<a id="target-username"></a>
-						</div>
-					</li>
-					<li>
-						<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
-
-		<div class="container">
-			<div class="row">
-				<div class="col-md-3">
-					<label class="control-label">Please select a project: </label>
-				</div>
-				<div class="col-md-3">
-					<input id="search_pt" type="text" class="form-control" placeholder="Search..." required>
-				</div>
-				<div class="col-md-4">
-					<button class="btn btn-primary" onclick="showCreateDialog();">New Project</button>
-					<button id="configuration_btn" type="button" class="btn btn-primary" onclick="goToConfigurationView();">Configure</button>
-				</div>
-			</div>
-			<div class="row top-buffer" style="margin-top:50px;">
-				<div class="col-md-6">
-					<table class="table table-bordered">
-						<thead>
-							 <tr>
-								<th width=50%>Name</th>
-								<th>Options</th>
-							</tr>
-						</thead>
-						<tbody id="display_ptTable" data-bind="foreach: projects">
-							<tr>
-								<td>
-									<span data-bind="text: name"></span>
-									<img data-bind="visible: isShared, click: show_diff" src="css/GitHub-Mark-32px.png" alt="Shared on Github" style="float: right; cursor: pointer" title="Shared on Github"/>
-								</td>
-								<td>
-									<button class="btn btn-primary btn-sm" style="margin-left: 10px; margin-right: 15px;" data-bind="click: edit">Edit</button>
-									<button class="btn btn-danger btn-sm" data-bind="click: delete_pj">Delete</button>
-
-									<label class="switch">
-									  <input data-bind="checked: isShared, click: toggleShared" type="checkbox">
-									  <div class="slider round"></div>
-									</label>
-								</td>
-                			</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
+<script src="js/lib/parsley.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/git.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/utils.js"></script>
+<!--<script src="js/userInfo.js"></script>-->
+</head>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" onclick="goToHomeView();">SONATA SDK
+				Editor</a>
 		</div>
-		<div id="createProjectDialog" title="Create new project" hidden>
-			<form id="createForm" data-parsley-validate>
-				<h4>Please input the name of the new project:</h4>
-				<label for="ptNameInput">
-                    Project Name
-                    <input data-parsley-required="true" data-parsley-trigger="change" data-parsley-pattern="^[a-z0-9\\-_.]+$" data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed."
-                        id ='ptNameInput' placeholder="Enter name of project"/>
-				</label>
-                <label for="ptUrlInput">
-                    Github URL
-				    <input  data-parsley-required="false" data-parsley-trigger="change" type="url" data-parsley-pattern-message="Only valid urls are allowed"
-				        id ='ptUrlInput' placeholder="repository URL (optional)"/>
-				</label>
-				<label for="urlSelect">
-                    Choose from your repos:
-					<select id="urlSelect" onchange="urlSelected(this)">
-					    <option selected value="">select repo</option>
-						<!-- ko foreach: repos-->
-						<option data-bind="value: clone_url, text: name"></option>
-						<!-- /ko-->
-					</select>
-				</label>
-
-			</form>
-		</div>
-		<div id="ConfirmDeletionDialog" title="Confirm deletion" hidden>
-			<h4>Do you really want to delete the project?</h4>
-		</div>
-		<div id="DeletePtDialog" title="Successfully deleted" hidden>
-			<h4>Project is deleted!</h4>
-		</div>
-		<div id="GitDialog" title="Project Status" hidden>
-		</div>
-		<div id="commitDialog" title="Set commit message" hidden>
-			<form id="commitForm">
-				<label for="commitInput">Commit message</label>
-				<input  data-parsley-required="true" data-parsley-trigger="change"
-						id ='commitInput' placeholder="Commit message"/>
-			</form>
-		</div>
-		<div id="shareDialog" class="no-close" title="Share Project on Github" hidden>
-			<form id="shareForm">
-				<label for="repoNameInput">Repository Name</label>
-				<input  data-parsley-required="true" data-parsley-trigger="change"
-						id ='repoNameInput' placeholder="repository Name"/>
-			</form>
-		</div>
-
-		<div id="unshareDialog" class="no-close" title="Delete Remote Repository?" hidden>
-			Please put in your Repo name to make sure to delete your repository:
-			<form id="unShareForm">
-				<label for="delRepoNameInput">Repository Name</label>
-				<input  data-parsley-required="true" data-parsley-trigger="change"
-						id ='delRepoNameInput' placeholder="repository Name"/>
-			</form>
-		</div>
-
-		<ul class="pager">
-			<li>
-				<a onclick="goToHomeView();">Previous</a>
-			</li>
+		<ul class="nav navbar-nav">
+			<li><a onclick="goToHomeView();">Home</a></li>
+			<li class="active"><a id="nav_workspace"
+				onclick="history.go(0);"> Workspace </a></li>
 		</ul>
-	</body>
+		<ul class="userinfo nav navbar-nav">
+			<li>
+				<div id="userNameImg">
+					<img class="avatar" width="20" height="20"> <a
+						id="target-username"></a>
+				</div>
+			</li>
+			<li><a id="log-out" onclick="logOutFromEditor()">Log Out</a></li>
+		</ul>
+	</div>
+	</nav>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<label class="control-label">Please select a project: </label>
+			</div>
+			<div class="col-md-3">
+				<input id="search_pt" type="text" class="form-control"
+					placeholder="Search..." required>
+			</div>
+			<div class="col-md-4">
+				<button class="btn btn-primary" onclick="showCreateDialog();">
+				<span style="margin-right: 2px;" class="glyphicon glyphicon-folder-open"></span>
+				New Project</button>
+				<button id="configuration_btn" type="button" class="btn btn-primary"
+					onclick="goToConfigurationView();">
+					<span style="margin-right: 2px;" class="glyphicon glyphicon-wrench"></span>
+					Configure
+				</button>
+			</div>
+		</div>
+		<div class="row top-buffer" style="margin-top: 50px;">
+			<div class="col-md-6">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th width=50%>Name</th>
+							<th>Options</th>
+						</tr>
+					</thead>
+					<tbody id="display_ptTable" data-bind="foreach: projects">
+						<tr>
+							<td><span data-bind="text: name"></span> <img
+								data-bind="visible: isShared, click: show_diff"
+								src="css/GitHub-Mark-32px.png" alt="Shared on Github"
+								style="float: right; cursor: pointer" title="Shared on Github" />
+							</td>
+							<td>
+								<button class="btn btn-primary btn-sm"
+									style="margin-left: 5px; margin-right: 5px;"
+									data-bind="click: edit">
+									<span style="margin-right: 2px;"
+										class="glyphicon glyphicon-pencil"></span> Edit
+								</button>
+								<button class="btn btn-danger btn-sm"
+									style="margin-left: 5px; margin-right: 5px;"
+									data-bind="click: delete_pj">
+									<span style="margin-right: 2px;"
+										class="glyphicon glyphicon-trash"></span> Delete
+								</button> <label class="switch"
+								style="margin-left: 5px; margin-right: 5px;"> <input
+									data-bind="checked: isShared, click: toggleShared"
+									type="checkbox">
+										<div class="slider round"></div></label>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="createProjectDialog" title="Create new project" hidden>
+		<form id="createForm" data-parsley-validate>
+			<h4>Please input the name of the new project:</h4>
+			<label for="ptNameInput"> Project Name <input
+				data-parsley-required="true" data-parsley-trigger="change"
+				data-parsley-pattern="^[a-z0-9\\-_.]+$"
+				data-parsley-pattern-message="Only alphabetic, numeric characters and \_. are allowed."
+				id='ptNameInput' placeholder="Enter name of project" />
+			</label> <label for="ptUrlInput"> Github URL <input
+				data-parsley-required="false" data-parsley-trigger="change"
+				type="url"
+				data-parsley-pattern-message="Only valid urls are allowed"
+				id='ptUrlInput' placeholder="repository URL (optional)" />
+			</label> <label for="urlSelect"> Choose from your repos: <select
+				id="urlSelect" onchange="urlSelected(this)">
+					<option selected value="">select repo</option>
+					<!-- ko foreach: repos-->
+					<option data-bind="value: clone_url, text: name"></option>
+					<!-- /ko-->
+			</select>
+			</label>
+
+		</form>
+	</div>
+	<div id="ConfirmDeletionDialog" title="Confirm deletion" hidden>
+		<h4>Do you really want to delete the project?</h4>
+	</div>
+	<div id="DeletePtDialog" title="Successfully deleted" hidden>
+		<h4>Project is deleted!</h4>
+	</div>
+	<div id="GitDialog" title="Project Status" hidden></div>
+	<div id="commitDialog" title="Set commit message" hidden>
+		<form id="commitForm">
+			<label for="commitInput">Commit message</label> <input
+				data-parsley-required="true" data-parsley-trigger="change"
+				id='commitInput' placeholder="Commit message" />
+		</form>
+	</div>
+	<div id="shareDialog" class="no-close" title="Share Project on Github"
+		hidden>
+		<form id="shareForm">
+			<label for="repoNameInput">Repository Name</label> <input
+				data-parsley-required="true" data-parsley-trigger="change"
+				id='repoNameInput' placeholder="repository Name" />
+		</form>
+	</div>
+
+	<div id="unshareDialog" class="no-close"
+		title="Delete Remote Repository?" hidden>
+		Please put in your Repo name to make sure to delete your repository:
+		<form id="unShareForm">
+			<label for="delRepoNameInput">Repository Name</label> <input
+				data-parsley-required="true" data-parsley-trigger="change"
+				id='delRepoNameInput' placeholder="repository Name" />
+		</form>
+	</div>
+
+	<ul class="pager">
+		<li><a onclick="goToHomeView();">Previous</a></li>
+	</ul>
+</body>
 </html>
 
-	
