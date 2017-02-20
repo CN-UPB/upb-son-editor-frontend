@@ -640,7 +640,7 @@ function drawElan(dataId) {
 }
 
 // draw a node in editor
-function drawNode(type, data, x, y) {
+function drawNode(type, data, rawData, x, y) {
 	usedIDs.push(data.id);
 	viewModel.addToEditor(data);
 	var dataId = data.id.replace(":", "\\:");
@@ -654,13 +654,40 @@ function drawNode(type, data, x, y) {
 	});
 	var nameBox = elem.children("input")[0];
 	nameBox.style.width = ((nameBox.value.length + 2) * 8) + 'px';
+	var nodeInfo;
 	if (type == "cp") {
 		drawCp(data.id);
+		nodeInfo = "CP";
 	} else if (type == "e-lan") {
 		drawElan(data.id);
+		nodeInfo = "E-LAN";
 	} else {
+		if (type == "vnf") {
+			nodeInfo = "VNF: " + rawData.vnf_vendor + ":" + rawData.vnf_name
+					+ ":" + rawData.vnf_version;
+		} else {
+			nodeInfo = "NS: " + rawData.ns_vendor + ":" + rawData.ns_name + ":"
+					+ rawData.ns_version;
+		}
 		drawVnfOrNs(type, data.id, data.descriptor);
 	}
+	elem.attr("title", nodeInfo);
+	elem.tooltip({
+		position : {
+			my : "center top-40px",
+			at : "center top"
+		},
+		show : {
+			effect : "slideDown",
+			duration : 100
+		}
+	});
+	elem.mousedown(function() {
+		elem.tooltip("disable");
+	});
+	elem.mouseup(function() {
+		elem.tooltip("enable");
+	});
 	instance.draggable(data.id, {
 		drag : activateDragging,
 		stop : savePositionForNode,
@@ -892,39 +919,37 @@ function clean() {
 }
 function outputNotFoundInfo() {
 	var error = "";
-	var notFound=false;
+	var notFound = false;
 	if (notFoundVNFs.length > 0) {
-		notFound=true;
+		notFound = true;
 		if (notFoundVNFs.length == 1) {
 			error += "The following refenrenced function is not found:\n";
-		}
-		else
-		{
+		} else {
 			error += "The following refenrenced functions are not found:\n";
 		}
 		for ( var i = 0; i < notFoundVNFs.length; i++) {
-			error += "\t"+notFoundVNFs[i];
+			error += "\t" + notFoundVNFs[i];
 			error += "\n";
 		}
 	}
 	if (notFoundNSs.length > 0) {
-		notFound=true;
+		notFound = true;
 		if (notFoundNSs.length == 1) {
 			error += "The following refenrenced service is not found:\n";
 		} else {
 			error += "The following refenrenced services are not found:\n";
 		}
 		for ( var i = 0; i < notFoundNSs.length; i++) {
-			error += "\t"+notFoundNSs[i];
+			error += "\t" + notFoundNSs[i];
 			error += "\n";
 		}
 
 	}
 	if (notFound) {
-		error+="Please add the referenced function/service into your project!";
+		error += "Please add the referenced function/service into your project!";
 		$("#errorDialog").dialog({
 			modal : true,
-			width: 450,
+			width : 450,
 			buttons : {
 				Confirm : function() {
 					$("#errorDialog").dialog("close");
@@ -949,7 +974,7 @@ function displayNS() {
 			$y = cur_ns.meta.positions[vnf.vnf_id][1];
 			var vnf_data = loadCpInfos('vnf', vnf);
 			if (vnf_data) {
-				drawNode("vnf", vnf_data, $x, $y);
+				drawNode("vnf", vnf_data, vnf, $x, $y);
 				countDropped++;
 			}
 		}
@@ -965,7 +990,7 @@ function displayNS() {
 			$y = cur_ns.meta.positions[ns.ns_id][1];
 			var ns_data = loadCpInfos('ns', ns);
 			if (ns_data) {
-				drawNode("ns", ns_data, $x, $y);
+				drawNode("ns", ns_data, ns, $x, $y);
 				countDropped++;
 			}
 		}
@@ -980,7 +1005,7 @@ function displayNS() {
 			}
 			$x = cur_ns.meta.positions[cp.id][0];
 			$y = cur_ns.meta.positions[cp.id][1];
-			drawNode("cp", cp, $x, $y);
+			drawNode("cp", cp, cp, $x, $y);
 			countDropped++;
 		}
 	}
@@ -995,7 +1020,7 @@ function displayNS() {
 				}
 				$x = cur_ns.meta.positions[elan.id][0];
 				$y = cur_ns.meta.positions[elan.id][1];
-				drawNode("e-lan", elan, $x, $y);
+				drawNode("e-lan", elan, elan, $x, $y);
 				var connections = elan.connection_points_reference;
 				for ( var j = 0; j < connections.length; j++) {
 					instance.connect({
@@ -1067,13 +1092,13 @@ function dropNewVnfOrNs(type, list, elemId) {
 		var ns_data = loadCpInfos('ns', newEntry);
 		$x = cur_ns.meta.positions[ns_data.id][0];
 		$y = cur_ns.meta.positions[ns_data.id][1];
-		drawNode(type, ns_data, $x, $y);
+		drawNode(type, ns_data, newEntry, $x, $y);
 	} else {
 		cur_ns.descriptor.network_functions = list;
 		var vnf_data = loadCpInfos('vnf', newEntry);
 		$x = cur_ns.meta.positions[vnf_data.id][0];
 		$y = cur_ns.meta.positions[vnf_data.id][1];
-		drawNode(type, vnf_data, $x, $y);
+		drawNode(type, vnf_data, newEntry, $x, $y);
 	}
 }
 
@@ -1084,7 +1109,7 @@ function dropNewCp(elemID) {
 	};
 	$x = cur_ns.meta.positions[cp.id][0];
 	$y = cur_ns.meta.positions[cp.id][1];
-	drawNode('cp', cp, $x, $y);
+	drawNode('cp', cp, cp, $x, $y);
 	if (!cur_ns.descriptor.connection_points) {
 		cur_ns.descriptor.connection_points = [];
 	}
@@ -1099,7 +1124,7 @@ function dropNewElan(elemID) {
 	};
 	$x = cur_ns.meta.positions[elan.id][0];
 	$y = cur_ns.meta.positions[elan.id][1];
-	drawNode("e-lan", elan, $x, $y);
+	drawNode("e-lan", elan, elan, $x, $y);
 	if (!cur_ns.descriptor.virtual_links) {
 		cur_ns.descriptor.virtual_links = [];
 	}

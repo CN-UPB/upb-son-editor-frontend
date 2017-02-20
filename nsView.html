@@ -16,10 +16,10 @@
 
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 <script src="js/lib/bootstrap-filestyle.min.js">
     
@@ -182,11 +182,12 @@
 			<div class="pan-parent panzoom" id="editor-parent">
 				<div class="editor-area" data-bind="foreach: editor_nodes"
 					id="editor">
-					<div data-bind="attr: {'id': id}">
-						<input type="text"
+					<div title="" data-bind="attr: {'id': id}">
+						<input  type="text"
 							onkeypress="this.style.width = ((this.value.length + 2) * 8) + 'px';"
 							data-bind="textInput: id, event: {blur:  $parent.rename}" /> 
 					</div>
+				
 				</div>
 
 				<div id="connection-list"></div>
