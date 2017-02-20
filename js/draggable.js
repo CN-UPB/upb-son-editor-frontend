@@ -91,17 +91,23 @@ var Node = function(node_data) {
 var ViewModel = function() {
 	this.vnfs = ko.observableArray([]);
 	this.addVnf = function(vnf) {
-		this.vnfs.push(vnf);
-		vnf_map[vnf.descriptor.vendor + ":" + vnf.descriptor.name + ":"
-				+ vnf.descriptor.version] = vnf;
-		classNames.push(vnf.descriptor.name);
+		if (!vnf_map[vnf.descriptor.vendor + ":" + vnf.descriptor.name + ":"
+				+ vnf.descriptor.version]) {
+			this.vnfs.push(vnf);
+			vnf_map[vnf.descriptor.vendor + ":" + vnf.descriptor.name + ":"
+					+ vnf.descriptor.version] = vnf;
+			classNames.push(vnf.descriptor.name);
+		}
 	}.bind(this);
 	this.nss = ko.observableArray([]);
 	this.addNs = function(ns) {
-		this.nss.push(ns);
-		ns_map[ns.descriptor.vendor + ":" + ns.descriptor.name + ":"
-				+ ns.descriptor.version] = ns;
-		classNames.push(ns.descriptor.name);
+		if (!ns_map[ns.descriptor.vendor + ":" + ns.descriptor.name + ":"
+				+ ns.descriptor.version]) {
+			this.nss.push(ns);
+			ns_map[ns.descriptor.vendor + ":" + ns.descriptor.name + ":"
+					+ ns.descriptor.version] = ns;
+			classNames.push(ns.descriptor.name);
+		}
 	}.bind(this);
 	this.editor_nodes = ko.observableArray([]);
 	var self = this;
@@ -786,24 +792,24 @@ function loadVNFsNSsFromCatalogues() {
 							withCredentials : true
 						},
 						success : function(data) {
-							vnfs = data;
-							for ( var i = 0; i < vnfs.length; i++) {
-								viewModel.addVnf(vnfs[i]);
+							c_vnfs = data;
+							for ( var i = 0; i < c_vnfs.length; i++) {
+								viewModel.addVnf(c_vnfs[i]);
 							}
 						}
 					});
 					$.ajax({
-						url : serverURL + "workspaces/" + wsId + "/projects/"
+						url : serverURL + "workspaces/" + wsId + "/catalogues/"
 								+ +catalogue.id + "/services/",
 						dataType : "json",
 						xhrFields : {
 							withCredentials : true
 						},
 						success : function(data) {
-							nss = data;
-							for ( var i = 0; i < nss.length; i++) {
-								if (nss[i].id != nsId) {
-									viewModel.addNs(nss[i]);
+							c_nss = data;
+							for ( var i = 0; i < c_nss.length; i++) {
+								if (c_nss[i].id != nsId) {
+									viewModel.addNs(c_nss[i]);
 								}
 							}
 							$(".ns").draggable({
@@ -1356,35 +1362,36 @@ function loadCurrentNS() {
 				},
 			});
 }
-$(document).ready(function() {
-	queryString = getQueryString();
-	wsId = queryString["wsId"];
-	ptId = queryString["ptId"];
-	nsId = queryString["nsId"];
-	setWorkspaceInNav(wsId);
-	setProjectInNav(wsId, ptId);
-	loadPlatforms();
-	setSize();
-	$(window).resize(function() {
-		setSize();
-	});
-	$(".cp").draggable({
-		helper : "clone",
-		revert : "invalid",
-	});
-	$(".e-lan").draggable({
-		helper : "clone",
-		revert : "invalid",
-	});
-	// delay loading the current network service until the sidebar has
-	// loaded
-	// completely
-	// , loadVNFsNSsFromCatalogues()
-	$.when(loadAllVNFs(), loadAllNSs()).done(function(r1, r2) {
-		loadCurrentNS();
-	});
-	ko.applyBindings(viewModel);
-	jsPlumb.ready(function() {
-		configureJsPlumb();
-	});
-});
+$(document).ready(
+		function() {
+			queryString = getQueryString();
+			wsId = queryString["wsId"];
+			ptId = queryString["ptId"];
+			nsId = queryString["nsId"];
+			setWorkspaceInNav(wsId);
+			setProjectInNav(wsId, ptId);
+			loadPlatforms();
+			setSize();
+			$(window).resize(function() {
+				setSize();
+			});
+			$(".cp").draggable({
+				helper : "clone",
+				revert : "invalid",
+			});
+			$(".e-lan").draggable({
+				helper : "clone",
+				revert : "invalid",
+			});
+			// delay loading the current network service until the sidebar has
+			// loaded
+			// completely
+			$.when(loadAllVNFs(), loadAllNSs(), loadVNFsNSsFromCatalogues())
+					.done(function(r1, r2) {
+						loadCurrentNS();
+					});
+			ko.applyBindings(viewModel);
+			jsPlumb.ready(function() {
+				configureJsPlumb();
+			});
+		});
