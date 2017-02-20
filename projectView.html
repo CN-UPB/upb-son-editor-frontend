@@ -54,7 +54,7 @@
 			<option>VNF</option>
 		 </select>
 	</div>
-    <div class="col-md-4">
+    <div class="col-md-6">
 		<input id="search_item" type="text" class="form-control" placeholder="Search..." required>
 	</div>
 	 <div class="col-md-4">
@@ -64,25 +64,29 @@
 	</div>
 </div>
 <div class="row top-buffer" style="margin-top:50px;">
-	<div class="col-md-8">
+	<div class="col-md-12">
 		<table class="table table-bordered">
 			<thead>
 			  <tr>
+				<th width=10%>Vendor</th>
 				<th width=10%>Name</th>
-				<th width=30%>Description</th>
+				<th width=5%>Version</th>
+				<th width=25%>Description</th>
 				<th width=10%>Type</th>
-				<th width=50%>Options</th>
+				<th width=40%>Options</th>
 			  </tr>
 			</thead>
 			<tbody id="display_NS_VNFS" data-bind="foreach: descriptors">
                 <tr>
+					<td data-bind="text: vendor"></td>
                     <td data-bind="text: name"></td>
+					<td data-bind="text: version"></td>
                     <td data-bind="text: description"></td>
                     <td data-bind="text: type"></td>
                     <td>
-                        <button class="btn btn-primary btn-sm" style="margin-left: 10px; margin-right: 15px;" data-bind="click: edit">Edit</button>
-                        <button class="btn btn-primary btn-sm" style="margin-right: 15px;" data-bind="click: clone">Clone</button>
-                        <button class="btn btn-danger btn-sm" data-bind="click: delete_desc">Delete</button>
+                        <button class="btn btn-primary btn-sm" style="margin-left: 10px; margin-right: 5px;" data-bind="click: edit">Edit</button>
+                        <button class="btn btn-primary btn-sm" style="margin-left: 10px; margin-right: 5px;" data-bind="click: clone">Clone</button>
+                        <button class="btn btn-danger btn-sm" style="margin-left: 10px; margin-right: 5px;" data-bind="click: delete_desc">Delete</button>
                     </td>
                 </tr>
 			</tbody>

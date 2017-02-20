@@ -7,11 +7,13 @@ var nsId = "";
 var availableItems = [];
 var itemDictionary = {};
 
-var Descriptor = function(data) {
+var Descriptor = function(data, id , type) {
 	this.name = ko.observable(data.name);
+	this.vendor = ko.observable(data.vendor);
+	this.version = ko.observable(data.version);
     this.description = ko.observable(data.description);
-    this.type = ko.observable(data.type);
-    this.id = ko.observable(data.id);
+    this.type = ko.observable(type);
+    this.id = ko.observable(id);
 	var self = this;
 	this.delete_desc = function() {
 		if (self.type() === "VNF"){
@@ -43,8 +45,8 @@ function ViewModel() {
 
 	var self = this;
 
-	this.addDescriptor= function(data){
-		self.descriptors.push(new Descriptor(data));
+	this.addDescriptor= function(data, id, type){
+		self.descriptors.push(new Descriptor(data, id, type));
     }
 }
 
@@ -109,17 +111,7 @@ function loadServices() {
 				availableItems.push("NS: " + serviceName);
 				var serviceId = services[i].id;
 				itemDictionary[serviceName] = serviceId;
-				var serviceInfo = services[i].descriptor.description;
-				if (!serviceInfo){
-					serviceInfo = "";
-				}
-				var nsData = {
-					name : serviceName,
-					description : serviceInfo,
-					id: serviceId,
-					type: "NS"
-				};
-				viewModel.addDescriptor(nsData);
+				viewModel.addDescriptor(services[i].descriptor, serviceId, "NS");
 			}
 		}
 	});
@@ -144,17 +136,7 @@ function loadVnfs() {
 				availableItems.push("VNF: " + vnfName);
 				var vnfId = vnfs[i].id;
 				itemDictionary[vnfName] = vnfId;
-				var vnfInfo = vnfs[i].descriptor.description;
-				if (!vnfInfo){
-					vnfInfo = "";
-				}
-                var vnfData = {
-                    name : vnfName,
-                    description : vnfInfo,
-                    id: vnfId,
-                    type: "VNF"
-                };
-				viewModel.addDescriptor(vnfData);
+				viewModel.addDescriptor(vnfs[i].descriptor, vnfId, "VNF");
 			}
 		}
 	});

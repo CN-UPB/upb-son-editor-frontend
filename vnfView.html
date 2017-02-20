@@ -42,7 +42,7 @@
 					<li>
 						<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
 					</li>
-				</ul>				
+				</ul>
 			</div>
 		</nav>
 		<!--jquery ui-->
@@ -56,12 +56,22 @@
 				</div>
 				<div class="btn btn-default" style="float: right" onclick="showImageFiles()">Show Image Files</div>
 			</div>
+			<div class="row uploadYml">
+				<div style="float:right">
+					<label>Create new descriptor if referenced</label>
+					<label class="switch">
+						<input id="editMode" type="checkbox">
+						<div class="slider round"></div>
+					</label>
+					<label>Replace descriptor references</label>
+				</div>
+			</div>
 			<div id="vnfForm" class="row configurationForm" ></div>
 			<div id="buttons"  class="row" align="center">
 				<button class="btn btn-primary" onclick="saveTables();">Save</button>
 				<button class="btn btn-default" onclick="goToProjectView();">Close</button>
 			</div>
-		</div>	
+		</div>
 		<div id="successVnfDialog" title="Success" hidden>
 			<h4>New VNF is created!</h4>
 		</div>
@@ -85,7 +95,7 @@
 		</div>
 		<div id="FailedValidationDialog" title="Failed" hidden>
 			<h4>Please refill the invalid fileds!</h4>
-		</div>		
+		</div>
 	</body>
 </html>
 

@@ -117,7 +117,7 @@ $(document).ajaxError(function (event, response, request, thrownError) {
 		}
 		if (response.status > 0) {
 			var json = JSON.parse(response.responseText);
-			$("#errorDialog").html(json.message);
+			$("#errorDialog").html(json.message.replace(/(?:\r\n|\r|\n)/g, '<br />'));
 		} else {
 			$("#errorDialog").text("Connection Failed. Please Try again later")
 		}
