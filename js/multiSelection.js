@@ -104,6 +104,7 @@ function deleteSelectedNodes() {
 			usedIDs.splice($.inArray(deleteId, usedIDs), 1);
 		    }
 		    updateServiceOnServer();
+		    selectedNodes = [];
 		},
 		Cancel : function() {
 		    $(this).dialog("close");
