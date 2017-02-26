@@ -1,127 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <title>SONATA SDK Editor - Project</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"/>
-  <link rel="stylesheet" media="screen" href="css/commonStyle.css" />
-	
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-  
-  <script src="js/constants.js"></script>
-  <script src="js/project.js"></script>
-  <script src="js/utils.js"></script>
-  <!--<script src="js/userInfo.js"></script>-->
+<title>SONATA SDK Editor - Project</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css" />
+<link rel="stylesheet" media="screen" href="css/commonStyle.css" />
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<script src="js/constants.js"></script>
+<script src="js/project.js"></script>
+<script src="js/utils.js"></script>
+<!--<script src="js/userInfo.js"></script>-->
 </head>
 <body>
 
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" onclick="goToHomeView();">SONATA SDK Editor</a>
-    </div>
-    <ul class="nav navbar-nav">
-	   <li><a onclick="goToHomeView();">Home</a></li>
-       <li><a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a></li>
-       <li class="active"><a id="nav_project" onclick="history.go(0);">Project</a></li>
-    </ul>
-	<ul class="userinfo nav navbar-nav">
-		<li>
-			<div id="userNameImg">
-				<img class="avatar" width="20" height="20">
-				<a id="target-username"></a>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" onclick="goToHomeView();"> <img
+					src="http://www.sonata-nfv.eu/sites/sonata-nfv.eu/themes/zen/sonatina/images/sonata_logo.svg"
+					alt="SONATA SDK Editor" width="180" height="50">
+				</a>
 			</div>
-		</li>
-			<li>
-				<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
-			</li>
-	</ul>
-  </div>
-</nav>
-  
-<div class="container">
-<div class="row">
-	<div class="col-md-2">
-		 <select class="form-control" onchange="loadList(this.selectedIndex);">
-			<option selected="selected">All</option>
-			<option>NS</option>
-			<option>VNF</option>
-		 </select>
-	</div>
-    <div class="col-md-6">
-		<input id="search_item" type="text" class="form-control" placeholder="Search..." required>
-	</div>
-	 <div class="col-md-4">
-			<button class="btn btn-primary" onclick="showCreateNSDialog(false,0)">New NS</button>
-			<button class="btn btn-primary" onclick="createNewVnf();">New VNF</button>	
-			<button class="btn btn-primary" onclick="goToConfigurationView();">Configure</button>				
-	</div>
-</div>
-<div class="row top-buffer" style="margin-top:50px;">
-	<div class="col-md-12">
-		<table class="table table-bordered">
-			<thead>
-			  <tr>
-				<th width=10%>Vendor</th>
-				<th width=10%>Name</th>
-				<th width=5%>Version</th>
-				<th width=25%>Description</th>
-				<th width=10%>Type</th>
-				<th width=40%>Options</th>
-			  </tr>
-			</thead>
-			<tbody id="display_NS_VNFS" data-bind="foreach: descriptors">
-                <tr>
-					<td data-bind="text: vendor"></td>
-                    <td data-bind="text: name"></td>
-					<td data-bind="text: version"></td>
-                    <td data-bind="text: description"></td>
-                    <td data-bind="text: type"></td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" style="margin-left: 10px; margin-right: 5px;" data-bind="click: edit">Edit</button>
-                        <button class="btn btn-primary btn-sm" style="margin-left: 10px; margin-right: 5px;" data-bind="click: clone">Clone</button>
-                        <button class="btn btn-danger btn-sm" style="margin-left: 10px; margin-right: 5px;" data-bind="click: delete_desc">Delete</button>
-                    </td>
-                </tr>
-			</tbody>
-		</table>
-	</div>
-</div>
-<ul class="pager">
+			<ul class="nav navbar-nav">
+				<li><a onclick="goToHomeView();">Home</a></li>
+				<li><a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a></li>
+				<li class="active"><a id="nav_project" onclick="history.go(0);">Project</a></li>
+			</ul>
+			<ul class="userinfo nav navbar-nav">
+				<li>
+					<div id="userNameImg">
+						<img class="avatar" width="20" height="20"> <a
+							id="target-username"></a>
+					</div>
+				</li>
+				<li><a id="log-out" onclick="logOutFromEditor()">Log Out</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-2">
+				<select class="form-control"
+					onchange="loadList(this.selectedIndex);">
+					<option selected="selected">All</option>
+					<option>NS</option>
+					<option>VNF</option>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<input id="search_item" type="text" class="form-control"
+					placeholder="Search..." required>
+			</div>
+			<div class="col-md-4">
+				<button class="btn btn-primary"
+					onclick="showCreateNSDialog(false,0)">
+					<span style="margin-right: 2px;" class="glyphicon glyphicon-file"></span>
+					New NS
+				</button>
+				<button class="btn btn-primary" onclick="createNewVnf();">
+					<span style="margin-right: 2px;" class="glyphicon glyphicon-file"></span>
+					New VNF
+				</button>
+				<button class="btn btn-primary" onclick="goToConfigurationView();">
+					<span style="margin-right: 2px;" class="glyphicon glyphicon-wrench"></span>
+					Configure
+				</button>
+			</div>
+		</div>
+		<div class="row top-buffer" style="margin-top: 50px;">
+			<div class="col-md-12">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th width=10%>Vendor</th>
+							<th width=10%>Name</th>
+							<th width=5%>Version</th>
+							<th width=25%>Description</th>
+							<th width=10%>Type</th>
+							<th width=40%>Options</th>
+						</tr>
+					</thead>
+					<tbody id="display_NS_VNFS" data-bind="foreach: descriptors">
+						<tr>
+								<td data-bind="text: vendor"></td>
+                   				<td data-bind="text: name"></td>
+								<td data-bind="text: version"></td>
+			                    <td data-bind="text: description"></td>
+                    			<td data-bind="text: type"></td>
+							<td>
+								<button class="btn btn-primary btn-sm"
+									style="margin-left: 5px; margin-right: 5px;"
+									data-bind="click: edit">
+									<span style="margin-right: 2px;"
+										class="glyphicon glyphicon-pencil"></span>Edit
+								</button>
+								<button class="btn btn-primary btn-sm"
+									style="margin-left: 5px; margin-right: 5px;"
+									data-bind="click: clone">
+									<span style="margin-right: 2px;"
+										class="glyphicon glyphicon-copy"></span>Clone
+								</button>
+								<button class="btn btn-danger btn-sm"
+									style="margin-left: 5px; margin-right: 5px;"
+									data-bind="click: delete_desc">
+									<span style="margin-right: 2px;"
+										class="glyphicon glyphicon-trash"></span>Delete
+								</button>
+								<button class="btn btn-warning btn-sm"
+									style="margin-left: 5px; margin-right: 5px;"
+									data-bind="click: publish_to">
+									<span style="margin-right: 2px;"
+										class="glyphicon glyphicon-upload"></span>Publish
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<ul class="pager">
 			<li><a onclick="goToWorkspaceView();">Previous</a></li>
-</ul>
-</div>
-<div id="ConfirmDeletionDialog_VNF" title="Confirm deletion" hidden>
-	<h4>Do you really want to delete the VNF?</h4>
-</div>
-<div id="ConfirmDeletionDialog_Service" title="Confirm deletion" hidden>
-	<h4>Do you really want to delete the service?</h4>
-</div>
-<div id="DeleteVnfDialog" title="Successfully deleted" hidden>
-	<h4>VNF is deleted!</h4>
-</div>
-
-
-<div id="createNetworkserviceDialog" title="Create new Networkservice" hidden>
-	<h4>Please input the details of the new network service:</h4>
-	<input class="labelClass" id ='nsDescriptorVersionInput' placeholder="Enter Descriptor Version"/>
-	<input class="labelClass" id ='nsVendorInput' placeholder="Enter Vendor"/>
-	<input class="labelClass" id ='nsNameInput' placeholder="Enter name of network service"/>
-	<input class="labelClass" id ='nsVersionInput' placeholder="Enter Version"/>
-</div>
-
-<div id="DeleteServiceDialog" title="Successfully deleted" hidden>
-	<h4>Service is deleted!</h4>
-</div>
-<div id="successSaveConfiDialog" title="Success" hidden>
-	<h4>Configuration is saved!</h4>
-</div>
+		</ul>
+	</div>
+	<div id="ConfirmDeletionDialog_VNF" title="Confirm deletion" hidden>
+		<h4>Do you really want to delete the VNF?</h4>
+	</div>
+	<div id="ConfirmDeletionDialog_Service" title="Confirm deletion" hidden>
+		<h4>Do you really want to delete the service?</h4>
+	</div>
+	<div id="DeleteVnfDialog" title="Successfully deleted" hidden>
+		<h4>VNF is deleted!</h4>
+	</div>
+	<div id="PublishToDialog" title="Publish to catalogue" hidden>
+		<select data-bind="foreach: catalogues" id="selectCatalogue">
+			<option data-bind="value: id, text: name"></option>
+		</select>
+	</div>
+	<div id="createNetworkserviceDialog" title="Create new Networkservice"
+		hidden>
+		<h4>Please input the details of the new network service:</h4>
+		<input class="labelClass" id='nsDescriptorVersionInput'
+			placeholder="Enter Descriptor Version" /> <input class="labelClass"
+			id='nsVendorInput' placeholder="Enter Vendor" /> <input
+			class="labelClass" id='nsNameInput'
+			placeholder="Enter name of network service" /> <input
+			class="labelClass" id='nsVersionInput' placeholder="Enter Version" />
+	</div>
+	<div id="PublishSuccessDialog" title="Successfully published" hidden>
+		<h4>Successfully published!</h4>
+	</div>
+	<div id="DeleteServiceDialog" title="Successfully deleted" hidden>
+		<h4>Service is deleted!</h4>
+	</div>
+	<div id="successSaveConfiDialog" title="Success" hidden>
+		<h4>Configuration is saved!</h4>
+	</div>
 </body>
 </html>
 
