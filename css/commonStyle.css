@@ -98,7 +98,8 @@ a.navbar-brand {
 
 /* The switch - the box around the slider */
 .switch {
-  margin-left: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
   position: relative;
   display: inline-block;
   width: 40px;
@@ -128,11 +129,17 @@ a.navbar-brand {
   width: 26px;
   left: -4px;
   bottom: -7px;
-  background-color: #cccccc;
-  background-image: url("GitHub-Mark-32px.png");
-  background-size:cover;
+  background-color: #337ab7;
+  border:  1px solid #ccc;
   -webkit-transition: .4s;
   transition: .4s;
+}
+
+.slider.github:before {
+  background-image: url("GitHub-Mark-32px.png");
+  background-size:cover;
+  background-color: #ccc;
+  border:  0px;
 }
 
 input:checked + .slider {

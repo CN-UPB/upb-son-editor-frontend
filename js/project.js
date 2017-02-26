@@ -7,11 +7,13 @@ var nsId = "";
 var availableItems = [];
 var itemDictionary = {};
 
-var Descriptor = function(data) {
-    this.name = ko.observable(data.name);
+var Descriptor = function(data, id , type) {
+	this.name = ko.observable(data.name);
+	this.vendor = ko.observable(data.vendor);
+	this.version = ko.observable(data.version);
     this.description = ko.observable(data.description);
-    this.type = ko.observable(data.type);
-    this.id = ko.observable(data.id);
+    this.type = ko.observable(type);
+    this.id = ko.observable(id);
     var self = this;
     this.publish_to = function(event) {
         $("#PublishToDialog").dialog({
@@ -90,8 +92,8 @@ function ViewModel() {
     this.descriptors = ko.observableArray([]);
     this.catalogues = ko.observableArray([]);
     var self = this;
-    this.addDescriptor = function(data) {
-        self.descriptors.push(new Descriptor(data));
+    	this.addDescriptor= function(data, id, type){
+		self.descriptors.push(new Descriptor(data, id, type));
     }
 }
 
@@ -148,72 +150,52 @@ $(document).ready(function() {
 });
 // load infos of all network services from the server
 function loadServices() {
-    availableItems.push("Create new NS");
-    $.ajax({
-        url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
-        dataType: "json",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function(data) {
-            console.log("services:");
-            console.log(data);
-            // display available services and their onclick event.
-            services = data;
-            for (var i = 0; i < services.length; i++) {
-                var serviceName = services[i].descriptor.name;
-                availableItems.push("NS: " + serviceName);
-                var serviceId = services[i].id;
-                itemDictionary[serviceName] = serviceId;
-                var serviceInfo = services[i].descriptor.description;
-                if (!serviceInfo) {
-                    serviceInfo = "";
-                }
-                var nsData = {
-                    name: serviceName,
-                    description: serviceInfo,
-                    id: serviceId,
-                    type: "NS"
-                };
-                viewModel.addDescriptor(nsData);
-            }
-        }
-    });
+	availableItems.push("Create new NS");
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/services/",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			console.log("services:");
+			console.log(data);
+			// display available services and their onclick event.
+			services = data;
+			for (var i = 0; i < services.length; i++) {
+				var serviceName = services[i].descriptor.name;
+				availableItems.push("NS: " + serviceName);
+				var serviceId = services[i].id;
+				itemDictionary[serviceName] = serviceId;
+				viewModel.addDescriptor(services[i].descriptor, serviceId, "NS");
+			}
+		}
+	});
 }
 
 // load infos of all VNFs from the server
 function loadVnfs() {
-    availableItems.push("Create new VNF");
-    $.ajax({
-        url: serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
-        dataType: "json",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function(data) {
-            console.log("vnfs:");
-            console.log(data);
-            // display available vnfs and their onclick event.
-            vnfs = data;
-            for (var i = 0; i < vnfs.length; i++) {
-                var vnfName = vnfs[i].descriptor.name;
-                availableItems.push("VNF: " + vnfName);
-                var vnfId = vnfs[i].id;
-                itemDictionary[vnfName] = vnfId;
-                var vnfInfo = vnfs[i].descriptor.description;
-                if (!vnfInfo) {
-                    vnfInfo = "";
-                }
-                var vnfData = {
-                    name: vnfName,
-                    description: vnfInfo,
-                    id: vnfId,
-                    type: "VNF"
-                };
-                viewModel.addDescriptor(vnfData);
-            }
-        }
-    });
+	availableItems.push("Create new VNF");
+	$.ajax({
+		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId + "/functions/",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : true
+		},
+		success : function (data) {
+			console.log("vnfs:");
+			console.log(data);
+			// display available vnfs and their onclick event.
+			vnfs = data;
+			for (var i = 0; i < vnfs.length; i++) {
+				var vnfName = vnfs[i].descriptor.name;
+				availableItems.push("VNF: " + vnfName);
+				var vnfId = vnfs[i].id;
+				itemDictionary[vnfName] = vnfId;
+				viewModel.addDescriptor(vnfs[i].descriptor, vnfId, "VNF");
+			}
+		}
+	});
 }
 
 // load all network services and vnfs from the server, which will be displayed

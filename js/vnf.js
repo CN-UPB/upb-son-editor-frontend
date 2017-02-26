@@ -5,14 +5,17 @@ var editor;
 function saveTables() {
 	var errors = editor.validate();
 	if (errors.length == 0) {
-		var descriptor = JSON.stringify(editor.getValue());
+		var data= {};		
+		data.descriptor = editor.getValue();
+		data.edit_mode =$('#editMode')[0].checked?"replace_refs":"create_new";
+		data = JSON.stringify(data);
 		if (queryString['operation'] != "edit") 
 		{
-			createNewVnf(descriptor);
+			createNewVnf(data);
 		}
 		else
 		{
-			updateVnf(descriptor);
+			updateVnf(data);
 		}
 	} 
 else {

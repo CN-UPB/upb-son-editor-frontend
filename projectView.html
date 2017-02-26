@@ -80,21 +80,25 @@
 			</div>
 		</div>
 		<div class="row top-buffer" style="margin-top: 50px;">
-			<div class="col-md-8">
+			<div class="col-md-12">
 				<table class="table table-bordered">
 					<thead>
 						<tr>
+							<th width=10%>Vendor</th>
 							<th width=10%>Name</th>
-							<th width=30%>Description</th>
+							<th width=5%>Version</th>
+							<th width=25%>Description</th>
 							<th width=10%>Type</th>
-							<th width=50%>Options</th>
+							<th width=40%>Options</th>
 						</tr>
 					</thead>
 					<tbody id="display_NS_VNFS" data-bind="foreach: descriptors">
 						<tr>
-							<td data-bind="text: name"></td>
-							<td data-bind="text: description"></td>
-							<td data-bind="text: type"></td>
+								<td data-bind="text: vendor"></td>
+                   				<td data-bind="text: name"></td>
+								<td data-bind="text: version"></td>
+			                    <td data-bind="text: description"></td>
+                    			<td data-bind="text: type"></td>
 							<td>
 								<button class="btn btn-primary btn-sm"
 									style="margin-left: 5px; margin-right: 5px;"

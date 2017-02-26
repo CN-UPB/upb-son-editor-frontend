@@ -26,14 +26,7 @@ function pull(pt_id) {
 		},
 		data: JSON.stringify({'project_id': pt_id}),
 		success: function (data) {
-			if (data.success) {
-				$("#GitDialog").html(data.message.replace(/(\n)+/g, '<br />'));
-			} else {
-				$('#GitDialog').dialog().html(
-					"<b>Exitcode:</b> " + data.exitcode + "<br/>"
-					+ "<b>Reason:</b> " + data.message
-				);
-			}
+			$("#GitDialog").html(data.message.replace(/(\n)+/g, '<br />'));
 		}
 	});
 }
@@ -60,14 +53,7 @@ function commit(pt_id) {
 						}),
 						success: function (data) {
 							closeWaitAnimation();
-							if (data.success) {
-								$('#GitDialog').dialog().text(data.message);
-							} else {
-								$('#GitDialog').dialog().html(
-									"<b>Exitcode:</b> " + data.exitcode + "<br/>"
-									+ "<b>Reason:</b> " + data.message
-								);
-							}
+							$('#GitDialog').dialog().text(data.message);
 						}
 					});
 					$(this).dialog("close");
@@ -178,9 +164,7 @@ function init(model, repo_name) {
 		},
 		data: JSON.stringify({'project_id': model.id()}),
 		success: function (data) {
-			if (data.success) {
-				create(model, repo_name);
-			}
+			create(model, repo_name);
 		},
 		error: function () {
 			model.isShared(false);
@@ -200,9 +184,7 @@ function create(model, repo_name) {
 		},
 		data: JSON.stringify({'project_id': model.id(), 'repo_name': repo_name}),
 		success: function (data) {
-			if (data.success) {
-				loadProjects(wsId);
-			}
+			loadProjects(wsId);
 			closeWaitAnimation();
 		},
 		error: function () {
@@ -243,9 +225,7 @@ function deletePJ(model, repo_name) {
 		},
 		data: JSON.stringify({'project_id': model.id(), "repo_name": repo_name}),
 		success: function (data) {
-			if (data.success) {
 				closeWaitAnimation();
-			}
 		},
 		error: function () {
 			model.isShared(true);
