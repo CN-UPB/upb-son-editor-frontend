@@ -200,7 +200,7 @@ function ImagesModel() {
 		return index() == self.images().length-1;
 	};
 
-	this.delete= function(data){
+	this.deleteImage= function(data){
 		$.ajax({
 			url: serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
 				+ queryString["ptId"] + "/functions/" + queryString["vnfId"]+ "/upload/"+data,
@@ -215,7 +215,7 @@ function ImagesModel() {
 				$("#deletedMessage").show();
 			}
 		});
-	}
+	};
 }
 
 var imagesModel = new ImagesModel();
@@ -224,6 +224,7 @@ function uploadImage(event) {
 	var input = event.target;
 	var formData = new FormData();
     formData.append("image", input.files[0]);
+    showWaitAnimation("Uploading", "Uploading " +input.files[0].name);
 	$.ajax({
 		url: serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
 			+ queryString["ptId"] + "/functions/" + queryString["vnfId"]+ "/upload",
@@ -235,6 +236,7 @@ function uploadImage(event) {
 		processData: false,  // tell jQuery not to process the data
 		contentType: false,   // tell jQuery not to set contentType
 		success: function (message) {
+		    	closeWaitAnimation();
 			$('#uploadSuccess').dialog({
 				modal: true,
 				draggable: false,
