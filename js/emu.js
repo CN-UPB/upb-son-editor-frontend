@@ -9,6 +9,10 @@ var itemDictionary = {};
 var vnfList = {};
 var links = [];
 var clickedStack = "";
+var allServerNodes = [];
+var nodeName = "";
+//var firstServerNode = {};
+//var lastServerNode = {};
 
 var Descriptor = function(data) {
 	this.name = ko.observable(data.name);
@@ -19,6 +23,8 @@ var Descriptor = function(data) {
     //this.forwarding_graphs = ko.observable(data.forwarding_graphs);
     this.status = ko.observable(data.status);
     this.template_name = ko.observable(data.template_name);
+    this.interfaces = ko.observable(data.interfaces);
+    this.info = ko.observable(data.info);
 	var self = this;
 
 	
@@ -108,7 +114,7 @@ var viewModel = new ViewModel();
 	}*/
 	function loadEmuServers(clickedStack){
 	return $.ajax({
-		url : "http://fg-cn-sandman1.cs.upb.de:8775/v2.1/fc394f2ab2df4114bde39905f800dc57/servers",
+		url : "http://fg-cn-sandman1.cs.upb.de:8775/v2.1/fc394f2ab2df4114bde39905f800dc57/servers/andPorts",
 		//url : "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
 		method : 'GET',
 		//contentType : "application/json; charset=utf-8",
@@ -118,21 +124,45 @@ var viewModel = new ViewModel();
 		},
 		success : function (data) {
 			console.log(clickedStack);
-			
-			
+		/*	// add start node
+			var firstNode = {
+				name: "start",
+				id: "start",
+				status: "ACTIVE",
+				template_name: "START"
+			};
+			viewModel.addDescriptor(firstNode); */
+			allServerNodes = [];
 			services = data;
 			for (var i = 0; i < services.servers.length; i++) {
 				if(services.servers[i].name.search(clickedStack) == -1){
 					console.log("The vnf: " + services.servers[i].name + " is not part of the stack: " + clickedStack);
 				}
 				else{
+					//console.log(i);
 					var serviceName = services.servers[i].name;	
 					//console.log(serviceName);
 					//var serviceId = services.servers[i].id;
 					var serviceId = services.servers[i].full_name;
 					var serviceStatus = services.servers[i].status;
 					var serviceTemplateName = services.servers[i].template_name;
-
+					var servicePorts = services.servers[i].ports;
+					//console.log(servicePorts);
+					//var servicesInterfaces = [];
+					var servicesInterfaces = "Interfaces ";
+					var serviceIps = "IP Addresses ";
+					var serverInfo = "";
+					for (var j = 0; j < services.servers[i].ports.length; j++){
+						//servicesInterfaces.push(services.servers[i].ports[j].intf_name);
+						servicesInterfaces = servicesInterfaces + ":" + services.servers[i].ports[j].intf_name;
+						serviceIps = serviceIps + ":" + services.servers[i].ports[j].fixed_ips[0].ip_address;
+						//serverInfo = {
+							//interface: services.servers[i].ports[j].intf_name,
+							//ip: services.servers[i].ports[j].fixed_ips[0].ip_address
+						//};
+						serverInfo = servicesInterfaces + "\n \n" + serviceIps;
+					}
+					//console.log(serviceIps);
 					var nsData = {
 						name : serviceName,
 						//description : serviceInfo,
@@ -141,15 +171,33 @@ var viewModel = new ViewModel();
 						//network_functions: vnfs,
 						//forwarding_graphs: virtual_links_count
 						status: serviceStatus,
-						template_name: serviceTemplateName
+						template_name: serviceTemplateName,
+						interfaces: servicesInterfaces,
+						info: serverInfo
 					};
-					console.log(nsData);
+					/*if (i == 0){
+						console.log("First server node: " + nsData);
+						firstServerNode = nsData;
+					}
+					if (i == services.servers.length-1){
+						console.log("Last server node: " + nsData);
+						lastServerNode = nsData;
+					}*/
+					allServerNodes.push(nsData);
 					viewModel.addDescriptor(nsData);
 					//sleep(1000);
 				}
 			}
-
+		/*	// Add last node
+			var lastNode = {
+				name: "stop",
+				id: "stop",
+				status: "ACTIVE",
+				template_name: "STOP"
+			};
+			viewModel.addDescriptor(lastNode); */
 			//console.log(viewModel.descriptors.length);
+			//console.log(allServerNodes);
 		}
 	});
 }
@@ -166,6 +214,13 @@ function loadEmuConnections(clickedStack){
 		success : function(data){
 			
 			//console.log(viewModel.connections);
+		/*	var firstConnection = {
+				from: 'start',
+				to: firstServerNode.id
+			};
+			links.push(firstConnection);
+			viewModel.addConnection(firstConnection); */
+			links = [];
 			connectionlist = data;
 			for (var i = 0; i < connectionlist.chains.length; i++) {
 				if(connectionlist.chains[i].src_vnf.search(clickedStack) == -1 || connectionlist.chains[i].dst_vnf.search(clickedStack) == -1){
@@ -183,11 +238,21 @@ function loadEmuConnections(clickedStack){
 							to : to
 						};
 						//console.log(connectionData);
-						links[i] = connectionData;
+						//links[i] = connectionData;
+						links.push(connectionData);
 						//console.log(links);
 					viewModel.addConnection(connectionData);
 				}
 			}
+			/*
+			var lastConnection = {
+				from: lastServerNode.id,
+				to: 'stop'
+			};
+			links.push(lastConnection);
+			viewModel.addConnection(lastConnection); */
+			
+			//console.log(links);
 			
 		}
 	});

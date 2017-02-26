@@ -5,6 +5,7 @@ var plumb = null;
 var $container = $(".container");
 $diagram = $container.find(".diagram");
 var $panzoom = null;
+
 //var links = [];
 /*var links = [
   {from: "dc1_TestStack_iperf1", to: "dc1_TestStack_firewall1"},
@@ -40,12 +41,14 @@ jsPlumb.ready(function() {
         }
        ],
        endpoints:["Blank","Blank"],
+       //endpoints:["Dot","Dot"],
        overlays:[["Arrow",{location:1,width:10, length:10}]],
      });
   });
   //sleep(3000); 
   var dg = new dagre.graphlib.Graph();
-  dg.setGraph({nodesep:30,ranksep:30,marginx:50,marginy:50});
+  dg.setGraph({rankdir:'LR',align:'DR',nodesep:30,ranksep:50,marginx:50,marginy:50});
+  //dg.setGraph({rankdir:'LR',align:'DL',nodesep:50,ranksep:130});
   dg.setDefaultEdgeLabel(function() { return {}; });
   console.log("before in items loop...");
   //sleep(3000);
@@ -58,7 +61,7 @@ jsPlumb.ready(function() {
         height : Math.round($n.outerHeight())
       };
       dg.setNode($n.attr('id'), box);   
-      console.log(dg.node(node));
+      //console.log(dg.node(node));
 
     }
 
@@ -68,17 +71,47 @@ jsPlumb.ready(function() {
     .forEach(function(edge) {dg.setEdge(edge.source.id,edge.target.id);});
   dagre.layout(dg);
   var graphInfo = dg.graph();
-  console.log(dg);
-  
+  console.log(dg.nodes());
+  //console.log(graphInfo);
+  var xdest = 50;
   dg.nodes().forEach(function(n) {
       //console.log("Node " + n + ": " + JSON.stringify(dg.node(n)));
       var node = dg.node(n);
-      console.log(dg.node(n));
+      node.x = node.x + xdest;
+
+      //console.log(dg.node(n));
       var top = Math.round(node.y-node.height/2)+'px';
-      var left = Math.round(node.x-node.width/2)+'px';
+      //var top = Math.round(152)+'px';
+      var left = Math.round(node.x-node.height/2)+'px';
+      //var left = Math.round(node.x + node.width/2)+'px';
       console.log("left: " + left + ", top: " + top);
       $('#' + n).css({left:left,top:top});
+      xdest = xdest + 50;
+      //add tooltip code
+      //$('#' + n).attr("title", n);
+      $('#' + n).tooltip({
+            position : {
+                my : "center top-40px",
+                at : "center top"
+            },
+            show : {
+                effect : "slideDown",
+                duration : 100
+            }
+        });
+        $('#' + n).mousedown(function() {
+          $('#' + n).tooltip("disable");
+        });
+        $('#' + n).mouseup(function() {
+          $('#' + n).tooltip("enable");
+        });
+
     });
+  //console.log($('.container').marginLeft());
+  //$('#start').css('marginLeft', $('.container').width() -100);
+  //var start_left = Math.round($("#start").css("left") + 100)+'px';
+  //var start_top = $("#start").css("top");
+  //$('#stop').css({left:start_left,top:start_top});
     /*var all_nodes = []; 
     all_nodes = dg.nodes();
     for(var i=0; i < all_nodes.length; i++){
@@ -89,6 +122,7 @@ jsPlumb.ready(function() {
       $('#' + node).css({left:left,top:top});
     }*/
   plumb.repaintEverything();
+/* // stopping pan and zoom and dragging of nodes
   _.defer(function(){
     $panzoom = $container.find('.panzoom').panzoom({
       minScale: minScale,
@@ -148,7 +182,7 @@ jsPlumb.ready(function() {
       $(this).data('dragstart',null);
       $(ev.target).css("cursor","");
     });
-  });
+  }); //end of defer function
   
   var currentScale = 1;
   $container.find(".item").draggable({
@@ -176,7 +210,7 @@ jsPlumb.ready(function() {
       $(this).css("cursor","");
       $container.find(".panzoom").panzoom("enable");
     }
-  });
- });
+  }); */
+ }); //end of jsplumb ready function
 //});
 }

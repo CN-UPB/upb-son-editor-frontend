@@ -79,7 +79,7 @@
 					<div id="i3" class="item">Child 3</div>
 					<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">-->
 				<div class="diagram" data-bind="foreach: descriptors" id="server-panel">
-					<div data-bind="attr: {'id': id}, drag: {value:$data}" class="item"><p data-bind="text: template_name">server1</p></div>
+					<div data-bind="attr: {'id': id, 'title': info}, drag: {value:$data}" class="item"><p data-bind="text: template_name">server1</p></div>
 
 				</div>
 			</div>
@@ -103,7 +103,7 @@
 		  </div>-->
 			</div>
 
-		</div>
+		<!--</div>-->
 		<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'></script>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.12.0/lodash.min.js'></script>
