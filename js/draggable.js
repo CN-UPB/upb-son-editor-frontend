@@ -276,7 +276,7 @@ function writeDependencies() {
 				vnf_deps.push(vnf_dep);
 			}
 		}
-		cur_ns.descriptor["vnf_dependencies"] = vnf_deps;
+		cur_ns.descriptor["vnf_depedency"] = vnf_deps;
 	}
 	if (cur_ns.descriptor.network_services != null) {
 		ns_deps = [];
@@ -287,7 +287,7 @@ function writeDependencies() {
 				ns_deps.push(ns_dep);
 			}
 		}
-		cur_ns.descriptor["service_dependencies"] = ns_deps;
+		cur_ns.descriptor["services_depedency"] = ns_deps;
 	}
 }
 
