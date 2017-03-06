@@ -30,14 +30,17 @@ function calSelectedNodes() {
 	    selectedNodes.push(nodes[i].id);
 	}
     }
+    markNodesSelected();
+    select = false;
+}
 
+function markNodesSelected(){
     for ( var i = 0; i < selectedNodes.length; i++) {
 	var dataId = selectedNodes[i].replace(":", "\\:");
 	var node = $("#" + dataId);
 	node.addClass("selectedNode");
 	instance.addToDragSelection(node);
     }
-    select = false;
 }
 
 function pauseEvent(e) {
@@ -54,6 +57,17 @@ function setMousedownForDraggable(elem) {
     elem.mousedown(function(e) {
 	if (!$(this).hasClass("selectedNode")) {
 	    cancelSelection();
+	    
+	}
+    });
+    elem.mouseup(function(e) {
+	if (!$(this).hasClass("selectedNode") && !$(e.target).is("input")) {
+	    if (!isDragAction){
+		//select single clicked on node
+		selectedNodes = [this.id];
+		markNodesSelected();
+		select = false;
+	    }
 	}
     });
 }
@@ -90,6 +104,7 @@ function deleteSelectedNodes() {
 			usedIDs.splice($.inArray(deleteId, usedIDs), 1);
 		    }
 		    updateServiceOnServer();
+		    selectedNodes = [];
 		},
 		Cancel : function() {
 		    $(this).dialog("close");

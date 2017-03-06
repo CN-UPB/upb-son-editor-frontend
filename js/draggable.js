@@ -88,24 +88,51 @@ var Node = function(node_data) {
 	self.id = ko.observable(node_data.id);
 };
 
+var Catalogue = function(catalogue) {
+	this.name = ko.observable(catalogue.name);
+	this.url = ko.observable(catalogue.url);
+	this.vnfs = ko.observableArray([]);
+	this.nss = ko.observableArray([]);
+};
+
 var ViewModel = function() {
+	this.catalogue_map = {};
+	this.catalogues = ko.observableArray([]);
 	this.vnfs = ko.observableArray([]);
 	this.addVnf = function(vnf) {
-		if (!vnf_map[vnf.descriptor.vendor + ":" + vnf.descriptor.name + ":"
-				+ vnf.descriptor.version]) {
-			this.vnfs.push(vnf);
-			vnf_map[vnf.descriptor.vendor + ":" + vnf.descriptor.name + ":"
-					+ vnf.descriptor.version] = vnf;
+		var uid = vnf.descriptor.vendor + ":" + vnf.descriptor.name + ":"
+				+ vnf.descriptor.version;
+		if (!vnf_map[uid] || !vnf.fromCat) {
+			if (vnf.fromCat) {
+				if (!this.catalogue_map[vnf.fromCat.name]) {
+					var cat = new Catalogue(vnf.fromCat);
+					this.catalogue_map[vnf.fromCat.name] = cat;
+					this.catalogues.push(cat);
+				}
+				this.catalogue_map[vnf.fromCat.name].vnfs.push(vnf);
+			} else {
+				this.vnfs.push(vnf);
+			}
+			vnf_map[uid] = vnf;
 			classNames.push(vnf.descriptor.name);
 		}
 	}.bind(this);
 	this.nss = ko.observableArray([]);
 	this.addNs = function(ns) {
-		if (!ns_map[ns.descriptor.vendor + ":" + ns.descriptor.name + ":"
-				+ ns.descriptor.version]) {
-			this.nss.push(ns);
-			ns_map[ns.descriptor.vendor + ":" + ns.descriptor.name + ":"
-					+ ns.descriptor.version] = ns;
+		var uid = ns.descriptor.vendor + ":" + ns.descriptor.name + ":"
+				+ ns.descriptor.version;
+		if (!ns_map[uid] || !ns.fromCat) {
+			if (ns.fromCat) {
+				if (!this.catalogue_map[ns.fromCat.name]) {
+					var cat = new Catalogue(ns.fromCat);
+					this.catalogue_map[ns.fromCat.name] = cat;
+					this.catalogues.push(cat);
+				}
+				this.catalogue_map[ns.fromCat.name].nss.push(ns);
+			} else {
+				this.nss.push(ns);
+			}
+			ns_map[uid] = ns;
 			classNames.push(ns.descriptor.name);
 		}
 	}.bind(this);
@@ -794,8 +821,12 @@ function loadVNFsNSsFromCatalogues() {
 						success : function(data) {
 							c_vnfs = data;
 							for ( var i = 0; i < c_vnfs.length; i++) {
+								c_vnfs[i].fromCat = catalogue;
 								viewModel.addVnf(c_vnfs[i]);
 							}
+							$(".vnf-accordion").accordion({
+								collapsible : true
+							});
 						}
 					});
 					$.ajax({
@@ -809,9 +840,11 @@ function loadVNFsNSsFromCatalogues() {
 							c_nss = data;
 							for ( var i = 0; i < c_nss.length; i++) {
 								if (c_nss[i].id != nsId) {
+									c_nss[i].fromCat = catalogue;
 									viewModel.addNs(c_nss[i]);
 								}
 							}
+							$(".ns-accordion").accordion();
 							$(".ns").draggable({
 								helper : "clone",
 								revert : "invalid"
@@ -1362,36 +1395,36 @@ function loadCurrentNS() {
 				},
 			});
 }
-$(document).ready(
-		function() {
-			queryString = getQueryString();
-			wsId = queryString["wsId"];
-			ptId = queryString["ptId"];
-			nsId = queryString["nsId"];
-			setWorkspaceInNav(wsId);
-			setProjectInNav(wsId, ptId);
-			loadPlatforms();
-			setSize();
-			$(window).resize(function() {
-				setSize();
-			});
-			$(".cp").draggable({
-				helper : "clone",
-				revert : "invalid",
-			});
-			$(".e-lan").draggable({
-				helper : "clone",
-				revert : "invalid",
-			});
-			// delay loading the current network service until the sidebar has
-			// loaded
-			// completely
-			$.when(loadAllVNFs(), loadAllNSs(), loadVNFsNSsFromCatalogues())
-					.done(function(r1, r2) {
-						loadCurrentNS();
-					});
-			ko.applyBindings(viewModel);
-			jsPlumb.ready(function() {
-				configureJsPlumb();
-			});
+$(document).ready(function() {
+	queryString = getQueryString();
+	wsId = queryString["wsId"];
+	ptId = queryString["ptId"];
+	nsId = queryString["nsId"];
+	setWorkspaceInNav(wsId);
+	setProjectInNav(wsId, ptId);
+	loadPlatforms();
+	setSize();
+	$(window).resize(function() {
+		setSize();
+	});
+	$(".cp").draggable({
+		helper : "clone",
+		revert : "invalid",
+	});
+	$(".e-lan").draggable({
+		helper : "clone",
+		revert : "invalid",
+	});
+	// delay loading the current network service until the sidebar has
+	// loaded
+	// completely
+	$.when(loadAllVNFs(), loadAllNSs()).done(function(r1, r2) {
+		$.when(loadVNFsNSsFromCatalogues()).done(function(r1, r2) {
+			loadCurrentNS();
 		});
+	});
+	ko.applyBindings(viewModel);
+	jsPlumb.ready(function() {
+		configureJsPlumb();
+	});
+});

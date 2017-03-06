@@ -163,6 +163,14 @@
                                             <p data-bind="text: descriptor.name">vnf1</p>
                                         </div>
                                     </div>
+	                                    <div data-bind="foreach: catalogues">Catalogue: 
+			       							<a data-bind="text: name, attr: { href: url}" target="_blank"></a>
+       										<!-- ko foreach: vnfs -->
+			       								<div data-bind="attr: {'id': descriptor.name}, drag: {value:$data}" class="vnf">
+                                            		<p data-bind="text: descriptor.name">vnf1</p>
+				       							</div>
+       								 		<!-- /ko -->
+	                                    </div>
                                 </div>
                             </li>
                             <li role="presentation">
@@ -176,6 +184,14 @@
                                             <p data-bind="text: descriptor.name">ns1</p>
                                         </div>
                                     </div>
+                                    <div data-bind="foreach: catalogues">Catalogue: 
+			       							<a data-bind="text: name, attr: { href: url}" target="_blank"></a>
+       								<!-- ko foreach: nss -->
+       								<div data-bind="attr: {'id': descriptor.name}, drag: {value:$data}" class="ns">
+                                            <p data-bind="text: descriptor.name">ns1</p>
+                                        </div>
+  									<!-- /ko -->
+       								</div>
                                 </div>
                             </li>
                             <li role="presentation">
