@@ -453,8 +453,8 @@ function renameVnfOrNs(oldId, newId, className) {
 			var vnf = cur_ns.descriptor.network_functions[i];
 			if (vnf.vnf_id == oldId) {
 				cur_ns.descriptor.network_functions[i].vnf_id = newId;
-				node = vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":"
-						+ vnf.vnf_version];
+				node =  jQuery.extend({}, vnf_map[vnf.vnf_vendor + ":" + vnf.vnf_name + ":"
+						+ vnf.vnf_version]);
 				node.id = newId;
 				break;
 			}
@@ -464,8 +464,8 @@ function renameVnfOrNs(oldId, newId, className) {
 			var ns = cur_ns.descriptor.network_services[i];
 			if (ns.ns_id == oldId) {
 				cur_ns.descriptor.network_services[i].ns_id = newId;
-				node = ns_map[ns.ns_vendor + ":" + ns.ns_name + ":"
-						+ ns.ns_version];
+				node = jQuery.extend({},ns_map[ns.ns_vendor + ":" + ns.ns_name + ":"
+						+ ns.ns_version]);
 				node.id = newId;
 				break;
 			}
