@@ -165,7 +165,7 @@ jsPlumb.ready(function() {
       $('#' + node).css({left:left,top:top});
     }*/
   plumb.repaintEverything();
-/* // stopping pan and zoom and dragging of nodes
+ // stopping pan and zoom and dragging of nodes
   _.defer(function(){
     $panzoom = $container.find('.panzoom').panzoom({
       minScale: minScale,
@@ -253,7 +253,7 @@ jsPlumb.ready(function() {
       $(this).css("cursor","");
       $container.find(".panzoom").panzoom("enable");
     }
-  }); */
+  }); 
  }); //end of jsplumb ready function
 //});
 }

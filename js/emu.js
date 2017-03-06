@@ -183,7 +183,7 @@ var viewModel = new ViewModel();
 						//serverInfo = servicesInterfaces + "\n \n" + serviceIps;
 					}
 					//console.log(serviceIps);
-					var nodeTitle = buildTitle(serviceIps);
+					var nodeTitle = buildTitle(serviceIps,servicesInterfaces);
 					//build_nodeTitle = function(serviceIps){
 					console.log(nodeTitle);
 					//}
@@ -452,11 +452,11 @@ function goToEmulatorView() {
 	window.location.href = "emuView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
 }
 
-function buildTitle(serviceIps){
+function buildTitle(serviceIps, servicesInterfaces){
 	
-	var nodetitle = "<div><ul>";
+	var nodetitle = "<div><p>ip addresses:Interfaces</p><ul>";
 	for (var k = 0; k < serviceIps.length; k++){
-		nodetitle = nodetitle + "<li>" + serviceIps[k] + "</li>";
+		nodetitle = nodetitle + "<li>" + serviceIps[k] + ":" + servicesInterfaces[k] + "</li>";
 	}
 	nodetitle = nodetitle + "</ul></div>";
 	return nodetitle;
