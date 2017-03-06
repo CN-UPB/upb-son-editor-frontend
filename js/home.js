@@ -25,12 +25,12 @@ $(document).ready(function () {
 				var trOptionTable = document.createElement("tr");
 				var tdEdit = document.createElement("td");
 				tdEdit.className = "btn btn-primary btn-sm";
-				tdEdit.style.marginLeft = "10px";
-				tdEdit.style.marginRight = "15px";
-				tdEdit.innerHTML = "Edit";
+				tdEdit.style.marginLeft = "5px";
+				tdEdit.style.marginRight = "5px";
+				tdEdit.innerHTML = "<span style='margin-right: 2px;' class='glyphicon glyphicon-pencil'></span>Edit";
 				var tdDelete = document.createElement("td");
 				tdDelete.className = "btn btn-danger btn-sm";
-				tdDelete.innerHTML = "Delete";
+				tdDelete.innerHTML ="<span style='margin-right: 2px;' class='glyphicon glyphicon-trash'></span>Delete";
 				trOptionTable.appendChild(tdEdit);
 				trOptionTable.appendChild(tdDelete);
 				optionTable.appendChild(trOptionTable);
@@ -114,7 +114,7 @@ function createNewWorkspace(wsName) {
 	});
 }
 
-//delete a workspace from the server 
+//delete a workspace from the server
 function deleteWs(wsId) {
 	$("#ConfirmDeletionDialog").dialog({
 		modal : true,
