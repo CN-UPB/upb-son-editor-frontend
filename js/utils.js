@@ -39,6 +39,7 @@ function goToProjectView(wsId, ptId) {
 	if(queryString["fromNSEditor"]){
 		//go back one step to editor
 		window.history.back();
+		window.location.reload();
 	} else {
 		window.location.href = "projectView.html?wsId=" + wsId + "&ptId=" + ptId;
 	}
