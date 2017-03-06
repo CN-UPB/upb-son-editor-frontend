@@ -41,6 +41,9 @@ function markNodesSelected(){
 	node.addClass("selectedNode");
 	instance.addToDragSelection(node);
     }
+    if (selectedNodes.length == 1 && node.hasClass("vnf-after-drop")){
+    	$("#editButton").show();
+    }
 }
 
 function pauseEvent(e) {
@@ -79,6 +82,7 @@ function cancelSelection() {
 	node.removeClass("selectedNode");
     }
     instance.clearDragSelection();
+    $("#editButton").hide();
 }
 
 function deleteSelectedNodes() {
@@ -182,3 +186,15 @@ $(document).ready(function() {
 	// Hide the div
     });
 });
+
+
+function editSelected(){
+		var node = selectedNodes[0];
+		var data = ko.dataFor($("#"+node)[0]);
+		if (data.uid){
+			if (vnf_map[data.uid()]){
+				var vnfId = vnf_map[data.uid()]['id'];
+			    window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit&fromNSEditor";
+			}
+		}
+}
