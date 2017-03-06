@@ -24,7 +24,9 @@ var Descriptor = function(data) {
     this.status = ko.observable(data.status);
     this.template_name = ko.observable(data.template_name);
     this.interfaces = ko.observable(data.interfaces);
+    this.ips = ko.observable(data.ips);
     this.info = ko.observable(data.info);
+    this.title = ko.observable(data.title);
 	var self = this;
 
 	
@@ -47,13 +49,21 @@ var Stack = function(data){
 var Connection = function(data){
 	this.from = ko.observable(data.from);
 	this.to = ko.observable(data.to);
+	this.src_intf = ko.observable(data.src_intf);
+	this.dst_intf = ko.observable(data.dst_intf);
 };
+/*
+var Interface = function(data){
+	this.interfaces = ko.observable(data.interfaces);
+}*/
+
 
 function ViewModel() {
 	//this.descriptors = null;
 	this.descriptors = ko.observableArray([]);
 	this.stacks = ko.observableArray([]);
 	this.connections = ko.observableArray([]);
+	//this.interfaces = ko.observableArray([]);
 	//console.log(this.descriptors);
 	var self = this;
 
@@ -76,7 +86,11 @@ function ViewModel() {
     this.addConnection = function(data){
     	self.connections.push(new Connection(data));
     }
-    
+ /*   
+    this.addInterface = function(data){
+    	self.interfaces.push(new Interface(data));
+    }*/
+
    /*
     this.network_functions = ko.observableArray([]);
 
@@ -147,22 +161,32 @@ var viewModel = new ViewModel();
 					var serviceStatus = services.servers[i].status;
 					var serviceTemplateName = services.servers[i].template_name;
 					var servicePorts = services.servers[i].ports;
-					//console.log(servicePorts);
-					//var servicesInterfaces = [];
-					var servicesInterfaces = "Interfaces ";
-					var serviceIps = "IP Addresses ";
-					var serverInfo = "";
+					console.log(servicePorts.length);
+					var servicesInterfaces = [];
+					var serviceIps = [];
+					//var servicesInterfaces = "Interfaces ";
+					//var serviceIps = "IP Addresses ";
+					var serverInfo = {};
 					for (var j = 0; j < services.servers[i].ports.length; j++){
-						//servicesInterfaces.push(services.servers[i].ports[j].intf_name);
-						servicesInterfaces = servicesInterfaces + ":" + services.servers[i].ports[j].intf_name;
-						serviceIps = serviceIps + ":" + services.servers[i].ports[j].fixed_ips[0].ip_address;
-						//serverInfo = {
-							//interface: services.servers[i].ports[j].intf_name,
-							//ip: services.servers[i].ports[j].fixed_ips[0].ip_address
-						//};
-						serverInfo = servicesInterfaces + "\n \n" + serviceIps;
+						console.log("Port number "+ j + " is: " + services.servers[i].ports[j].name);
+						servicesInterfaces[j] = services.servers[i].ports[j].intf_name;
+						//servicePorts[j] = services.servers[i].ports[j].fixed_ips.ip_address;
+						serviceIps[j] = services.servers[i].ports[j].fixed_ips[0].ip_address;
+						//servicesInterfaces = servicesInterfaces + ":" + services.servers[i].ports[j].intf_name;
+						//serviceIps = serviceIps + ":" + services.servers[i].ports[j].fixed_ips[0].ip_address;
+						serverInfo = {
+							interface: servicesInterfaces[j],
+							//ip: servicePorts[j]
+							ip: serviceIps[j]
+						};
+						//viewModel.addInterface(serverInfo);
+						//serverInfo = servicesInterfaces + "\n \n" + serviceIps;
 					}
 					//console.log(serviceIps);
+					var nodeTitle = buildTitle(serviceIps);
+					//build_nodeTitle = function(serviceIps){
+					console.log(nodeTitle);
+					//}
 					var nsData = {
 						name : serviceName,
 						//description : serviceInfo,
@@ -173,7 +197,9 @@ var viewModel = new ViewModel();
 						status: serviceStatus,
 						template_name: serviceTemplateName,
 						interfaces: servicesInterfaces,
-						info: serverInfo
+						ips: serviceIps,
+						info: serverInfo,
+						title: nodeTitle
 					};
 					/*if (i == 0){
 						console.log("First server node: " + nsData);
@@ -235,7 +261,9 @@ function loadEmuConnections(clickedStack){
 
 						var connectionData = {
 							from : from,
-							to : to
+							to : to,
+							src_intf: source_interface,
+							dst_intf: destination_interface
 						};
 						//console.log(connectionData);
 						//links[i] = connectionData;
@@ -385,7 +413,7 @@ function loadEmuStacks(){
 			configureJsPlumb();
 		});
 
-		setTimeout(showServiceGraph, 3000);
+		setTimeout(showServiceGraph, 50000);
 	}
 
 	function clearGraph(clickedStack){
@@ -422,6 +450,16 @@ function sleep(milliseconds) {
 
 function goToEmulatorView() {
 	window.location.href = "emuView.html?wsId=" + queryString["wsId"]+"&ptId=" + queryString["ptId"];
+}
+
+function buildTitle(serviceIps){
+	
+	var nodetitle = "<div><ul>";
+	for (var k = 0; k < serviceIps.length; k++){
+		nodetitle = nodetitle + "<li>" + serviceIps[k] + "</li>";
+	}
+	nodetitle = nodetitle + "</ul></div>";
+	return nodetitle;
 }
 
 

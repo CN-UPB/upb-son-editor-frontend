@@ -79,7 +79,12 @@
 					<div id="i3" class="item">Child 3</div>
 					<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">-->
 				<div class="diagram" data-bind="foreach: descriptors" id="server-panel">
-					<div data-bind="attr: {'id': id, 'title': info}, drag: {value:$data}" class="item"><p data-bind="text: template_name">server1</p></div>
+					<div data-bind="attr: {'id': id, 'title': title}, drag: {value:$data}" class="item">
+						<p data-bind="text: template_name">server1</p>
+					</div>
+					<!--<div class="diagram" data-bind="foreach: ports" >
+						<p data-bind="text: intf_name">ip address</p>
+					</div>-->
 
 				</div>
 			</div>

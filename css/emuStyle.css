@@ -47,7 +47,26 @@
 }
 
 .jsplumb-connector path {
-  stroke: #00BFFF;
+  /*stroke: #00BFFF;*/
+  stroke: red;
+  stroke-width: 3;
+}
+
+.jsplumb-connector path:hover {
+  /*stroke: #00BFFF;*/
+  stroke: blue;
+  stroke-width: 3;
+}
+
+.aLabel{
+    background-color: white;
+    padding: 0.4em;
+    font: 12px sans-serif;
+    color: #444;
+    z-index: 21;
+    border: 1px dotted gray;
+    opacity: 0.8;
+    cursor: pointer;
 }
 
 .hint {

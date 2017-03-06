@@ -25,25 +25,63 @@ var links = [
   //sleep(3000);
 jsPlumb.ready(function() {
   plumb = jsPlumb.getInstance({
-    PaintStyle: { strokeWidth: 1 },
+    PaintStyle: { stroke:"red", strokeWidth: 10 },
     Anchors: [["Left","Right","Bottom"], ["Top","Bottom"]],
     Container: $diagram,
   });
   
   _.each(links,function(link){
-     plumb.connect({
+     var conn = plumb.connect({
        source:link.from,
        target:link.to,
        connector: [ "StateMachine",
         {
           cornerRadius: 3,
-          stub:16
+          stub:16,
         }
        ],
+
        endpoints:["Blank","Blank"],
+       //label: "",
        //endpoints:["Dot","Dot"],
-       overlays:[["Arrow",{location:1,width:10, length:10}]],
+       overlays:[
+                  ["Arrow",{location:1,width:10, length:10,events:{
+                    click:function() { alert("you clicked on the arrow overlay")}
+                  }}],
+                  [ "Label", {
+                    //location: [0.5, 1.5],
+                    location: 0.20,
+                    id: "label",
+                    cssClass: "aLabel",
+                    visible: true,
+                    events:{
+                      tap:function() { alert("hey"); }
+                    }
+                  }]
+
+                ]
+             
      });
+     //conn.setLabel(link.from + "-" + link.to);
+     /*init = function (link) {       
+          link.getOverlay("label").setLabel(link.from + "-" + link.to)
+        } */
+     conn.bind("mouseover", function (connection, originalEvent) {
+            //connection.setLabel(link.src_intf + ":" + link.dst_intf);
+            
+            var conn_label = connection.getOverlay("label");
+            conn_label.setLabel(link.src_intf + ":" + link.dst_intf);
+            console.log(conn_label.getLabel());
+            connection.showOverlay("label");
+
+        });
+     conn.bind("mouseout", function (connection, originalEvent) {
+            //connection.setLabel("");
+            //var conn_label = connection.getOverlay("label");
+            //conn_label.hide();
+            connection.hideOverlay("label");
+        });
+
   });
   //sleep(3000); 
   var dg = new dagre.graphlib.Graph();
@@ -71,8 +109,8 @@ jsPlumb.ready(function() {
     .forEach(function(edge) {dg.setEdge(edge.source.id,edge.target.id);});
   dagre.layout(dg);
   var graphInfo = dg.graph();
-  console.log(dg.nodes());
-  //console.log(graphInfo);
+  //console.log(dg.nodes());
+  console.log(dg);
   var xdest = 50;
   dg.nodes().forEach(function(n) {
       //console.log("Node " + n + ": " + JSON.stringify(dg.node(n)));
@@ -97,7 +135,12 @@ jsPlumb.ready(function() {
             show : {
                 effect : "slideDown",
                 duration : 100
-            }
+            },
+            content: function(){
+              var title = $(this).attr("title");
+              return title;
+            },
+            track: true
         });
         $('#' + n).mousedown(function() {
           $('#' + n).tooltip("disable");
