@@ -85,19 +85,25 @@
                 <div class="col-md-4 no-padding">
                     <div class="action-section">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <a onclick="deleteSelectedNodes()">
                                     <i class="fa fa-trash fa-2x"></i>
                                     <br>Delete</br>
                                 </a>
                             </div>
-                            <div class="col-md-4">
+                            <div id="editButton" class="col-md-3" hidden>
+								<a onclick="editSelected()">
+									<i class="fa fa-edit fa-2x"></i>
+									<br>Edit</br>
+								</a>
+                            </div>
+                            <div class="col-md-3">
                                 <a onclick="undo()">
                                     <i class="fa fa-undo fa-2x"></i>
                                     <br>Undo</br>
                                 </a>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <a onclick="redo()">
                                     <i class="fa fa-repeat fa-2x"></i>
                                     <br>Redo</br>
@@ -163,7 +169,7 @@
                                             <p data-bind="text: descriptor.name">vnf1</p>
                                         </div>
                                     </div>
-	                                    <div data-bind="foreach: catalogues">Catalogue: 
+	                                    <div data-bind="foreach: catalogues">Catalogue:
 			       							<a data-bind="text: name, attr: { href: url}" target="_blank"></a>
        										<!-- ko foreach: vnfs -->
 			       								<div data-bind="attr: {'id': descriptor.name}, drag: {value:$data}" class="vnf">
@@ -184,7 +190,7 @@
                                             <p data-bind="text: descriptor.name">ns1</p>
                                         </div>
                                     </div>
-                                    <div data-bind="foreach: catalogues">Catalogue: 
+                                    <div data-bind="foreach: catalogues">Catalogue:
 			       							<a data-bind="text: name, attr: { href: url}" target="_blank"></a>
        								<!-- ko foreach: nss -->
        								<div data-bind="attr: {'id': descriptor.name}, drag: {value:$data}" class="ns">
