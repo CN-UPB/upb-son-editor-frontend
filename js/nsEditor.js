@@ -810,52 +810,55 @@ function loadCatalogues() {
 }
 
 function loadVNFsNSsFromCatalogues() {
-	$.when(loadCatalogues()).done(
-			function(r1, r2) {
-				for ( var i = 0; i < catalogues.length; i++) {
-					var catalogue = catalogues[i];
-					$.ajax({
-						url : serverURL + "workspaces/" + wsId + "/catalogues/"
-								+ catalogue.id + "/functions/",
-						dataType : "json",
-						xhrFields : {
-							withCredentials : true
-						},
-						success : function(data) {
-							c_vnfs = data;
-							for ( var i = 0; i < c_vnfs.length; i++) {
-								c_vnfs[i].fromCat = catalogue;
-								viewModel.addVnf(c_vnfs[i]);
-							}
-							$(".vnf-accordion").accordion({
-								collapsible : true
-							});
-						}
-					});
-					$.ajax({
-						url : serverURL + "workspaces/" + wsId + "/catalogues/"
-								+ +catalogue.id + "/services/",
-						dataType : "json",
-						xhrFields : {
-							withCredentials : true
-						},
-						success : function(data) {
-							c_nss = data;
-							for ( var i = 0; i < c_nss.length; i++) {
-								if (c_nss[i].id != nsId) {
-									c_nss[i].fromCat = catalogue;
-									viewModel.addNs(c_nss[i]);
-								}
-							}
-							$(".ns-accordion").accordion();
-							$(".ns").draggable({
-								helper : "clone",
-								revert : "invalid"
-							});
-						}
+	var ajaxCalls = [];
+	for (var i = 0; i < catalogues.length; i++) {
+		var catalogue = catalogues[i];
+		ajaxCalls.push(
+			$.ajax({
+				url: serverURL + "workspaces/" + wsId + "/catalogues/"
+				+ catalogue.id + "/functions/",
+				dataType: "json",
+				xhrFields: {
+					withCredentials: true
+				},
+				success: function (data) {
+					c_vnfs = data;
+					for (var i = 0; i < c_vnfs.length; i++) {
+						c_vnfs[i].fromCat = catalogue;
+						viewModel.addVnf(c_vnfs[i]);
+					}
+					$(".vnf-accordion").accordion({
+						collapsible: true
 					});
 				}
-			});
+			})
+		);
+		ajaxCalls.push(
+			$.ajax({
+				url: serverURL + "workspaces/" + wsId + "/catalogues/"
+				+ +catalogue.id + "/services/",
+				dataType: "json",
+				xhrFields: {
+					withCredentials: true
+				},
+				success: function (data) {
+					c_nss = data;
+					for (var i = 0; i < c_nss.length; i++) {
+						if (c_nss[i].id != nsId) {
+							c_nss[i].fromCat = catalogue;
+							viewModel.addNs(c_nss[i]);
+						}
+					}
+					$(".ns-accordion").accordion();
+					$(".ns").draggable({
+						helper: "clone",
+						revert: "invalid"
+					});
+				}
+			})
+		);
+	}
+	return ajaxCalls;
 }
 
 // load VNFs for the sidebar
@@ -1419,10 +1422,9 @@ $(document).ready(function() {
 		revert : "invalid",
 	});
 	// delay loading the current network service until the sidebar has
-	// loaded
-	// completely
-	$.when(loadAllVNFs(), loadAllNSs()).done(function(r1, r2) {
-		$.when(loadVNFsNSsFromCatalogues()).done(function(r1, r2) {
+	// loaded completely
+	$.when(loadAllVNFs(), loadAllNSs(), loadCatalogues()).done(function() {
+		$.when(loadVNFsNSsFromCatalogues()).done(function() {
 			loadCurrentNS();
 		});
 	});
