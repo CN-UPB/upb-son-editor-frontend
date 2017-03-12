@@ -11,6 +11,7 @@ var links = [];
 var clickedStack = "";
 var allServerNodes = [];
 var nodeName = "";
+var dc_count = 0;
 //var firstServerNode = {};
 //var lastServerNode = {};
 
@@ -52,6 +53,13 @@ var Connection = function(data){
 	this.src_intf = ko.observable(data.src_intf);
 	this.dst_intf = ko.observable(data.dst_intf);
 };
+
+var LbConnection = function(data){
+	this.from = ko.observable(data.from);
+	this.to = ko.observable(data.to);
+	this.src_intf = ko.observable(data.src_intf);
+	this.dst_intf = ko.observable(data.dst_intf);
+};
 /*
 var Interface = function(data){
 	this.interfaces = ko.observable(data.interfaces);
@@ -63,6 +71,7 @@ function ViewModel() {
 	this.descriptors = ko.observableArray([]);
 	this.stacks = ko.observableArray([]);
 	this.connections = ko.observableArray([]);
+	this.lbconnections = ko.observableArray([]);
 	//this.interfaces = ko.observableArray([]);
 	//console.log(this.descriptors);
 	var self = this;
@@ -85,6 +94,10 @@ function ViewModel() {
 
     this.addConnection = function(data){
     	self.connections.push(new Connection(data));
+    }
+
+    this.addLbConnection = function(data){
+    	self.lbconnections.push(new Connection(data));
     }
  /*   
     this.addInterface = function(data){
@@ -126,9 +139,11 @@ var viewModel = new ViewModel();
 	if (viewModel.stacks.length != 0){
 		viewModel.stacks = [];
 	}*/
-	function loadEmuServers(clickedStack){
+	function loadEmuServers(clickedStack, data_center){
+		//var services = [];
+		var dc_port = 8775 + +data_center;
 	return $.ajax({
-		url : "http://fg-cn-sandman1.cs.upb.de:8775/v2.1/fc394f2ab2df4114bde39905f800dc57/servers/andPorts",
+		url : "http://fg-cn-sandman1.cs.upb.de:"+ dc_port +"/v2.1/fc394f2ab2df4114bde39905f800dc57/servers/andPorts",
 		//url : "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
 		method : 'GET',
 		//contentType : "application/json; charset=utf-8",
@@ -138,6 +153,8 @@ var viewModel = new ViewModel();
 		},
 		success : function (data) {
 			console.log(clickedStack);
+			//console.log(data);
+
 		/*	// add start node
 			var firstNode = {
 				name: "start",
@@ -146,6 +163,14 @@ var viewModel = new ViewModel();
 				template_name: "START"
 			};
 			viewModel.addDescriptor(firstNode); */
+			if ( JSON.stringify(services) === JSON.stringify(data)){
+				console.log("objects are exactly same..!!!");
+			}
+			else{
+				console.log("objects are not same..!!!");	
+			}
+
+
 			allServerNodes = [];
 			services = data;
 			for (var i = 0; i < services.servers.length; i++) {
@@ -210,6 +235,7 @@ var viewModel = new ViewModel();
 						lastServerNode = nsData;
 					}*/
 					allServerNodes.push(nsData);
+					console.log(allServerNodes);
 					viewModel.addDescriptor(nsData);
 					//sleep(1000);
 				}
@@ -247,7 +273,7 @@ function loadEmuConnections(clickedStack){
 			links.push(firstConnection);
 			viewModel.addConnection(firstConnection); */
 			links = [];
-			connectionlist = data;
+			var connectionlist = data;
 			for (var i = 0; i < connectionlist.chains.length; i++) {
 				if(connectionlist.chains[i].src_vnf.search(clickedStack) == -1 || connectionlist.chains[i].dst_vnf.search(clickedStack) == -1){
 					console.log("The connection from: " + connectionlist.chains[i].src_vnf + " to: " + connectionlist.chains[i].dst_vnf + " is not part of the stack: " + clickedStack);
@@ -286,6 +312,51 @@ function loadEmuConnections(clickedStack){
 	});
 }
 
+function loadEmuLbConnections(clickedStack){
+	return $.ajax({
+		url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/lb/list",
+		method : 'GET',
+		//contentType : "application/json; charset=utf-8",
+		dataType : "json",
+		xhrFields : {
+			withCredentials : false
+		},
+		success : function(data){
+				var connectionListLb = data;
+				if (connectionListLb.loadbalancers.length == 0 ){
+					console.log("No loadbalancing in place..!!!");
+				}
+				else{
+					for(var i = 0; i < connectionListLb.loadbalancers.length; i++){
+						
+							var from = connectionListLb.loadbalancers[i].src_vnf;
+							var source_interface = connectionListLb.loadbalancers[i].src_intf;
+							for(j = 0; j < connectionListLb.loadbalancers[i].paths.length; j++){
+								if(connectionListLb.loadbalancers[i].src_vnf.search(clickedStack) == -1 || connectionListLb.loadbalancers[i].paths[j].dst_vnf.search(clickedStack) == -1){
+									console.log("The connection from: " + connectionListLb.loadbalancers[i].src_vnf + " to: " + connectionListLb.loadbalancers[i].paths[j].dst_vnf + " is not part of the stack: " + clickedStack);
+								}
+								else{
+									var to = connectionListLb.loadbalancers[i].paths[j].dst_vnf;
+									var destination_interface = connectionListLb.loadbalancers[i].paths[j].dst_intf;
+
+									var connectionData = {
+										from : from,
+										to : to,
+										src_intf: source_interface,
+										dst_intf: destination_interface
+									};
+									links.push(connectionData);
+									viewModel.addLbConnection(connectionData);
+								}
+						}
+					}
+				}
+
+		}
+	});
+}
+
+
 function loadEmuStacks(){
 	return $.ajax({
 		url: "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
@@ -323,6 +394,8 @@ function loadEmuStacks(){
 	// completely
 	//$.when(loadEmuServers(), loadEmuConnections(), loadEmuStacks()).done(function(r1, r2) {
 		loadEmuStacks();
+		calculateCountDC();
+		//console.log(dc_count);
 		ko.applyBindings(viewModel);
 		//configureJsPlumb();
 	//});
@@ -405,15 +478,21 @@ function loadEmuStacks(){
 }); // end of document.ready
 
 	function showServiceGraph(){
+		
 		console.log("inside showServiceGraph function....");
 		//clickedStack = emuStackName;
 		clearGraph(clickedStack);
+		//dc_count = calculateCountDC();
 
-		$.when(loadEmuServers(clickedStack), loadEmuConnections(clickedStack)).done(function(r1, r2) {
+		console.log(dc_count);
+		for (var i = 0; i < dc_count; i++){
+			loadEmuServers(clickedStack, i);
+		}
+		$.when(loadEmuConnections(clickedStack), loadEmuLbConnections(clickedStack)).done(function(r1, r2) {
 			configureJsPlumb();
 		});
 
-		setTimeout(showServiceGraph, 50000);
+		setTimeout(showServiceGraph, 5000);
 	}
 
 	function clearGraph(clickedStack){
@@ -462,4 +541,40 @@ function buildTitle(serviceIps, servicesInterfaces){
 	return nodetitle;
 }
 
+function calculateCountDC(){
+			//var count = 0;
+			$.ajax({
+				url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/topo",
+				method : 'GET',
+				//contentType : "application/json; charset=utf-8",
+				dataType : "json",
+				xhrFields : {
+					withCredentials : false
+				},
+				success : function (data){
+			
+				//console.log(viewModel.stacks);
+					dclist = data;
+					//console.log(dclist);
+					for(var i = 0; i < dclist.nodes.length; i++){
+						//var dcnodetype = dclist.nodes[i].type;
+						
+						if(dclist.nodes[i].type === "Datacenter"){
+							//for(var j = 0; j < dclist.nodes.links.length; j++){
+								//console.log(dclist.nodes[i].type);
+								dc_count++;
+							//}
+							
+						}
+
+						
+					}
+					//console.log(dc_count);
+					//return count;
+				}
+				
+			});
+			//console.log(dc_count);
+			//return count;
+		}
 

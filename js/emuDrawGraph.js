@@ -29,7 +29,7 @@ jsPlumb.ready(function() {
     Anchors: [["Left","Right","Bottom"], ["Top","Bottom"]],
     Container: $diagram,
   });
-  
+  console.log(links);
   _.each(links,function(link){
      var conn = plumb.connect({
        source:link.from,
@@ -129,8 +129,8 @@ jsPlumb.ready(function() {
       //$('#' + n).attr("title", n);
       $('#' + n).tooltip({
             position : {
-                my : "center top-40px",
-                at : "center top"
+                my : "right center-40px",
+                at : "right bottom"
             },
             show : {
                 effect : "slideDown",
