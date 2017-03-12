@@ -42,7 +42,10 @@ function markNodesSelected(){
 	instance.addToDragSelection(node);
     }
     if (selectedNodes.length == 1 && node.hasClass("vnf-after-drop")){
-    	$("#editButton").show();
+    	var data = ko.dataFor(node[0]);
+		if (data.uid) {
+			$("#editButton").show();
+		}
     }
 }
 
