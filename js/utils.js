@@ -1,8 +1,14 @@
+/**
+ * This is a collection of util functions which are used in multiple pages.
+ */
 $(document).ready(function () {
-
 	loadUserInfo();
 
 });
+/**
+ * It returns the querystring array of the current url
+ * @returns {Array}
+ */
 function getQueryString() {
 	var queryString = new Array();
 	if (window.location.search.split('?').length > 1) {
@@ -16,10 +22,17 @@ function getQueryString() {
 	return queryString;
 };
 
+/**
+ * It opens index.html
+ */
 function goToHomeView() {
 	window.location.href = "index.html";
 }
 
+/**
+ * It opens workspaceView.html
+ * @param wsId
+ */
 function goToWorkspaceView(wsId) {
 	var queryString = getQueryString();
 	if (wsId == null) {
@@ -28,6 +41,11 @@ function goToWorkspaceView(wsId) {
 	window.location.href = "workspaceView.html?wsId=" + wsId;
 }
 
+/**
+ * It opens projectView.html
+ * @param wsId
+ * @param ptId
+ */
 function goToProjectView(wsId, ptId) {
 	var queryString = getQueryString();
 	if (wsId == null) {
@@ -43,6 +61,10 @@ function goToProjectView(wsId, ptId) {
 		window.location.href = "projectView.html?wsId=" + wsId + "&ptId=" + ptId;
 	}
 }
+
+/**
+ * It adds the name of the current workspace to the navigation bar.
+ */
 function setWorkspaceInNav(wsId) {
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId,
@@ -56,6 +78,11 @@ function setWorkspaceInNav(wsId) {
 	});
 }
 
+/**
+ * It add the name of the current project to the navigation bar.
+ * @param wsId
+ * @param ptId
+ */
 function setProjectInNav(wsId, ptId) {
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/projects/" + ptId,
@@ -73,7 +100,10 @@ var LOGIN_DIALOG_STRING = "<div title='Login'><img src='http://www.sonata-nfv.eu
 var ERROR_DIALOG_STRING = "<div id='errorDialog' title='Error'></div>";
 var WAIT_DIALOG_STRING = "<div id='wait'><div id='waitText'></div><div id='progressbar'></div></div>";
 
-//global error handler for ajax requests
+/**
+ * It is the global error handler for ajax requests.
+ *
+ */
 $(document).ajaxError(function (event, response, request, thrownError) {
 	//in case of any error close the wait animation
 	closeWaitAnimation();
@@ -150,10 +180,7 @@ function showWaitAnimation(title, text, progress) {
 	} else {
 		$('#progressbar').progressbar({value: false});
 	}
-	if (waitText)
-		$('#waitText').text(waitText);
-	else
-		$('#waitText').html("<br/>");
+	if (waitText){$('#waitText').text(waitText);} else {$('#waitText').html("<br/>");}
 	$('#wait').dialog('option', 'title', titleText);
 
 }
@@ -162,6 +189,9 @@ function closeWaitAnimation() {
 	$("#wait").dialog("close");
 }
 
+/**
+ * It loads the user name.
+ */
 function loadUserInfo() {
 
 	$.ajax({
@@ -179,7 +209,9 @@ function loadUserInfo() {
 		}
 	});
 }
-
+/**
+ * It is the logout action.
+ */
 function logOutFromEditor() {
 	window.location.reload(true);
 	$.ajax({
@@ -194,7 +226,10 @@ function logOutFromEditor() {
 	});
 }
 
-//register a string formatting method
+/**
+ * It registers a string formatting method.
+ *
+ */
 if (!String.prototype.format) {
 	String.prototype.format = function () {
 		var args = arguments;

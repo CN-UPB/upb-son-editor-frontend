@@ -1,27 +1,94 @@
-//var vnfs=[{"name":"name1"},{"name":"name2"},{"name":"name3"}]
-//var serverURL = "http://fg-cn-sandman2.cs.upb.de:5000/";§§
+/**
+ * This is the main class of the network service editor.
+ * It loads the current network service, available VNFs and NSs from the current project
+ * and user defined catalogues from the back-end server.
+ * It implements the drag & drop, connect functionalities by using the jsPlumb.js library.
+ * It uses the knockout.js library to bind each node in editor(DOM element) with view model data
+ * such that functionalities like rename, deletion can be done.
+ * It is used in nsView.html.
+ */
+/**
+ * stores a list of available VNFs from the current project and user defined catalogues.
+ */
 var vnfs = [];
+/**
+ * stores a list of available NSs from the current project and user defined catalogues.
+ */
 var nss = [];
+/**
+ * stores a map of VNF descriptors in form of <vnf.vendor:vnf.name:vnf.version, vnf descriptor>
+ */
 var vnf_map = {};
+/**
+ * stores a map of NS descriptors in form of <ns.vendor:ns.name:ns.version, ns descriptor>
+ */
 var ns_map = {};
+
 var queryString = {};
+/**
+ * stores id of the current workspace
+ */
 var wsId = "";
+/**
+ * stores id of the current project
+ */
 var ptId = "";
+/**
+ * stores id of the current network service
+ */
 var nsId = "";
+/**
+ * stores the current network service descriptor
+ */
 var cur_ns = {};
+/**
+ * an instance of jsPlumb
+ */
 var instance = {};
+/**
+ * stores the last dragged descriptor
+ */
 var lastDraggedDescriptor = {};
+/**
+ * a counter for dropped node
+ */
 var countDropped = 0;
-var connections = [];
+/**
+ * color for jsPlumb endpoints
+ */
 var color = "#d39963";
 var interval = null;
+/**
+ * indicates if the mouse movement is a drag action
+ */
 var isDragAction = false;
+/**
+ * a counter for testing if a node is draged or clicked
+ */
 var dragCount = 0;
+/**
+ * stores used names for nodes in the current network service.
+ */
 var usedIDs = [];
+/**
+ * stores the name of node classes, which are not allowed to use as the name of a node
+ */
 var classNames = [ "CP", "cp", "e-lan" ];
+/**
+ * stores list of the available catalogues of the current workspace
+ */
 var catalogues = [];
+/**
+ * stores list of not found VNFs used in the current network service
+ */
 var notFoundVNFs = [];
+/**
+ * stores list of not found NSs used in the current network service
+ */
 var notFoundNSs = [];
+/**
+ * jsPlumb connection point style of each node
+ */
 var endPointOptions = {
 	endpoint : "Dot",
 	paintStyle : {
@@ -54,6 +121,9 @@ var endPointOptions = {
 		activeClass : "dragActive"
 	}
 };
+/**
+ * jsPlumb style configuration
+ */
 var jsPlumbOptions = {
 	DragOptions : {
 		cursor : 'pointer',
@@ -82,15 +152,21 @@ var jsPlumbOptions = {
 	Container : "editor"
 };
 
+/**
+ * data binding class for a node in editor
+ */
 var Node = function(node_data) {
 	var self = this;
 	self.old_id = ko.observable(node_data.id);
 	self.id = ko.observable(node_data.id);
 	if (node_data.uid){
-		self.uid = ko.observable(node_data.uid);	
+		self.uid = ko.observable(node_data.uid);
 	}
 };
 
+/**
+ * data binding class for available catalogues
+ */
 var Catalogue = function(catalogue) {
 	this.name = ko.observable(catalogue.name);
 	this.url = ko.observable(catalogue.url);
@@ -98,6 +174,11 @@ var Catalogue = function(catalogue) {
 	this.nss = ko.observableArray([]);
 };
 
+/**
+ * data bind class for the network service
+ * add dragged VNF/NS descriptors to the vnf_map/ns_map
+ * rename a node
+ */
 var ViewModel = function() {
 	this.catalogue_map = {};
 	this.catalogues = ko.observableArray([]);
@@ -231,6 +312,12 @@ var viewModel = new ViewModel();
 		}
 	};
 })();
+
+/**
+ * It calculates anchors of connection points of a node.
+ * @param anchorCount
+ * @returns {Array}
+ */
 function calcAnchors(anchorCount) {
 	var r = 0.5, step = Math.PI * 2 / anchorCount, current = Math.PI, a = [];
 	for ( var i = 0; i < anchorCount; i++) {
@@ -254,6 +341,12 @@ function calcAnchors(anchorCount) {
 	}
 	return a;
 }
+
+/**
+ * It calculates label position of connection points of a node
+ * @param anchor
+ * @returns {Array}
+ */
 function calcLabelPos(anchor) {
 	var labelX = anchor[0], labelY = anchor[1];
 	if (labelX == 0) {
@@ -268,6 +361,10 @@ function calcLabelPos(anchor) {
 	}
 	return [ labelX, labelY ];
 }
+
+/**
+ * It writes vnf and serice dependencies of the current network service to its descriptor.
+ */
 function writeDependencies() {
 	if (cur_ns.descriptor.network_functions != null) {
 		vnf_deps = [];
@@ -294,6 +391,10 @@ function writeDependencies() {
 	}
 }
 
+/**
+ * It updates the current network service on the back-end server.
+ * @param action
+ */
 function updateServiceOnServer(action) {
 	if (!action) {
 		addAction();
@@ -319,7 +420,9 @@ function updateServiceOnServer(action) {
 	});
 }
 
-// add new virtual link to descriptor
+/**
+ *  It adds new virtual link to the current network service descriptor.
+ */
 function addLinkToDpt(conn) {
 	var cp_source = conn.endpoints[0];
 	var cp_target = conn.endpoints[1];
@@ -359,7 +462,10 @@ function addLinkToDpt(conn) {
 	}
 }
 
-// delete a single link from descriptor
+/** It deletes a single link from  the current network service descriptor.
+ *
+ * @param connection
+ */
 function deleteLinkFromDpt(connection) {
 	var cur_links = cur_ns.descriptor.virtual_links;
 	var cp_source = connection.endpoints[0];
@@ -404,7 +510,11 @@ function deleteLinkFromDpt(connection) {
 	}
 }
 
-// delete node from descriptor
+/** It deletes a node from the current network service descriptor.
+ *
+ * @param id
+ * @param className
+ */
 function deleteNodeFromDpt(id, className) {
 	if (className.startsWith("vnf")) {
 		var cur_vnfs = cur_ns.descriptor.network_functions;
@@ -446,6 +556,12 @@ function deleteNodeFromDpt(id, className) {
 	}
 }
 
+/**
+ * It renames a VNF or NS in the current network service descriptor.
+ * @param oldId
+ * @param newId
+ * @param className
+ */
 function renameVnfOrNs(oldId, newId, className) {
 	var node = {};
 	if (className.split("-")[0] == "vnf") {
@@ -513,6 +629,12 @@ function renameVnfOrNs(oldId, newId, className) {
 	}
 }
 
+/**
+ * It renames a connection point or ELAN node in the current network service descriptor.
+ * @param oldId
+ * @param newId
+ * @param className
+ */
 function renameCpOrElan(oldId, newId, className) {
 	var node = {};
 	var virtualLinks = [];
@@ -572,6 +694,12 @@ function renameCpOrElan(oldId, newId, className) {
 	}
 }
 
+/**
+ * It updates the descriptor after renaming on the back-end server.
+ * @param oldId
+ * @param newId
+ * @param className
+ */
 function renameNodeOnServer(oldId, newId, className) {
 	// notify jsplumb id is changed
 	instance.setIdChanged(oldId, newId);
@@ -584,22 +712,15 @@ function renameNodeOnServer(oldId, newId, className) {
 	} else {
 		renameCpOrElan(oldId, newId, className);
 	}
-	displayDeleteButton(newId);
 	updateServiceOnServer();
 }
 
-function displayDeleteButton(id) {
-	var dataId = id.replace(":", "\\:");
-	var node = "#" + dataId;
-	$(node).bind("mouseover", function() {
-		$(node).children("a").css("display", "inline");
-	});
-	$(node).bind("mouseout", function() {
-		$(node).children("a").css("display", "none");
-	});
-}
-
-// draw a vnf/ns and its connection points
+/** It draws a VNF/NS node and its connection points in editor.
+ *
+ * @param type
+ * @param id
+ * @param descriptor
+ */
 function drawVnfOrNs(type, id, descriptor) {
 	if (type == "vnf") {
 		addToVnfList(id);
@@ -640,7 +761,10 @@ function drawVnfOrNs(type, id, descriptor) {
 		addNodeToMatrix(cpLabels);
 	}
 }
-// draw a connection point
+/** It draws a connection point in editor.
+ *
+ * @param elemID
+ */
 function drawCp(elemID) {
 	instance.addEndpoint(elemID, {
 		uuid : elemID,
@@ -656,7 +780,10 @@ function drawCp(elemID) {
 	}, endPointOptions);
 }
 
-// draw a elan node and its links
+/** It draws a ELAN node and its links in editor.
+ *
+ * @param dataId
+ */
 function drawElan(dataId) {
 	instance.addEndpoint(dataId, {
 		uuid : dataId,
@@ -675,7 +802,14 @@ function drawElan(dataId) {
 	}, endPointOptions);
 }
 
-// draw a node in editor
+/** It draws a node in editor
+ *
+ * @param type
+ * @param data
+ * @param rawData
+ * @param x
+ * @param y
+ */
 function drawNode(type, data, rawData, x, y) {
 	usedIDs.push(data.id);
 	viewModel.addToEditor(data);
@@ -728,10 +862,14 @@ function drawNode(type, data, rawData, x, y) {
 		drag : activateDragging,
 		stop : savePositionForNode,
 	});
-	displayDeleteButton(data.id);
 	setMousedownForDraggable(elem);
 }
 
+/**
+ * It draws a link in editor.
+ * @param virtual_link
+ * @returns
+ */
 function drawLink(virtual_link) {
 	var conn = instance.connect({
 		uuids : virtual_link["connection_points_reference"]
@@ -743,6 +881,10 @@ function drawLink(virtual_link) {
 	return conn;
 }
 
+/**
+ * It upload the current network service descriptor to a platform
+ * @param id
+ */
 function doUpload(id) {
 	showWaitAnimation("Uploading");
 	$.ajax({
@@ -776,6 +918,10 @@ function doUpload(id) {
 		}
 	});
 }
+
+/**
+ * It shows the upload to platform dialog.
+ */
 function showUploadDialog() {
 	$("#uploadDialog").dialog({
 		resizable : false,
@@ -796,6 +942,10 @@ function showUploadDialog() {
 	});
 }
 
+/**
+ * It loads the available catalogues from the back-end server.
+ * @returns
+ */
 function loadCatalogues() {
 	return $.ajax({
 		url : serverURL + "workspaces/" + wsId + "/catalogues/",
@@ -809,6 +959,10 @@ function loadCatalogues() {
 	});
 }
 
+/**
+ * It loads VNFs and NSs from the catalogues for the left side bar.
+ * @returns {Array}
+ */
 function loadVNFsNSsFromCatalogues() {
 	var ajaxCalls = [];
 	for (var i = 0; i < catalogues.length; i++) {
@@ -861,7 +1015,10 @@ function loadVNFsNSsFromCatalogues() {
 	return ajaxCalls;
 }
 
-// load VNFs for the sidebar
+/** It loads VNFs of the current project for the left side bar.
+ *
+ * @returns
+ */
 function loadAllVNFs() {
 	return $.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId
@@ -878,7 +1035,9 @@ function loadAllVNFs() {
 		}
 	});
 }
-// load network services for the sidebar
+/** It loads NSs of the current project for the left side bar.
+ *
+ */
 function loadAllNSs() {
 	return $.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/" + ptId
@@ -902,7 +1061,9 @@ function loadAllNSs() {
 	});
 }
 
-// load platforms for Upload dialog
+/** It loads the platforms for Upload dialog
+ *
+ */
 function loadPlatforms() {
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/platforms/",
@@ -915,7 +1076,9 @@ function loadPlatforms() {
 		}
 	});
 }
-// write connection points infomation for VNF/NS
+/**
+ * It writes connection points infomation for VNF/NS
+ */
 function loadCpInfos(type, data) {
 	if (type == 'vnf') {
 		var vnf_data = {};
@@ -943,6 +1106,11 @@ function loadCpInfos(type, data) {
 	}
 }
 
+/**
+ * It computes a grid layout for nodes
+ * @param index
+ * @returns {Array}
+ */
 function getGridPosition(index) {
 	var $editor = $("#editor");
 	var editorWidth = $editor.width();
@@ -953,6 +1121,10 @@ function getGridPosition(index) {
 	var $y = min + dist * Math.floor((index * dist) / max);
 	return [ $x, $y ];
 }
+
+/**
+ * It cleans the editor by deleting all items.
+ */
 function clean() {
 	for ( var i = 0; i < viewModel.editor_nodes().length; i++) {
 		var node = viewModel.editor_nodes()[i];
@@ -962,6 +1134,10 @@ function clean() {
 	}
 	viewModel.editor_nodes([]);
 }
+
+/**
+ * It outputs error msgs for not founded VNF/NS.
+ */
 function outputNotFoundInfo() {
 	var error = "";
 	var notFound = false;
@@ -1005,7 +1181,9 @@ function outputNotFoundInfo() {
 	notFoundVNFs = [];
 	notFoundNSs = [];
 }
-// display loaded network service in the editor
+/** It displays the current network service in the editor.
+ *
+ */
 function displayNS() {
 	var index = 0;
 	if (cur_ns.descriptor.network_functions != null) {
@@ -1080,7 +1258,9 @@ function displayNS() {
 	}
 }
 
-// function to set the editor height dynamically fitting to the browser window
+/** It sets the editor height dynamically fitting to the browser window.
+ *
+ */
 function setSize() {
 	windowHeight = $(window).innerHeight()
 			- $('.left-navigation-bar').offset().top;
@@ -1095,7 +1275,14 @@ function setSize() {
 	$('.vnf').css('width', $('.left-navigation-bar').width() - 10);
 	$('.ns').css('width', $('.left-navigation-bar').width() - 10);
 }
-// replace old_class from the source element with new class 'xxx-after-drop'
+/** It replaces old_class from the source element with new class 'xxx-after-drop'
+ *
+ * @param ui
+ * @param data
+ * @param old_class
+ * @param editor
+ * @param current_zoom
+ */
 function reconfigureNode(ui, data, old_class, editor, current_zoom) {
 	var newId = old_class + "_" + data.attr('id') + "_" + countDropped;
 	if (old_class == "cp") {
@@ -1122,6 +1309,12 @@ function reconfigureNode(ui, data, old_class, editor, current_zoom) {
 	savePositionForNode(evt, true);
 }
 
+/**
+ * It sets configuration before drawing a droped VNF/NS.
+ * @param type
+ * @param list
+ * @param elemId
+ */
 function dropNewVnfOrNs(type, list, elemId) {
 	if (!list) {
 		list = [];
@@ -1147,6 +1340,10 @@ function dropNewVnfOrNs(type, list, elemId) {
 	}
 }
 
+/**
+ * It sets configuration before drawing a dropped connection point.
+ * @param elemID
+ */
 function dropNewCp(elemID) {
 	var cp = {
 		"id" : elemID,
@@ -1161,6 +1358,10 @@ function dropNewCp(elemID) {
 	cur_ns.descriptor.connection_points.push(cp);
 }
 
+/**
+ * It sets configuration before drawing a droppend ELAN node.
+ * @param elemID
+ */
 function dropNewElan(elemID) {
 	var elan = {
 		"id" : elemID,
@@ -1176,6 +1377,11 @@ function dropNewElan(elemID) {
 	cur_ns.descriptor.virtual_links.push(elan);
 }
 
+/**
+ * It animates the E-LINE connections.
+ * @param conn
+ * @returns
+ */
 function animateConnections(conn) {
 	var arrow = conn.getOverlay("arrow");
 	var src = conn.source.className;
@@ -1199,7 +1405,11 @@ function animateConnections(conn) {
 		arrow.hide();
 	}
 }
-
+/**
+ * It saves the current position of each node to descriptor.
+ * @param event
+ * @param noUpdate
+ */
 function savePositionForNode(event, noUpdate) {
 	var position = event.pos;
 	var node = event.selection[0][0];
@@ -1248,7 +1458,9 @@ function savePositionForNode(event, noUpdate) {
 	}
 }
 
-// helper to check if nodes where dragged or jus clicked
+/** It is the helper to check if nodes where dragged or jus clicked.
+ *
+ */
 function activateDragging() {
 	isDragAction = false;
 	dragCount++;
@@ -1257,6 +1469,9 @@ function activateDragging() {
 	}
 }
 
+/**
+ *  It configures the jsPlumb instance.
+ */
 function configureJsPlumb() {
 	instance = jsPlumb.getInstance(jsPlumbOptions);
 	$("#editor").droppable(
@@ -1296,7 +1511,6 @@ function configureJsPlumb() {
 						stop : savePositionForNode,
 						containment : "parent"
 					});
-					displayDeleteButton(data.attr('id'));
 				}
 			});
 	// suspend drawing and initialise.
@@ -1362,7 +1576,9 @@ function configureJsPlumb() {
 	});
 	jsPlumb.fire("jsPlumbDemoLoaded", instance);
 }
-// load the current NS from the server
+/** It loads the current network service from the back-end server.
+ *
+ */
 function loadCurrentNS() {
 	$
 			.ajax({

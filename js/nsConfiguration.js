@@ -1,4 +1,20 @@
+/**
+ * Written by Linghui
+ * This is the implementation of the configuration in network service editor
+ * It uses js-yaml.js library to convert a descriptor in .yaml file to a javascript object.
+ * It uses jsoneditor.js library to generate an HTML form by taking the NS descriptor schema from the back-end server.
+ * It is used in nsView.html.
+ */
+
+/**
+ * JSON editor object
+ */
 var editor;
+
+/**
+ * It shows the configuration view of the current network service
+ * and it is called by clicking the "Configure" button.
+ */
 function showNsConfiguration() {
     $("#editorContainer").hide();
     editor.setValue(cur_ns.descriptor);
@@ -9,6 +25,10 @@ function showNsConfiguration() {
 	    windowHeight - $('#nsConfigurationForm').offset().top - 2
 		    * $('#buttons').height());
 }
+/**
+ * It validates the inputs according to the schema.
+ * @returns {Boolean}
+ */
 function validate() {
     var errors = editor.validate();
     if (errors.length == 0) {
@@ -28,6 +48,10 @@ function validate() {
     }
 }
 
+/**
+ * It uploads a descriptor .yaml file.
+ * @param event
+ */
 function uploadFile(event){
     var input = event.target;
     var reader = new FileReader();
@@ -38,7 +62,9 @@ function uploadFile(event){
     reader.readAsText(input.files[0]);
 };
 
-
+/**
+ * It saves the configuration of the current network service to the back-end server.
+ */
 function saveNsConfiguration() {
     if (validate()) {
 	cur_ns.descriptor = editor.getValue();
@@ -47,6 +73,9 @@ function saveNsConfiguration() {
     }
 }
 
+/**
+ * It closes the configuration view.
+ */
 function closeNsConfiguration() {
     if (validate()) {
 	cur_ns.descriptor = editor.getValue();
@@ -63,7 +92,7 @@ $(document)
 		    JSONEditor.defaults.theme = 'bootstrap3';
 		    JSONEditor.defaults.iconlib = 'jQueryUI';
 		    JSONEditor.defaults.editors.object.options.remove_empty_properties = true;
-		    // get schema
+		    // get the descriptor schema from the back-end server
 		    $
 			    .ajax({
 				url : serverURL+ "workspaces/" + wsId + "/schema/ns",

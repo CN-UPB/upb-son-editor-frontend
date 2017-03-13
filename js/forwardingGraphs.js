@@ -1,22 +1,75 @@
+/**
+ * Written by Linghui
+ * The idea is to perform the depth-first search algorithm on the adjacency matrix.
+ * The nodes in adjacency matrix are connection points of each node.
+ * The edges in adjacency matrix are the E-Line connections and the connections inside a node.
+ * Note that a node can have multiple connection points and they are connected to each other even though
+ * there is no explicit E-Line connections between them.
+ * Each forwarding path starts from a connection point of the current network service.
+ * Each forwarding graph must be a connected component. A network service can have multiple forwarding graphs
+ * since multiple connected components are allowed.
+ * It is used in nsView.html.
+ */
+/**
+ * stores the starting connection points of the current network service
+ */
 var startNodes = [];
+/**
+ * stores the ending connection points of the current network service
+ */
 var endNodes = [];
+/**
+ * adjacency matrix to store nodes and edges
+ */
 var adj = {};
+/**
+ * intermediate storage for computed forwarding graphs with redundant infos
+ */
 var graphs = [];
+/**
+ * stores the computed forwarding graphs
+ */
 var forwardingGraphs = [];
+/**
+ * stores number of connection points of the current network service used in a computed forwarding graph
+ */
 var numOfCps = [];
+/**
+ * Used to count the number of virtual links of a forwarding path
+ */
 var countedLinks = [];
+/**
+ * a list to save the VNFs in the current network service.
+ */
 var vnfList = [];
+
+/**
+ * It adds a VNF to the list of VNFs.
+ * @param vnf
+ */
 function addToVnfList(vnf) {
     if ($.inArray(vnf, vnfList) < 0) {
         vnfList.push(vnf);
     }
 }
+
+/**
+ * It removes a VNF from the list of VNFs.
+ * @param vnf
+ */
 function removeFromVnfList(vnf) {
     var index = vnfList.indexOf(vnf);
     if (index > -1) {
         vnfList.splice(index, 1);
     }
 }
+
+/**
+ * It tests if all connection points in a list are from the one node.
+ * This is to avoid circular path in the depth-first search.
+ * @param list
+ * @returns {Boolean}
+ */
 function containsOnlyCps(list) {
     if (list) {
         var id = list[0].split(":")[0];
@@ -31,6 +84,11 @@ function containsOnlyCps(list) {
         return false;
     }
 }
+
+/**
+ * It adds a node to the adjacency matrix.
+ * @param cps
+ */
 function addNodeToMatrix(cps) {
     if (cps) {
         for (var i = 0; i < cps.length; i++) {
@@ -52,6 +110,12 @@ function addNodeToMatrix(cps) {
     }
     cur_ns.meta.adjacency_matrix = adj;
 }
+
+/**
+ * It adds an edge to the adjacency matrix.
+ * @param source
+ * @param target
+ */
 function addEdgeToAdjacencyMatrix(source, target) {
     if (adj[source]) {
         var points_to = adj[source];
@@ -66,6 +130,12 @@ function addEdgeToAdjacencyMatrix(source, target) {
     }
     cur_ns.meta.adjacency_matrix = adj;
 }
+
+/**
+ * It removes an edge from the adjacency matrix.
+ * @param source
+ * @param target
+ */
 function removeFromAdjacencyMatrix(source, target) {
     if (adj[source]) {
         var points_to = adj[source];
@@ -78,6 +148,13 @@ function removeFromAdjacencyMatrix(source, target) {
     }
     cur_ns.meta.adjacency_matrix = adj;
 }
+
+/**
+ * It runs depth-first search recursively.
+ * @param node
+ * @param found
+ * @returns {Array}
+ */
 function dfs(node, found) {
     var foundSoFar = JSON.parse(found);
     foundSoFar.push(node);
@@ -115,6 +192,10 @@ function dfs(node, found) {
         return paths;
     }
 }
+
+/**
+ * It runs depth-first search starting from every connection points of the current network service.
+ */
 function computeForwardingPaths() {
     var paths = [];
     for (var i = 0; i < startNodes.length; i++) {
@@ -179,14 +260,12 @@ function computeForwardingPaths() {
     }
     writeGraphToDescriptor(paths);
     cur_ns.descriptor["forwarding_graphs"] = forwardingGraphs;
-    //console.log("forwarding graphs computed");
-    //console.log(paths);
-    //console.log(forwardingGraphs);
     return paths;
 }
-function isVNF(node) {
-    return true;
-}
+
+/**
+ * It writes the computed forwarding paths to the respective forwarding graph
+ */
 function writePathToGraph(path, i) {
     for (var k = 0; k < path.length; k++) {
         var node = path[k];
@@ -255,6 +334,11 @@ function writePathToGraph(path, i) {
     fg["number_of_endpoints"] = numOfCps[i];
     forwardingGraphs[i] = fg;
 }
+
+/**
+ * It writes the computed forwarding graphs to descriptor
+ * @param forwardingPaths
+ */
 function writeGraphToDescriptor(forwardingPaths) {
     graphs = [];
     forwardingGraphs = [];
@@ -292,6 +376,11 @@ function writeGraphToDescriptor(forwardingPaths) {
         }
     }
 }
+
+/**
+ * It recomputes the forwarding graphs whenever a connection is added/deleted to the graph.
+ * It is called in nsEditor.js, whenever a connection is added/deleted.
+ */
 function updateForwardingGraphs(source, target, remove) {
     if (!remove) {
         addEdgeToAdjacencyMatrix(source, target);

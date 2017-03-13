@@ -1,7 +1,21 @@
+/**
+ * It is used in workspaceConfigurationView.html
+ */
 var queryString = {};
+
+/**
+ * an instance of WorkspaceModel
+ */
 var workspaceModel;
+
+/**
+ * an instance of SchemaModel
+ */
 var schemasModel;
 
+/**
+ * data binding class for platforms
+ */
 var Platform = function () {
 	this.name = ko.observable("");
 	this.url = ko.observable("");
@@ -11,9 +25,12 @@ var Platform = function () {
 		this.url(data.url);
 		this.id(data.id);
 		return this;
-	}
-}
+	};
+};
 
+/**
+ * data binding class for catalogues
+ */
 var Catalogue = function () {
 	this.name = ko.observable("");
 	this.url = ko.observable("");
@@ -23,9 +40,12 @@ var Catalogue = function () {
 		this.url(data.url);
 		this.id(data.id);
 		return this;
-	}
-}
+	};
+};
 
+/**
+ * data binding class for all workspace configuration items
+ */
 var WorkspaceModel = function () {
 	this.name = ko.observable();
 	this.platforms = ko.observableArray();
@@ -48,26 +68,30 @@ var WorkspaceModel = function () {
 		.bind(this);
 	this.init = function (data) {
 		this.name(data.name);
-		if (data.platforms.length != 0)
-			this.platforms($.map(data.platforms, function (item) {
-				return new Platform().init(item)
-			}));
-		if (data.catalogues.length != 0)
-			this.catalogues($.map(data.catalogues, function (item) {
-				return new Catalogue().init(item)
-			}));
+		if (data.platforms.length != 0){this.platforms($.map(data.platforms, function (item) {
+			return new Platform().init(item)
+		}));}
+		if (data.catalogues.length != 0){this.catalogues($.map(data.catalogues, function (item) {
+			return new Catalogue().init(item)
+		}));}
 		$("form").parsley().validate();
 		return this;
 	}
 };
 
+/**
+ * data binding class for VNF schema and NS schema.
+ */
 var SchemasModel = function () {
 	this.vnf_schemas = ko.observableArray();
 	this.ns_schemas = ko.observableArray();
 };
 
 
-//save the configuration from workspace and it will be called by clicking "save" button
+/**
+ *  It saves the configuration of the current workspace and it is called by clicking "save" button.
+ *
+ */
 function saveConfiguration() {
 	$("form").parsley().validate();
 	if ($("form").parsley().isValid()) {
@@ -123,7 +147,11 @@ function saveConfiguration() {
 	}
 }
 
-//load the current configuration of the workspace 
+/**
+ * It loads the current configuration of the workspace.
+ *
+ * @param wsId
+ */
 function loadConfiguration(wsId) {
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId,

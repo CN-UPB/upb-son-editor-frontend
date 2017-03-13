@@ -1,15 +1,28 @@
+/**
+ * Written by Linghui
+ * This is the implementation of the VNF editor.
+ * It uses js-yaml.js library to convert a descriptor in .yaml file to a javascript object.
+ * It uses jsoneditor.js library to generate an HTML form by taking the VNF descriptor schema from the back-end server.
+ * It is used in vnfView.html.
+ */
 var queryString = {};
+/**
+ * JSON editor object
+ */
 var editor;
 
-// validate the VNF descriptor and save it if it is valid
+/**
+ * It validates the VNF descriptor and save it if it is valid
+ *
+ */
 function saveTables() {
 	var errors = editor.validate();
 	if (errors.length == 0) {
-		var data= {};		
+		var data= {};
 		data.descriptor = editor.getValue();
 		data.edit_mode =$('#editMode')[0].checked?"replace_refs":"create_new";
 		data = JSON.stringify(data);
-		if (queryString['operation'] != "edit") 
+		if (queryString['operation'] != "edit")
 		{
 			createNewVnf(data);
 		}
@@ -17,7 +30,7 @@ function saveTables() {
 		{
 			updateVnf(data);
 		}
-	} 
+	}
 else {
 		$("#FailedValidationDialog").dialog({
 			modal : true,
@@ -31,7 +44,10 @@ else {
 	}
 }
 
-// update a VNF to the server
+/** It updates a VNF to the back-end server.
+ *
+ * @param jsonData
+ */
 function updateVnf(jsonData) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
@@ -68,7 +84,11 @@ function updateVnf(jsonData) {
 	});
 }
 
-// create a new VNF and it will be called by clicking "New VNF" button
+/**
+ * It creates a new VNF and it is called by clicking "New VNF" button.
+ *
+ * @param jsonData
+ */
 function createNewVnf(jsonData) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
@@ -110,7 +130,11 @@ function createNewVnf(jsonData) {
 	});
 }
 
-// load a VNF from the server
+/**
+ * It loads a VNF from the back-end server.
+ *
+ * @param vnfId
+ */
 function loadVnf(vnfId) {
 	$.ajax({
 		url : serverURL + "workspaces/" + queryString["wsId"] + "/projects/"
@@ -127,6 +151,10 @@ function loadVnf(vnfId) {
 	});
 }
 
+/**
+ * It uploads a descriptor .yaml file and converts it to js object.
+ * @param event
+ */
 function uploadFile(event) {
 	var input = event.target;
 	var reader = new FileReader();
@@ -137,60 +165,13 @@ function uploadFile(event) {
 	reader.readAsText(input.files[0]);
 };
 
-$(document)
-		.ready(
-				function() {
-					queryString = getQueryString();
-					var wsId = queryString["wsId"];
-					var ptId = queryString["ptId"];
-					setWorkspaceInNav(wsId);
-					setProjectInNav(wsId, ptId);
-					JSONEditor.defaults.theme = 'bootstrap3';
-					JSONEditor.defaults.iconlib = 'jQueryUI';
-					JSONEditor.defaults.editors.object.options.remove_empty_properties = true;
-					// get schema
-					showWaitAnimation("Loading Schema");
-					$.ajax({
-						url : serverURL + "workspaces/" + wsId + "/schema/vnf",
-						dataType : "json",
-						xhrFields : {
-							withCredentials : true
-						},
-						success : function(vnfd_schema) {
-							vnfd_schema["title"] = "VNF Descriptor";
-							editor = new JSONEditor(document
-									.getElementById('vnfForm'), {
-								ajax : true,
-								show_errors : "always",
-								display_required_only : true,
-								schema : vnfd_schema,
-							});
-							editor.watch('root.name', function() {
-								$("#nav_vnf").text(
-										"VNF: "
-												+ editor.getEditor(
-														'root.name')
-														.getValue());
-							});
-							if (queryString["operation"] != "create") {
-								showWaitAnimation("Loading VNF");
-								loadVnf(queryString["vnfId"]);
-							} else {
-								closeWaitAnimation();
-							}
-						}
-					});
-					windowHeight = $(window).innerHeight();
-					$('#vnfForm').css(
-							'height',
-							windowHeight - $('#vnfForm').offset().top - 2
-									* $('#buttons').height());
-
-					ko.applyBindings(imagesModel);
-				});
 
 
-//VNF Image Upload
+/**
+ * It is the data binding model for VNF image
+ *
+ * @returns
+ */
 function ImagesModel() {
 	this.images = ko.observableArray([]);
 
@@ -220,6 +201,10 @@ function ImagesModel() {
 
 var imagesModel = new ImagesModel();
 
+/**
+ * It uploads an image of VNF.
+ * @param event
+ */
 function uploadImage(event) {
 	var input = event.target;
 	var formData = new FormData();
@@ -251,6 +236,9 @@ function uploadImage(event) {
 	$(input).filestyle('clear');
 }
 
+/**
+ * It shows image files dialog.
+ */
 function showImageFiles(){
 	$("#deletedMessage").hide();
 	$.ajax({
@@ -273,3 +261,54 @@ function showImageFiles(){
 		}
 	});
 }
+$(document)
+.ready(
+		function() {
+			queryString = getQueryString();
+			var wsId = queryString["wsId"];
+			var ptId = queryString["ptId"];
+			setWorkspaceInNav(wsId);
+			setProjectInNav(wsId, ptId);
+			JSONEditor.defaults.theme = 'bootstrap3';
+			JSONEditor.defaults.iconlib = 'jQueryUI';
+			JSONEditor.defaults.editors.object.options.remove_empty_properties = true;
+			// get VNF schema from the back-end server
+			showWaitAnimation("Loading Schema");
+			$.ajax({
+				url : serverURL + "workspaces/" + wsId + "/schema/vnf",
+				dataType : "json",
+				xhrFields : {
+					withCredentials : true
+				},
+				success : function(vnfd_schema) {
+					vnfd_schema["title"] = "VNF Descriptor";
+					editor = new JSONEditor(document
+							.getElementById('vnfForm'), {
+						ajax : true,
+						show_errors : "always",
+						display_required_only : true,
+						schema : vnfd_schema,
+					});
+					editor.watch('root.name', function() {
+						$("#nav_vnf").text(
+								"VNF: "
+										+ editor.getEditor(
+												'root.name')
+												.getValue());
+					});
+					if (queryString["operation"] != "create") {
+						showWaitAnimation("Loading VNF");
+						loadVnf(queryString["vnfId"]);
+					} else {
+						closeWaitAnimation();
+					}
+				}
+			});
+			windowHeight = $(window).innerHeight();
+			$('#vnfForm').css(
+					'height',
+					windowHeight - $('#vnfForm').offset().top - 2
+							* $('#buttons').height());
+
+			ko.applyBindings(imagesModel);
+		});

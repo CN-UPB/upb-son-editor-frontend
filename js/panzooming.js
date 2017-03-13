@@ -1,9 +1,27 @@
+/**
+ * This is the implementation of panzooming in the network service editor.
+ * This feature uses the jquery.panzoom.js library.
+ * It is used in nsView.html.
+ */
+
 var zoomMatrix = [];
+/**
+ * stores the current zooming value. Initially equals 1.
+ */
 var current_zoom = 1;
-var $setLeft;// the origin of editor
+/**
+ * store the origin of the editor
+ */
+var $setLeft;
 var $setTop;
+/**
+ * the panzoom object
+ */
 var $panzoom;
 
+/**
+ *It changes the zooming value to selected item of the drop down box.
+ */
 function changeZoomTo() {
     var x = document.getElementById("percent").value;
     current_zoom = x / 100;
@@ -22,7 +40,9 @@ function changeZoomTo() {
     });
 }
 
-// inform jsplumb the current zoom
+/**
+ * It informs jsplumb the current zooming value.
+ */
 function onZoomChanged(e, Panzoom, zoom) {
     instance.setZoom(zoom);
     $panzoom.panzoom("pan", -130, -60, {
@@ -35,11 +55,13 @@ function onZoomChanged(e, Panzoom, zoom) {
     });
 }
 
+/**
+ * It initializes and configures the panzoom object.
+ */
 $(document).ready(
 	function() {
 	    $setLeft = $('#editor').offset().left;
 	    $setTop = $('#editor').offset().top;
-
 	    // initialize panzoom
 	    var $section = $('#editor-parent');
 	    var $menu_actions = $('#menu-actions');
@@ -48,14 +70,14 @@ $(document).ready(
 		$zoomOut : $menu_actions.find(".zoom-out"),
 		$reset : $menu_actions.find(".reset"),
 		transition : true,
-		which : 3,// Set whether you'd like to pan on left (1), middle
+		which : 3,// set whether you'd like to pan on left (1), middle
 		// (2), or right click (3)
 		maxScale : 1.5,
 		increment : 0.1,
 		minScale : 0.5,
 		easing : "ease-in-out",
 		onZoom : onZoomChanged,
-		cursor : "default",	
+		cursor : "default",
 	    });
 	    $panzoom.parent().on(
 		    'mousewheel.focal',
@@ -89,7 +111,7 @@ $(document).ready(
 		});
 
 	    });
-	    
+
 	    //limit the pan translation so that the background will not be seen.
 	    $panzoom.on('panzoomend',
 		    function(e, panzoom, matrix, changed) {

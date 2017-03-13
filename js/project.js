@@ -1,12 +1,43 @@
+/**
+ * Written by Linghui
+ *
+ * It is used in project.html.
+ */
+
+/**
+ * stores list of VNFs in current project
+ */
 var vnfs = [];
+/**
+ * stores list of NSs in current project
+ */
 var services = [];
 var queryString = {};
+/**
+ * stores id of the current workspace
+ */
 var wsId = "";
+/**
+ * stores id of the current project
+ */
 var ptId = "";
+/**
+ * stores id of the created new network service
+ */
 var nsId = "";
+/**
+ * Used for searching a specific VNF or NS in the search bar
+ */
 var availableItems = [];
+/**
+ * Dictionary stores the name and id of each VNF or NS in form of <VnfName, id> or <NsName,id>
+ */
 var itemDictionary = {};
 
+/**
+ * data binding class for a descriptor
+ * It implements the options to a project such as edit, delete, clone and publish to a catalogue.
+ */
 var Descriptor = function(data, id , type) {
 	this.name = ko.observable(data.name);
 	this.vendor = ko.observable(data.vendor);
@@ -59,7 +90,7 @@ var Descriptor = function(data, id , type) {
                 }
             }
         });
-    }
+    };
     this.delete_desc = function() {
         if (self.type() === "VNF") {
             deleteVnf(self.id());
@@ -99,6 +130,9 @@ function ViewModel() {
 
 var viewModel = new ViewModel();
 
+/**
+ * It loads the user defined catalogues from the back-end server.
+ */
 function loadCatalogues() {
     $.ajax({
         url: serverURL + "workspaces/" + wsId,
@@ -112,43 +146,9 @@ function loadCatalogues() {
     });
 }
 
-$(document).ready(function() {
-    queryString = getQueryString();
-    wsId = queryString["wsId"];
-    ptId = queryString["ptId"];
-    setWorkspaceInNav(wsId);
-    setProjectInNav(wsId, ptId);
-    ko.applyBindings(viewModel);
-    loadServices();
-    loadVnfs();
-    // search bar(uses jquery ui Autocomplete)
-    $("#search_item").autocomplete({
-        source: availableItems,
-        select: function(event, ui) {
-            var item = ui.item.label;
-            var selectedId;
-            if (item.startsWith("Create")) {
-                if (item == "Create new NS") {
-                    showCreateNSDialog();
-                } else {
-                    createNewVnf();
-                }
-            } else {
-                if (item.startsWith("NS")) {
-                    item = item.substring(4, item.length);
-                    selectedId = itemDictionary[item];
-                    editService(selectedId);
-                } else {
-                    item = item.substring(5, item.length);
-                    selectedId = itemDictionary[item];
-                    editVnf(selectedId);
-                }
-            }
-        }
-    });
-    loadCatalogues();
-});
-// load infos of all network services from the server
+/**
+ *It loads infos of all network services from the back-end server.
+ */
 function loadServices() {
 	availableItems.push("Create new NS");
 	$.ajax({
@@ -173,7 +173,9 @@ function loadServices() {
 	});
 }
 
-// load infos of all VNFs from the server
+/**
+ * It loads infos of all VNFs from the back-end server.
+*/
 function loadVnfs() {
 	availableItems.push("Create new VNF");
 	$.ajax({
@@ -198,8 +200,10 @@ function loadVnfs() {
 	});
 }
 
-// load all network services and vnfs from the server, which will be displayed
-// to the user
+/**
+ * It loads all network services and vnfs from the back-end server, which will be displayed
+ *	to the user.
+ */
 function loadList(selectedIndex) {
     document.getElementById("display_NS_VNFS").innerHTML = "";
     availableItems = [];
@@ -218,8 +222,9 @@ function loadList(selectedIndex) {
     }
 }
 
-// delete a network service from the server and it will be called by clicking
-// "delete" button belongs to a service
+/** It deletes a network service from the server and it is called by clicking
+ * "delete" button belongs to a service.
+ */
 function deleteService(serviceId) {
     $("#ConfirmDeletionDialog_Service").dialog({
         modal: true,
@@ -256,8 +261,9 @@ function deleteService(serviceId) {
     });
 }
 
-// delete a VNF from the server and it will be called by clicking "delete"
-// button belongs to a VNF
+/**delete a VNF from the server and it is called by clicking "delete"
+ * button belongs to a VNF.
+ */
 function deleteVnf(vnfId) {
     $("#ConfirmDeletionDialog_VNF").dialog({
         modal: true,
@@ -295,23 +301,29 @@ function deleteVnf(vnfId) {
     });
 }
 
-// clone a existing VNF to create a new one and it will be called by clicking
-// "clone" button belongs to a VNF
+/** It clones a existing VNF to create a new one and it is called by clicking
+ * "clone" button belongs to a VNF.
+ */
 function cloneVnf(vnfId) {
     window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "clone";
 }
 
-// clone a existing network service to create a new one and it will be called by
-// clicking "clone" button belongs to a service
+/** It clones a existing network service to create a new one and it is called by
+ * clicking "clone" button belongs to a service
+ */
 function cloneService(serviceId) {
     showCreateNSDialog(true, serviceId);
 }
-
+/**
+ *  It opens the VNF view page for a new VNF.
+ */
 function createNewVnf() {
     window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&operation=" + "create";
 }
 
-// send the name of the new network service to server
+/**
+ *  It creates a new network service and sends the name of it to the back-end server.
+ */
 function createNewService(clone, cloneId) {
     if (clone) {
         // load cloned service from server
@@ -392,25 +404,31 @@ function createNewService(clone, cloneId) {
     }
 }
 
-// open the network service editor and it will be called by clicking "edit"
-// button belongs to a service
+/** It opens the network service editor and it will be called by clicking "edit"
+ *	button belongs to a service.
+ */
 function editService(serviceId) {
     window.location.href = "nsView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&nsId=" + serviceId;
 
 }
 
-// open the VNF editor and it will be called by clicking "edit" button belongs
-// to a VNF
+/** It opens the VNF editor and it will be called by clicking "edit" button belongs
+ *  to a VNF.
+ */
 function editVnf(vnfId) {
     window.location.href = "vnfView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"] + "&vnfId=" + vnfId + "&operation=" + "edit";
 }
 
-// open configuration from the current project
+/**
+ * It opens the configuration view of the current project
+ */
 function goToConfigurationView() {
-    window.location.href = "project-configurationView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"];
+    window.location.href = "projectConfigurationView.html?wsId=" + queryString["wsId"] + "&ptId=" + queryString["ptId"];
 }
 
-// create new networkservice dialog (uses jquery ui Dialog)
+/**
+ * It shows the "create new network service" dialog (uses jquery ui Dialog)
+ */
 function showCreateNSDialog(clone, cloneId) {
     $("#createNetworkserviceDialog").dialog({
         modal: true,
@@ -426,3 +444,44 @@ function showCreateNSDialog(clone, cloneId) {
         }
     });
 }
+
+/**
+ * It loads available VNFs, NSs and catalogues from the back-end server
+ * and sets configurations for the search bar.
+ */
+$(document).ready(function() {
+    queryString = getQueryString();
+    wsId = queryString["wsId"];
+    ptId = queryString["ptId"];
+    setWorkspaceInNav(wsId);
+    setProjectInNav(wsId, ptId);
+    ko.applyBindings(viewModel);
+    loadServices();
+    loadVnfs();
+    // search bar(uses jquery ui Autocomplete)
+    $("#search_item").autocomplete({
+        source: availableItems,
+        select: function(event, ui) {
+            var item = ui.item.label;
+            var selectedId;
+            if (item.startsWith("Create")) {
+                if (item == "Create new NS") {
+                    showCreateNSDialog();
+                } else {
+                    createNewVnf();
+                }
+            } else {
+                if (item.startsWith("NS")) {
+                    item = item.substring(4, item.length);
+                    selectedId = itemDictionary[item];
+                    editService(selectedId);
+                } else {
+                    item = item.substring(5, item.length);
+                    selectedId = itemDictionary[item];
+                    editVnf(selectedId);
+                }
+            }
+        }
+    });
+    loadCatalogues();
+});

@@ -1,6 +1,19 @@
+/**
+ * It is used in workspaceView.html
+ */
+
+/**
+ * stores projects in a list
+ */
 var projects = [];
+/**
+ * stores id of the current workspace
+ */
 var wsId = "";
 var queryString = {};
+/**
+ * an instance of TableViewModel
+ */
 var tableViewModel;
 
 var Project = function(data) {
@@ -27,7 +40,7 @@ var Project = function(data) {
     		share(self);
 		}
 		return true;
-	}
+	};
 };
 
 var TableViewModel = function (){
@@ -36,20 +49,13 @@ var TableViewModel = function (){
 	var self = this;
 	this.addProject = function(data){
 		self.projects.push(new Project(data));
-	}
+	};
 };
 
-
-$(document).ready(function () {
-	queryString = getQueryString();
-	wsId = queryString["wsId"];
-	setWorkspaceInNav(wsId);
-	tableViewModel = new TableViewModel();
-	ko.applyBindings(tableViewModel);
-	loadProjects(wsId);
-	loadRepos(wsId);
-});
-
+/**
+ * It loads projects of the current workspace from the back-end server.
+ * @param wsId
+ */
 function loadProjects(wsId){
 	var availableProjects = ["Create new project"];
 	var ptDictionary = {};
@@ -91,7 +97,6 @@ function loadProjects(wsId){
 
 
 function urlSelected(item){
-	
 	if (item.selectedIndex >0){
 		$('#ptUrlInput').val(item.value);
 		$('#ptNameInput').val(item.options[item.selectedIndex].text);
@@ -103,7 +108,10 @@ function urlSelected(item){
 
 
 
-//create new project dialog (uses jquery ui Dialog)
+/**
+ * It shows "create new project dialog" (uses jquery ui Dialog).
+ *
+ */
 function showCreateDialog() {
 	$("#createProjectDialog").dialog({
 		modal : true,
@@ -124,7 +132,13 @@ function showCreateDialog() {
 	});
 }
 
-//send the name of the new workspace to server
+/**
+ * It creates a new project and sends the name of it to back-end server.
+ *
+ * @param wsId
+ * @param ptName
+ * @param repoURL
+ */
 function createNewProject(wsId, ptName, repoURL) {
 	$.ajax({
 		url : serverURL + "workspaces/" + wsId + "/projects/",
@@ -155,12 +169,19 @@ function createNewProject(wsId, ptName, repoURL) {
 	});
 }
 
-//open configuration from the current workspace
+/**
+ * It opens configuration view of the current workspace.
+ *
+ */
 function goToConfigurationView() {
-	window.location.href = "workspace-configurationView.html?wsId=" + queryString["wsId"];
+	window.location.href = "workspaceConfigurationView.html?wsId=" + queryString["wsId"];
 }
 
-//delete a project from the server and it will be called by clicking "delete" button belongs to a project
+/**
+ * It deletes a project from the back-end server and it is called by clicking "delete" button belongs to a project.
+ *
+ * @param ptId
+ */
 function deletePt(ptId) {
 	$("#ConfirmDeletionDialog").dialog({
 		modal : true,
@@ -197,4 +218,14 @@ function deletePt(ptId) {
 
 	});
 }
+
+$(document).ready(function () {
+	queryString = getQueryString();
+	wsId = queryString["wsId"];
+	setWorkspaceInNav(wsId);
+	tableViewModel = new TableViewModel();
+	ko.applyBindings(tableViewModel);
+	loadProjects(wsId);
+	loadRepos(wsId);
+});
 

@@ -1,7 +1,19 @@
+/**
+ * It is used in projectConfiguration.html
+ */
 var queryString = {};
+/**
+ * an instance of ProjectModel
+ */
 var projectModel;
+/**
+ * stores the available catalogues of the current workspace
+ */
 var availableCatalogues=[];
 
+/**
+ * Data binding model for all items in project configuration view
+ */
 var ProjectModel = function () {
 	this.name = ko.observable();
 	this.maintainer = ko.observable();
@@ -10,7 +22,6 @@ var ProjectModel = function () {
 	this.description=ko.observable();
 	this.publish_to=ko.observableArray();
 	this.repo_url = ko.observable();
-	this.isShared = ko.observable(false);
 
 	this.init=function(data){
 		this.name(data.name);
@@ -20,7 +31,6 @@ var ProjectModel = function () {
 		this.description(data.description);
 		this.publish_to(data.publish_to);
 		this.repo_url(data.repo_url);
-		this.isShared(data.repo_url != null);
 		var selected=[];
 		for(var i=0;i<data.publish_to.length;i++)
 		{
@@ -31,14 +41,16 @@ var ProjectModel = function () {
 			}
 		}
 		$(".chosen-select").val(selected).trigger("chosen:updated");
-	}
+	};
 	this.setPublishTo=function(data)
 	{
 		this.publish_to(data);
-	}
+	};
 }
 
-//save the configuration from project and it will be called by clicking "save" button
+/**
+ * It saves the configuration of the current project and it is called by clicking "save" button
+ */
 function saveConfiguration() {
 	selected=$(".chosen-select").val();
 	projectModel.setPublishTo(selected);
@@ -94,7 +106,11 @@ function saveConfiguration() {
 }
 
 
-//load the current configuration of the project
+/**
+ * It loads the configuration of the current project.
+ *
+ * @param ptId
+ */
 function loadConfiguration(ptId) {
 	showWaitAnimation("Loading project");
 	$.ajax({
@@ -111,97 +127,10 @@ function loadConfiguration(ptId) {
 	});
 }
 
-function pullProject(){
-	showWaitAnimation("Pulling project...", "Pulling");
-	$.ajax({
-		method: "POST",
-		url: serverURL + "workspaces/" + wsId + "/git/pull",
-		contentType : "application/json; charset=utf-8",
-		dataType: "json",
-		xhrFields : {
-			withCredentials : true
-		},
-		data: JSON.stringify({
-			"project_id": ptId
-		}),
-		success : function (data) {
-			closeWaitAnimation();
-			if (data.success){
-				$('#gitSuccess').dialog({modal: true}).text(data.message);
-			} else {
-				$('#errorDialog').dialog({modal: true}).html(
-					"<b>Exitcode:</b> " + data.exitcode + "<br/>"
-					+ "<b>Reason:</b> " + data.message
-				);
-			}
-		}
-	});
-}
-
-function commitProject(){
-	$('#commitDialog').dialog({
-		modal: true,
-		buttons: {
-			Commit: function () {
-				$("#commitForm").parsley().validate();
-				if ($("#commitForm").parsley().isValid()){
-					var commit_message = $('#commitInput').val();
-					showWaitAnimation("Committing project...", "Committing");
-					$.ajax({
-						method: "POST",
-						url: serverURL + "workspaces/" + wsId + "/git/commit",
-						contentType: "application/json; charset=utf-8",
-						dataType: "json",
-						xhrFields: {
-							withCredentials: true
-						},
-						data: JSON.stringify({
-							"project_id": ptId,
-							"commit_message": commit_message
-						}),
-						success: function (data) {
-							closeWaitAnimation();
-							if (data.success) {
-								$('#gitSuccess').dialog().text(data.message);
-							} else {
-								$('#errorDialog').dialog().html(
-									"<b>Exitcode:</b> " + data.exitcode + "<br/>"
-									+ "<b>Reason:</b> " + data.message
-								);
-							}
-						}
-					});
-				}
-				$(this).dialog("close");
-			},
-			Cancel: function () {
-				$(this).dialog("close");
-			}
-		}
-	});
-
-}
-
-
-function shareProject(){
-	$('#shareDialog').dialog({
-		modal: true,
-		buttons: {
-			Share: function(){
-				$('#shareForm').parsley().validate();
-				if($('#shareForm').parsley().isValid()) {
-					var repo_url = $('#repoURLInput').val();
-					//call share method on server
-					$(this).dialog("close");
-				}
-			},
-			Cancel: function(){
-				$(this).dialog("close");
-			}
-		}
-	});
-}
-
+/**
+ * It loads the available catalogues of the current workspace from the back-end server
+ * and set configuration to the chosen box for "publish to".
+ */
 $(document).ready(function () {
 	queryString = getQueryString();
 	wsId = queryString["wsId"];

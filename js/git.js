@@ -1,7 +1,14 @@
 /**
  * Created by Jonas on 28.01.2017.
+ * This is the implementation for GitHub integration and is used in the workspace.html.
+ * It uses the knockout.js library for data binding.
+ * It is used in workspace.html.
+ *
  */
 
+/**
+ * It loads list of repositories of the user.
+ */
 function loadRepos(wsId) {
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/git/list",
@@ -15,6 +22,10 @@ function loadRepos(wsId) {
 	});
 }
 
+/**
+ *It pulls from Git repository.
+ * @param pt_id
+ */
 function pull(pt_id) {
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/git/pull",
@@ -30,6 +41,10 @@ function pull(pt_id) {
 		}
 	});
 }
+/**
+ *It commits changes to Git repository.
+ * @param pt_id
+ */
 function commit(pt_id) {
 	$('#commitDialog').dialog({
 		modal: true,
@@ -66,6 +81,10 @@ function commit(pt_id) {
 	});
 
 }
+/**
+ * It shows differences between the local version and remote version in Git repository.
+ * @param pt_id
+ */
 function diff(pt_id) {
 	$.ajax({
 		url: serverURL + "workspaces/" + wsId + "/git/diff",
@@ -86,7 +105,12 @@ function diff(pt_id) {
 	});
 }
 
-
+/**
+ * It shows if there is local changes.
+ * @param wsId
+ * @param pt_id
+ * @param url
+ */
 function showStatus(wsId, pt_id, url) {
 	showWaitAnimation();
 	$.ajax({
@@ -131,6 +155,10 @@ function showStatus(wsId, pt_id, url) {
 	});
 }
 
+/**
+ * It shows the share dialog.
+ * @param model
+ */
 function share(model) {
 	$('#shareDialog').dialog({
 		modal: true,
@@ -152,6 +180,11 @@ function share(model) {
 	});
 }
 
+/**
+ * It initializes the Git repository.
+ * @param model
+ * @param repo_name
+ */
 function init(model, repo_name) {
 	showWaitAnimation("Sharing project on Github", "Initializing", 0);
 	$.ajax({
@@ -172,6 +205,11 @@ function init(model, repo_name) {
 	});
 }
 
+/**
+ * It creates the remote Git repository.
+ * @param model
+ * @param repo_name
+ */
 function create(model, repo_name) {
 	showWaitAnimation("Sharing project on Github", "Uploading", 50);
 	$.ajax({
@@ -193,6 +231,10 @@ function create(model, repo_name) {
 	});
 }
 
+/**
+ * It shows the unshare dialog.
+ * @param model
+ */
 function unshare(model) {
 	$('#unshareDialog').dialog({
 		modal: true,
@@ -213,6 +255,11 @@ function unshare(model) {
 	});
 }
 
+/**
+ * It deletes project from Git repository.
+ * @param model
+ * @param repo_name
+ */
 function deletePJ(model, repo_name) {
 	showWaitAnimation("Deleting", "Deleting project from Github");
 	$.ajax({

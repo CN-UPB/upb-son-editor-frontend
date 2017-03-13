@@ -1,5 +1,17 @@
+/**
+ * Written by Linghui
+ * It is used in index.html.
+ */
+
+/**
+ * stores the list of workspaces.
+ */
 var workspaces = [];
 
+/**
+ * It loads all available workspaces from the back-end server and displays them.
+ * It also implements the search for a specific workspace in the search bar.
+ */
 $(document).ready(function () {
 	var availableWorkspaces = ["Create new workspace"];
 	var wsDictionary = {};
@@ -64,7 +76,9 @@ $(document).ready(function () {
 	})
 });
 
-//create new workspace dialog (uses jquery ui Dialog)
+/**
+ * It shows the "create new workspace" dialog.
+ */
 function showCreateDialog() {
 	$("#createWorkspaceDialog").dialog({
 		modal : true,
@@ -84,7 +98,9 @@ function showCreateDialog() {
 	});
 }
 
-//create a new workspace and send the name of the new workspace to server
+/**
+ * It creates a new workspace and sends the name of the new workspace to the back-end server.
+ */
 function createNewWorkspace(wsName) {
 	$.ajax({
 		url : serverURL + "workspaces/",
@@ -114,7 +130,9 @@ function createNewWorkspace(wsName) {
 	});
 }
 
-//delete a workspace from the server
+/**
+ * It deletes a workspace from the back-end server.
+ */
 function deleteWs(wsId) {
 	$("#ConfirmDeletionDialog").dialog({
 		modal : true,
