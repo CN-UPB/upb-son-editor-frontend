@@ -113,6 +113,10 @@ $(document).ajaxError(function (event, response, request, thrownError) {
 		var authUrl = json.authorizationUrl;
 		var message = json.message;
 
+		if (!authUrl){
+			return;
+		}
+
 		requests.push(request);
 		if (requests.length > 1) {
 			//do not open more than one dialog at a time
@@ -193,21 +197,22 @@ function closeWaitAnimation() {
  * It loads the user name.
  */
 function loadUserInfo() {
-
-	$.ajax({
-		url: serverURL + "user",
-		dataType: "json",
-		xhrFields: {
-			withCredentials: true
-		},
-		success: function (data) {
-			//console.log(data);
-			//console.log(data.login);
-			//$('#username').css('float','right');
-			document.getElementById("target-username").text = data.login;
-			$('.avatar').attr("src", data.avatar_url);
-		}
-	});
+	if ($('.userinfo')[0]){
+		$.ajax({
+			url: serverURL + "user",
+			dataType: "json",
+			xhrFields: {
+				withCredentials: true
+			},
+			success: function (data) {
+				//console.log(data);
+				//console.log(data.login);
+				//$('#username').css('float','right');
+				document.getElementById("target-username").text = data.login;
+				$('.avatar').attr("src", data.avatar_url);
+			}
+		});
+	}
 }
 /**
  * It is the logout action.

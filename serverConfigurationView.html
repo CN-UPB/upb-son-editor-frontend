@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>SONATA SDK Editor - Server Configuration</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"/>
+	<link rel="stylesheet" media="screen" href="css/commonStyle.css"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+	<script src="js/lib/jsoneditor.min.js"></script>
+	<script src="js/constants.js"></script>
+	<script src="js/utils.js"></script>
+	<script src="js/backend-config.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" onclick="goToHomeView();">
+				<img src="http://www.sonata-nfv.eu/sites/sonata-nfv.eu/themes/zen/sonatina/images/sonata_logo.svg"
+					 alt="SONATA SDK Editor" width="180" height="50">
+			</a>
+		</div>
+		<ul class="nav navbar-nav">
+			<li><a onclick="goToHomeView();">Home</a></li>
+			<li class="active"><a id="nav_vnf" onclick="history.go(0);">CONFIG</a></li>
+		</ul>
+	</div>
+</nav>
+<!--jquery ui-->
+<div class="container-fluid">
+	<div id="configForm" class="row configurationForm"></div>
+	<div id="buttons" class="row" align="center">
+		<button class="btn btn-primary" onclick="saveConfig();">
+			<span style="margin-right: 2px;" class="glyphicon glyphicon-saved"></span>Save
+		</button>
+		<button class="btn btn-default" onclick="goToHomeView();"><span style="margin-right: 2px;"
+																		   class="glyphicon glyphicon-remove"></span>Close
+		</button>
+	</div>
+</div>
+<div id="successDialog" title="Success" hidden>
+	<h4>Configuration Saved</h4>
+</div>
+</body>
+</html>
