@@ -1088,6 +1088,7 @@ function loadCpInfos(type, data) {
 		} else {
 			notFoundVNFs.push(data.vnf_vendor + ":" + data.vnf_name + ":"
 					+ data.vnf_version);
+			return null;
 		}
 		return vnf_data;
 	}
@@ -1099,6 +1100,7 @@ function loadCpInfos(type, data) {
 		} else {
 			notFoundNSs.push(data.ns_vendor + ":" + data.ns_name + ":"
 					+ data.ns_version);
+			return null;
 		}
 		return ns_data;
 	}
