@@ -370,7 +370,7 @@ function writeDependencies() {
 		vnf_deps = [];
 		for ( var i = 0; i < cur_ns.descriptor.network_functions.length; i++) {
 			var vnf = cur_ns.descriptor.network_functions[i];
-			var vnf_dep = vnf.vnf_vendor + "." + vnf.vnf_name + "."
+			var vnf_dep = vnf.vnf_vendor + ":" + vnf.vnf_name + ":"
 					+ vnf.vnf_version;
 			if ($.inArray(vnf_dep, vnf_deps) < 0) {
 				vnf_deps.push(vnf_dep);
@@ -382,7 +382,7 @@ function writeDependencies() {
 		ns_deps = [];
 		for ( var i = 0; i < cur_ns.descriptor.network_services.length; i++) {
 			var ns = cur_ns.descriptor.network_services[i];
-			var ns_dep = ns.ns_vendor + "." + ns.ns_name + "." + ns.ns_version;
+			var ns_dep = ns.ns_vendor + ":" + ns.ns_name + ":" + ns.ns_version;
 			if ($.inArray(ns_dep, ns_deps) < 0) {
 				ns_deps.push(ns_dep);
 			}
@@ -1081,10 +1081,9 @@ function loadPlatforms() {
  */
 function loadCpInfos(type, data) {
 	if (type == 'vnf') {
-		var vnf_data = {};
-		vnf_data = jQuery.extend({}, vnf_map[data.vnf_vendor + ":" + data.vnf_name + ":"
+		var vnf_data = jQuery.extend({}, vnf_map[data.vnf_vendor + ":" + data.vnf_name + ":"
 				+ data.vnf_version]);
-		if (vnf_data) {
+		if (!$.isEmptyObject(vnf_data)) {
 			vnf_data['id'] = data.vnf_id;
 		} else {
 			notFoundVNFs.push(data.vnf_vendor + ":" + data.vnf_name + ":"
@@ -1093,10 +1092,9 @@ function loadCpInfos(type, data) {
 		return vnf_data;
 	}
 	if (type == 'ns') {
-		var ns_data = {};
-		ns_data = jQuery.extend({}, ns_map[data.ns_vendor + ":" + data.ns_name + ":"
+		var ns_data = jQuery.extend({}, ns_map[data.ns_vendor + ":" + data.ns_name + ":"
 				+ data.ns_version]);
-		if (ns_data) {
+		if (!$.isEmptyObject(ns_data)) {
 			ns_data['id'] = data.ns_id;
 		} else {
 			notFoundNSs.push(data.ns_vendor + ":" + data.ns_name + ":"
