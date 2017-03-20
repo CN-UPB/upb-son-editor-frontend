@@ -171,7 +171,7 @@ var viewModel = new ViewModel();
 			}
 
 
-			allServerNodes = [];
+			//allServerNodes = [];
 			services = data;
 			for (var i = 0; i < services.servers.length; i++) {
 				if(services.servers[i].name.search(clickedStack) == -1){
@@ -235,7 +235,7 @@ var viewModel = new ViewModel();
 						lastServerNode = nsData;
 					}*/
 					allServerNodes.push(nsData);
-					console.log(allServerNodes);
+					console.log(allServerNodes +":"+ allServerNodes.length);
 					viewModel.addDescriptor(nsData);
 					//sleep(1000);
 				}
@@ -483,7 +483,7 @@ function loadEmuStacks(){
 		//clickedStack = emuStackName;
 		clearGraph(clickedStack);
 		//dc_count = calculateCountDC();
-
+		allServerNodes = [];
 		console.log(dc_count);
 		for (var i = 0; i < dc_count; i++){
 			loadEmuServers(clickedStack, i);
