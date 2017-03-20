@@ -143,7 +143,8 @@ var viewModel = new ViewModel();
 		//var services = [];
 		var dc_port = 8775 + +data_center;
 	return $.ajax({
-		url : "http://fg-cn-sandman1.cs.upb.de:"+ dc_port +"/v2.1/fc394f2ab2df4114bde39905f800dc57/servers/andPorts",
+		//url : "http://fg-cn-sandman1.cs.upb.de:"+ dc_port +"/v2.1/fc394f2ab2df4114bde39905f800dc57/servers/andPorts",
+		url: emuserverURL + dc_port + "/v2.1/fc394f2ab2df4114bde39905f800dc57/servers/andPorts",
 		//url : "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
 		method : 'GET',
 		//contentType : "application/json; charset=utf-8",
@@ -256,7 +257,8 @@ var viewModel = new ViewModel();
 
 function loadEmuConnections(clickedStack){
 	return $.ajax({
-		url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/chain/list",
+		//url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/chain/list",
+		url: emuserverURL + "4000/v1/chain/list",
 		method : 'GET',
 		//contentType : "application/json; charset=utf-8",
 		dataType : "json",
@@ -314,7 +316,8 @@ function loadEmuConnections(clickedStack){
 
 function loadEmuLbConnections(clickedStack){
 	return $.ajax({
-		url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/lb/list",
+		//url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/lb/list",
+		url: emuserverURL + "4000/v1/lb/list",
 		method : 'GET',
 		//contentType : "application/json; charset=utf-8",
 		dataType : "json",
@@ -359,7 +362,8 @@ function loadEmuLbConnections(clickedStack){
 
 function loadEmuStacks(){
 	return $.ajax({
-		url: "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
+		//url: "http://fg-cn-sandman1.cs.upb.de:8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
+		url: emuserverURL + "8005/v1/fc394f2ab2df4114bde39905f800dc57/stacks",
 		method : 'GET',
 		//contentType : "application/json; charset=utf-8",
 		dataType : "json",
@@ -544,7 +548,8 @@ function buildTitle(serviceIps, servicesInterfaces){
 function calculateCountDC(){
 			//var count = 0;
 			$.ajax({
-				url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/topo",
+				//url: "http://fg-cn-sandman1.cs.upb.de:4000/v1/topo",
+				url: emuserverURL + "4000/v1/topo",
 				method : 'GET',
 				//contentType : "application/json; charset=utf-8",
 				dataType : "json",
