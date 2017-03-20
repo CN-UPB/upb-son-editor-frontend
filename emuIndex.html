@@ -1,0 +1,133 @@
+	<!DOCTYPE html>
+	<html >
+	  <head>
+		<meta charset="UTF-8">
+		<!--<title>Pan and Zoom in jsPlumb Community Edition with  Dagre and jQueryUI Draggable</title>-->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+  		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css"/>
+  		<link rel="stylesheet" media="screen" href="css/commonStyle.css" />
+  		<link rel="stylesheet" rel="stylesheet" href="css/emuStyle.css" />
+		<link rel="stylesheet" href="css/emuStyle.css">
+	  </head>
+
+	  <body>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+				<a class="navbar-brand" onclick="goToHomeView();"> <img
+					src="http://www.sonata-nfv.eu/sites/sonata-nfv.eu/themes/zen/sonatina/images/sonata_logo.svg"
+					alt="SONATA SDK Editor" width="180" height="50">
+				</a>		    </div>
+		    <ul class="nav navbar-nav">
+			   <li><a onclick="goToHomeView();">Home</a></li>
+			   <li><a id="nav_workspace" onclick="goToWorkspaceView();">Workspace</a></li>
+			   <li><a id="nav_project" onclick="goToProjectView();">Project</a></li>
+		       <li class="active"><a id="nav_monitor" onclick="history.go(0);">Monitor</a></li>
+		    </ul>
+			<ul class="userinfo nav navbar-nav">
+				<li>
+					<div id="userNameImg">
+						<img class="avatar" width="20" height="20">
+						<a id="target-username"></a>
+					</div>
+				</li>
+					<li>
+						<a id="log-out" onclick="logOutFromEditor()">Log Out</a>
+					</li>
+			</ul>
+		  </div>
+		</nav>
+<div class="table-container">
+	<div class="row top-buffer" style="margin-top:50px; margin-left:20px;">
+		<div class="col-md-5">
+			<table class="table table-bordered" id="service-table">
+				<thead>
+				  <tr>
+					<th width=10%>Name of The Server</th>
+					<th width=10%>Status</th>
+					<th width=20%>Options</th>
+				  </tr>
+				</thead>
+				<tbody id="display_NS_VNFS" data-bind="foreach: stacks">
+	                <tr>
+	                    <td data-bind="text: name"></td>
+	                    <td data-bind="text: status"></td>
+	                    <td>
+	                    	<button class="btn btn-primary btn-sm" data-bind="click: showGraph">Show Graph</button>
+	                    	<button class="btn btn-primary btn-sm" data-bind="click: clear">Clear</button>
+	                    </td>
+	                </tr>
+				</tbody>
+			</table>
+		</div>
+		<!--<div class="dropdown">
+			<button onclick="listStacks()" class="dropbtn">Stacks</button>
+			  <div id="myDropdown" class="dropdown-content" data-bind="foreach: stacks">
+			    <a data-bind="text: name">Stacks</a>
+			  </div>
+		</div>-->
+	</div>
+
+</div>
+		<div class="container col-md-6">
+			<div class="panzoom row">
+				<!--<div class="diagram">-->
+				
+					<!--<div id="i0"  class="item">Root!</div>
+					<div id="i1" class="item">Child 1</div>
+					<div  id="i11" class="item">Child 1.1</div>
+					<div  id="i12" class="item">Child 1.2</div>
+					<div id="i2" class="item">Child 2</div>
+					<div id="i21" class="item">Child 2.1</div>
+					<div id="i3" class="item">Child 3</div>
+					<div data-bind="foreach: vnfs" id="vnf-panel" class="vnf-list">-->
+				<div class="diagram" data-bind="foreach: descriptors" id="server-panel">
+					<div data-bind="attr: {'id': id, 'title': title}, drag: {value:$data}" class="item">
+						<p data-bind="text: template_name">server1</p>
+					</div>
+					<!--<div class="diagram" data-bind="foreach: ports" >
+						<p data-bind="text: intf_name">ip address</p>
+					</div>-->
+
+				</div>
+			</div>
+		<!--<div class="hint">
+		  <h4>Hint</h4>
+		  <ul>
+			<li>Drag and drop empty space to pan</li>
+			<li>Nodes are also draggable</li>
+			<li>Mouse wheel to pan up/down</li>
+			<li>Shift+Mouse wheel to pan left/right</li>
+			<li>Ctrl+Mouse wheel to zoom in/out</li>
+		  </ul>
+		<h4>Used</h4>
+		  <ul>
+			<li><a href="https://jsplumbtoolkit.com/community/doc/home.html">jsPlumb Community Edition</a></li>
+			<li><a href="https://github.com/timmywil/jquery.panzoom">jQuery Panzoom plugin</a></li>
+			<li><a href="https://github.com/cpettitt/dagre">Dagre for initial auto-layout</a></li>
+			<li><a href="http://jqueryui.com/draggable/">jQueryUI Draggable for dragging nodes</a></li>
+		  </ul>
+		  <a  target="_blank" href="http://yurigor.com/pan-zoom-jsplumb-dagrejs-jqueryui-draggable/">See my blog for details</a>
+		  </div>-->
+			</div>
+
+		<!--</div>-->
+		<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.12.0/lodash.min.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.0.7/jsPlumb.min.js'></script>
+		<script src='http://yurigor.com/js/dagre.min.js'></script>
+		<script src='http://yurigor.com/js/jquery.panzoom.min.js'></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+	<!--<script src="js/jquery.panzoom.js"></script>
+	<script src="js/jquery.mousewheel.js"></script>-->
+		<script src="js/constants.js"></script>
+  		<!--<script src="js/project.js"></script>-->
+  		<script src="js/utils.js"></script>
+  		<script src="js/emu.js"></script>
+		<script src="js/emuDrawGraph.js"></script>
+
+		
+		
+	  </body>
+	</html>
