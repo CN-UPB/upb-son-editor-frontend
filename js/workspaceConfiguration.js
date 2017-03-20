@@ -83,8 +83,7 @@ var WorkspaceModel = function () {
  * data binding class for VNF schema and NS schema.
  */
 var SchemasModel = function () {
-	this.vnf_schemas = ko.observableArray();
-	this.ns_schemas = ko.observableArray();
+	this.schemas = ko.observableArray();
 };
 
 
@@ -168,10 +167,8 @@ function loadConfiguration(wsId) {
 					withCredentials: true
 				},
 				success: function (schema_data) {
-					schemasModel.vnf_schemas(schema_data["vnf"]);
-					schemasModel.ns_schemas(schema_data['ns']);
-					$('#selectVNFSchema').val(data.vnf_schema_index);
-					$('#selectNSSchema').val(data.ns_schema_index);
+					schemasModel.schemas(schema_data);
+					$('#selectSchema').val(data.schema_index);
 				}
 			});
 		}

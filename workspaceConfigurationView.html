@@ -124,19 +124,11 @@
                 <div id="schemas">
                     <div class="form-group" align="left">
                         <div class="col-md-1">
-                            <label class="control-label">VNF Schema:</label>
+                            <label class="control-label">Schema Master:</label>
                         </div>
-                        <div class="col-md-4">
-                            <select class="form-control" data-bind="foreach: vnf_schemas" id="selectVNFSchema">
-                                <option data-bind="value: $index, text: name"></option>
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <label class="control-label">NS Schema:</label>
-                        </div>
-                        <div class="col-md-5">
-                            <select class="form-control" data-bind="foreach: ns_schemas" id="selectNSSchema">
-                                <option data-bind="value: $index, text: name"></option>
+                        <div class="col-md-9">
+                            <select class="form-control" data-bind="foreach: schemas" id="selectSchema">
+                                <option data-bind="value: $index, text: url"></option>
                             </select>
                         </div>
                     </div>
