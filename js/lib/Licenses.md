@@ -1,5 +1,5 @@
 
-#Copyright (c) 2010 - 2014 jsPlumb 
+# Copyright (c) 2010 - 2014 jsPlumb 
 http://jsplumbtoolkit.com/
 All 1.x.x and 2.x.x versions of jsPlumb Community edition are dual-licensed 
 under both MIT and GPLv2.
@@ -25,7 +25,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#Copyright (c) 2012 Markus Lima, Bootstrap Filestyle
+# Copyright (c) 2012 Markus Lima, Bootstrap Filestyle
 https://github.com/markusslima/bootstrap-filestyle/blob/master/LICENSE-MIT
 
 Permission is hereby granted, free of charge, to any person
@@ -49,7 +49,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
     
-#Copyright (c) 2013 Jeremy Dorn, JSON Editor 
+# Copyright (c) 2013 Jeremy Dorn, JSON Editor 
 https://github.com/jdorn/json-editor/blob/master/LICENSE
 The MIT License (MIT)
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -69,7 +69,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#Copyright (C) 2011-2015 by Vitaly Puzrin,JS-YAML - YAML 1.2 parser
+# Copyright (C) 2011-2015 by Vitaly Puzrin,JS-YAML - YAML 1.2 parser
 https://github.com/nodeca/js-yaml/blob/master/LICENSE
 (The MIT License)
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -90,7 +90,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-#Copyright (c) Steven Sanderson, the Knockout.js team, and other contributors, Knockout
+# Copyright (c) Steven Sanderson, the Knockout.js team, and other contributors, Knockout
 http://knockoutjs.com/
 The MIT License (MIT) - http://www.opensource.org/licenses/mit-license.php
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -111,7 +111,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-#Copyright jQuery Foundation and other contributors, JQuery Mousewheel
+# Copyright jQuery Foundation and other contributors, JQuery Mousewheel
 https://jquery.org/
 
 This software consists of voluntary contributions made by many
@@ -140,7 +140,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#Copyright 2016 Timmy Willison, jQuery Panzoom
+# Copyright 2016 Timmy Willison, jQuery Panzoom
 https://github.com/timmywil/jquery.panzoom/blob/master/MIT-License.txt
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -184,7 +184,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#Copyright (c) 2011-2016 by Harvest, Chosen
+# Copyright (c) 2011-2016 by Harvest, Chosen
 https://github.com/harvesthq/chosen/blob/master/LICENSE.md
 by Patrick Filler for Harvest
 
